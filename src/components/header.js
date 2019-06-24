@@ -1,25 +1,30 @@
-import { Link } from "gatsby"
-import PropTypes from "prop-types"
 import React from "react"
 import styled from "styled-components"
 
 import icon from "../images/icon.png"
 import colors from "../lib/colors"
 
-const Header = ({ siteTitle }) => (
-  <StyledHeader>
-    <Link to="/" style={{ color: `white`, textDecoration: `none` }}>
-      <img style={{ width: "50px" }} src={icon} />
-    </Link>
-  </StyledHeader>
-)
+export default class Results extends React.Component {
+  constructor(props) {
+    super(props)
 
-Header.propTypes = {
-  siteTitle: PropTypes.string,
-}
+    this.state = {
+      displayMap: true,
+    }
+  }
 
-Header.defaultProps = {
-  siteTitle: "",
+  render() {
+    return (
+      <StyledHeader>
+        <img
+          onClick={this.props.reset.bind(this)}
+          alt="tour food"
+          style={{ width: "50px", cursor: "pointer" }}
+          src={icon}
+        />
+      </StyledHeader>
+    )
+  }
 }
 
 const StyledHeader = styled.header`
@@ -27,5 +32,3 @@ const StyledHeader = styled.header`
   width: 100%;
   border-bottom: 3px solid ${colors.blue};
 `
-
-export default Header

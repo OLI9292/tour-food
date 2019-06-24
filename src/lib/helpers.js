@@ -1,6 +1,7 @@
 const BASE_GEOCODING_URL =
   "https://maps.googleapis.com/maps/api/geocode/json?address="
-const API_KEY = "&key=AIzaSyDDkb6KxLUg9FvVP3ERRCQPV71kvE6nE0g"
+
+const API_KEY = "&key=" + process.env.GATSBY_GOOGLE_API_KEY
 
 export const parseRow = row => {
   const data = row.split(",")
@@ -16,6 +17,11 @@ export const geocode = (addressStr, cb) =>
   fetch(BASE_GEOCODING_URL + addressStr + API_KEY)
     .then(res => res.json())
     .then(data => {
-      const { lat, lng } = data["results"][0]["geometry"]["location"]
-      cb(lat, lng)
+      try {
+        const { lat, lng } = data["results"][0]["geometry"]["location"]
+        cb(lat, lng)
+      } catch (error) {
+        console.log("ERR:", error)
+        throw new Error(`Could not geocode location: ${addressStr}`)
+      }
     })

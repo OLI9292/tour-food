@@ -1,10 +1,9 @@
 import React from "react"
 import * as geolib from "geolib"
+import { navigate } from "gatsby"
 
-import Layout from "../components/layout"
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
-import Results from "../components/results"
 
 import searchByRoute from "../images/search-by-route.png"
 import searchNearby from "../images/search-nearby.png"
@@ -18,8 +17,9 @@ import {
   GrayLine,
   Submit,
   Form,
-  Text,
 } from "./components"
+
+import { Box, Text } from "../components/common"
 
 import { parseRow, geocode } from "../lib/helpers"
 
@@ -27,16 +27,25 @@ import colors from "../lib/colors"
 
 const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPPv-4s_IwrC3f89lf7uesNNyl_Omig9EvbqiAoTcI61z_tPocemFqVPGSfs0feyfoa4qgynMpKU9W/pub?output=csv"
-const MAX_RESULTS = 10
+const MAX_RESULTS = 30
 
 export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchType: "route",
-      locationA: "Greenwich, CT",
-      locationB: "Austin, TX",
+      searchType: "destination",
+      locationA: "Brooklyn, NY",
+      // locationB: "Austin, TX",
     }
+  }
+
+  reset() {
+    this.setState({
+      searchType: undefined,
+      locationA: undefined,
+      locationB: undefined,
+      results: undefined,
+    })
   }
 
   checkLocation() {
@@ -44,6 +53,7 @@ export default class IndexPage extends React.Component {
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => {
           const { latitude, longitude } = coords
+          console.log(latitude, longitude)
         },
         error => console.log(error),
         { timeout: 5000 }
@@ -65,8 +75,8 @@ export default class IndexPage extends React.Component {
       })
   }
 
-  async findNearLocation(locationA) {
-    geocode(locationA, (lat, lng) => {
+  async findNearLocation(locations, cb) {
+    geocode(locations[0], (lat, lng) => {
       const results = this.state.locations
         .map(location => ({
           location,
@@ -79,31 +89,53 @@ export default class IndexPage extends React.Component {
         .filter(a => a.distance < 25)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
         .slice(0, MAX_RESULTS)
-
-      this.setState({ results })
+      cb(results)
     })
   }
 
-  async findAlongRoute(locationA, locationB) {
-    geocode(locationA, (latA, lngA) => {
-      geocode(locationB, (latB, lngB) => {
+  async findAlongRoute(locations, cb) {
+    geocode(locations[0], (latA, lngA) =>
+      geocode(locations[1], (latB, lngB) => {
         const results = this.state.locations
           .map(location => ({
             location,
             distance:
               geolib.getDistanceFromLine(
-                { latitude: location.latitude, longitude: location.longitude },
+                {
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                },
                 { latitude: latA, longitude: lngA },
                 { latitude: latB, longitude: lngB }
               ) / 1609.344,
           }))
           .filter(a => a.distance < 25)
+          .map(({ location, distance }) => ({
+            location,
+            distance,
+            minimumDistanceFromLocation: Math.min(
+              geolib.getDistance(
+                {
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                },
+                { latitude: latA, longitude: lngA }
+              ) / 1609.344,
+              geolib.getDistance(
+                {
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                },
+                { latitude: latB, longitude: lngB }
+              ) / 1609.344
+            ),
+          }))
+          .filter(a => a.minimumDistanceFromLocation > 10)
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
           .slice(0, MAX_RESULTS)
-
-        this.setState({ results })
+        cb(results)
       })
-    })
+    )
   }
 
   render() {
@@ -111,18 +143,6 @@ export default class IndexPage extends React.Component {
 
     const isSearchingDestination = searchType === "destination"
     const isSearchingRoute = searchType === "route"
-
-    const displayResults = Array.isArray(results)
-    let resultsDescription = ""
-
-    if (displayResults) {
-      resultsDescription += `${results.length} result`
-      if (results.length > 1) resultsDescription += "s"
-      if (isSearchingRoute) {
-        resultsDescription += ` from ${locationA} to ${locationB}`
-      }
-      if (isSearchingDestination) resultsDescription += ` nearby ${locationA}`
-    }
 
     const searchNearbyHeader = (
       <Header color={colors.blue}>search nearby</Header>
@@ -164,9 +184,27 @@ export default class IndexPage extends React.Component {
         <Submit
           onClick={e => {
             e.preventDefault()
-            isSearchingDestination
-              ? this.findNearLocation(locationA)
-              : this.findAlongRoute(locationA, locationB)
+            const fn = isSearchingDestination
+              ? this.findNearLocation.bind(this)
+              : this.findAlongRoute.bind(this)
+
+            fn([locationA, locationB], results => {
+              console.log(results.length)
+              const displayResults = results.length > 0
+              let description = ""
+
+              if (displayResults) {
+                description += `${results.length} result`
+                if (results.length > 1) description += "s"
+                if (isSearchingRoute) {
+                  description += ` from ${locationA} to ${locationB}`
+                }
+                if (isSearchingDestination)
+                  description += ` nearby ${locationA}`
+              }
+
+              navigate("/results", { state: { description, results } })
+            })
           }}
           type="submit"
           value="search"
@@ -197,26 +235,13 @@ export default class IndexPage extends React.Component {
     )
 
     return (
-      <div
-        id="container"
-        style={{
-          height: "100vh",
-          width: "100vw",
-          position: "fixed",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <Box id="container">
         <SEO title="Home" />
 
-        <HeaderComponent siteTitle="Tour Food" />
+        <HeaderComponent reset={this.reset.bind(this)} siteTitle="Tour Food" />
 
-        {displayResults ? (
-          <Results results={results} description={resultsDescription} />
-        ) : (
-          searchComponent
-        )}
-      </div>
+        {searchType ? searchComponent : selectSearchComponent}
+      </Box>
     )
   }
 }

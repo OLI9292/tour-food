@@ -42,7 +42,6 @@ export const Input = styled.input`
   font-size: 1.5em;
   letter-spacing: 1px;
   display: block;
-  font-family: Nunito;
 `
 
 export const GrayLine = styled.div`
@@ -53,9 +52,9 @@ export const GrayLine = styled.div`
 `
 
 export const Submit = styled.input`
+  -webkit-appearance: none;
   background-color: ${p => p.color};
   color: white;
-  font-family: Nunito;
   text-transform: uppercase;
   text-align: center;
   cursor: pointer;

@@ -1,9 +1,19 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap");
+
 html {
   font-family: "Nunito", sans-serif;
+  font-weight: 700;
 }
 
 body {
   margin: 0;
+}
+
+html,
+body,
+#___gatsby,
+#___gatsby > div {
+  min-height: 100vh;
 }
 
 h1,
@@ -13,4 +23,17 @@ h2 {
 
 #container > div {
   height: 100%;
+}
+
+input {
+  font-family: inherit;
+}
+
+#map-container > div {
+  height: 50% !important;
+}
+
+.gm-fullscreen-control,
+.gm-bundled-control {
+  display: none !important;
 }
