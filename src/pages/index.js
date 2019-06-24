@@ -33,8 +33,8 @@ export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchType: "destination",
-      locationA: "Brooklyn, NY",
+      // searchType: "destination",
+      // locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
     }
   }
@@ -139,7 +139,7 @@ export default class IndexPage extends React.Component {
   }
 
   render() {
-    const { searchType, locationA, locationB, results } = this.state
+    const { searchType, locationA, locationB, results, locations } = this.state
 
     const isSearchingDestination = searchType === "destination"
     const isSearchingRoute = searchType === "route"
@@ -189,7 +189,6 @@ export default class IndexPage extends React.Component {
               : this.findAlongRoute.bind(this)
 
             fn([locationA, locationB], results => {
-              console.log(results.length)
               const displayResults = results.length > 0
               let description = ""
 
@@ -203,7 +202,9 @@ export default class IndexPage extends React.Component {
                   description += ` nearby ${locationA}`
               }
 
-              navigate("/results", { state: { description, results } })
+              navigate("/results", {
+                state: { description, results, locations },
+              })
             })
           }}
           type="submit"
@@ -228,7 +229,12 @@ export default class IndexPage extends React.Component {
           {searchNearbyHeader}
         </SearchBox>
 
-        <div style={{ flex: 1, marginTop: "15px" }}>
+        <div
+          onClick={() =>
+            navigate("/results", { state: { results: [], locations } })
+          }
+          style={{ cursor: "pointer", flex: 1, marginTop: "15px" }}
+        >
           <Text>View All</Text>
         </div>
       </SearchBoxes>

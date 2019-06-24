@@ -1,9 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
+import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
-import HeaderComponent from "../components/header"
+import Header from "../components/header"
 import { FlexedDiv, Text, Box } from "../components/common"
 import Marker from "../components/mapMarker"
 
@@ -15,19 +16,51 @@ export default class Results extends React.Component {
   constructor(props) {
     super(props)
 
-    const { results, description } = this.props.location.state
+    const { results, description, locations } = this.props.location.state
 
     this.state = {
       displayMap: false,
       results,
+      locations,
+      filterOptions: {
+        state: Array.from(new Set(locations.map(l => l.state))).sort(),
+        city: Array.from(new Set(locations.map(l => l.city))).sort(),
+      },
+      filterBy: {
+        state: undefined,
+        city: undefined,
+        tag: undefined,
+      },
       description,
     }
   }
 
-  render() {
-    const { results, description, displayMap } = this.state
+  filter(key, value) {
+    const { locations } = this.state
+    const filterBy = {}
+    filterBy[key] = value
 
-    const displayMapBanner = (
+    const results = locations
+      .filter(l =>
+        Object.keys(filterBy).every(
+          key => !filterBy[key] || filterBy[key] === l[key]
+        )
+      )
+      .map(location => ({ location }))
+
+    this.setState({ results, filterBy })
+  }
+
+  render() {
+    const {
+      results,
+      description,
+      displayMap,
+      filterOptions,
+      filterBy,
+    } = this.state
+
+    const displayMapBanner = results.length ? (
       <FlexedDiv
         style={{
           borderBottom: `3px solid ${colors.blue}`,
@@ -45,9 +78,9 @@ export default class Results extends React.Component {
         />
         <Text>View on Map</Text>
       </FlexedDiv>
-    )
+    ) : null
 
-    const map = (
+    const map = results.length ? (
       <div style={{ height: "50%", width: "100vw", marginLeft: "-10px" }}>
         <GoogleMapReact
           disableDefaultUI={true}
@@ -69,7 +102,7 @@ export default class Results extends React.Component {
           ))}
         </GoogleMapReact>
       </div>
-    )
+    ) : null
 
     const result = (data, idx) => (
       <Result key={idx}>
@@ -93,17 +126,23 @@ export default class Results extends React.Component {
             </Text>
           </div>
 
-          <Text style={{ marginLeft: "20px" }} color={colors.orange}>
-            {Math.round(data.distance * 10) / 10}m
-          </Text>
+          {data.distance && (
+            <Text style={{ marginLeft: "20px" }} color={colors.orange}>
+              {Math.round(data.distance * 10) / 10}m
+            </Text>
+          )}
         </FlexedDiv>
       </Result>
     )
 
     return (
       <Box>
-        <HeaderComponent
-          reset={() => console.log("hi")}
+        <Header
+          reset={() => navigate("/")}
+          showFilters={true}
+          filterBy={filterBy}
+          filter={this.filter.bind(this)}
+          filterOptions={filterOptions}
           siteTitle="Tour Food"
         />
 
