@@ -21,9 +21,16 @@ export default class Results extends React.Component {
     const dropdown = attr => (
       <Dropdown>
         {filterOptions[attr].map((a, idx) => (
-          <Text onClick={() => this.props.filter(attr, a)} small key={idx}>
-            {a}
-          </Text>
+          <Option
+            onClick={() => {
+              this.setState({ displayOptionsFor: undefined })
+              this.props.filter(attr, a)
+            }}
+          >
+            <Text color="black" extraSmall key={idx}>
+              {a}
+            </Text>
+          </Option>
         ))}
       </Dropdown>
     )
@@ -83,11 +90,17 @@ export default class Results extends React.Component {
               {displayOptionsFor === "city" && dropdown("city")}
             </FilterBox>
 
-            <FilterBox>
+            <FilterBox
+              onMouseOver={() => this.setState({ displayOptionsFor: "tag" })}
+              onMouseLeave={() =>
+                this.setState({ displayOptionsFor: undefined })
+              }
+            >
               <Text style={{ marginRight: "5px" }} color={color("tag")}>
                 {filterBy["tag"] || "Tag"}
               </Text>
               <Triangle color={color("tag")} />
+              {displayOptionsFor === "tag" && dropdown("tag")}
             </FilterBox>
           </FlexedDiv>
         )}
@@ -118,14 +131,40 @@ const FilterBox = styled(FlexedDiv)`
   cursor: pointer;
   position: relative;
   height: 100%;
+  @media (max-width: 600px) {
+    position: static;
+  }
+`
+
+const Option = styled.div`
+  @media (max-width: 600px) {
+    border-bottom: 0.5px solid ${colors.lightGray};
+    padding: 10px;
+    cursor: pointer;
+  }
 `
 
 const Dropdown = styled.div`
   position: absolute;
+  background-color: white;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 3px solid ${colors.blue};
+  font-weight: 400;
   top: 50px;
   left: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 100px);
-  grid-gap: 0 5px;
+  grid-template-columns: repeat(auto-fill, 90px);
+  grid-gap: 4px 15px;
+  z-index: 100;
+  @media (max-width: 600px) {
+    padding: 0px;
+    grid-template-columns: 1fr;
+    overflow: scroll;
+    max-height: calc(100% - 50px);
+    border-width: 3px 0;
+    width: 100vw;
+    left: 0;
+  }
 `

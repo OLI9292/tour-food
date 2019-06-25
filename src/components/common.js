@@ -11,7 +11,7 @@ export const FlexedDiv = styled.div`
 export const Text = styled.p`
   margin: 0;
   color: ${p => p.color || colors.gray};
-  font-size: ${p => (p.large ? 1.4 : p.small ? 1 : 1.2)}em;
+  font-size: ${p => (p.large ? 1.4 : p.small ? 1 : p.extraSmall ? 0.8 : 1.2)}em;
 `
 
 export const Box = styled.div`

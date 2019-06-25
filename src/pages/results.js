@@ -12,6 +12,11 @@ import colors from "../lib/colors"
 
 import searchByRouteSquare from "../images/search-by-route-square.png"
 
+const unique = (locations, attr) =>
+  Array.from(new Set(locations.map(l => l[attr]).flat()))
+    .filter(elem => elem)
+    .sort()
+
 export default class Results extends React.Component {
   constructor(props) {
     super(props)
@@ -23,8 +28,9 @@ export default class Results extends React.Component {
       results,
       locations,
       filterOptions: {
-        state: Array.from(new Set(locations.map(l => l.state))).sort(),
-        city: Array.from(new Set(locations.map(l => l.city))).sort(),
+        state: unique(locations, "state"),
+        city: unique(locations, "city"),
+        tag: unique(locations, "tags"),
       },
       filterBy: {
         state: undefined,
@@ -42,13 +48,24 @@ export default class Results extends React.Component {
 
     const results = locations
       .filter(l =>
-        Object.keys(filterBy).every(
-          key => !filterBy[key] || filterBy[key] === l[key]
-        )
+        Object.keys(filterBy).every(key => {
+          if (!filterBy[key]) return true
+          return key === "tag"
+            ? l.tags.indexOf(filterBy[key]) > -1
+            : filterBy[key] === l[key]
+        })
       )
       .map(location => ({ location }))
 
-    this.setState({ results, filterBy })
+    let description = `${results.length} result${
+      results.length === 1 ? "" : "s"
+    } `
+
+    if (filterBy["tag"]) description += "for " + filterBy["tag"]
+    if (filterBy["state"]) description += "in " + filterBy["state"]
+    if (filterBy["city"]) description += "in " + filterBy["city"]
+
+    this.setState({ description, results, filterBy })
   }
 
   render() {
@@ -121,17 +138,29 @@ export default class Results extends React.Component {
               {data.location.name}
             </Text>
 
-            <Text small style={{ display: "inline-block" }}>
+            <Text extraSmall style={{ display: "inline-block" }}>
               {data.location.city}, {data.location.state}
             </Text>
           </div>
 
-          {data.distance && (
+          {data.distance !== undefined && (
             <Text style={{ marginLeft: "20px" }} color={colors.orange}>
               {Math.round(data.distance * 10) / 10}m
             </Text>
           )}
         </FlexedDiv>
+
+        {data.location.tags.length && (
+          <Text color={colors.orange} extraSmall style={{ textAlign: "left" }}>
+            {data.location.tags.sort().join(", ")}
+          </Text>
+        )}
+
+        {data.location.comments && (
+          <Text color={colors.orange} style={{ textAlign: "left" }}>
+            {data.location.comments}
+          </Text>
+        )}
       </Result>
     )
 
@@ -179,7 +208,7 @@ const ScrollContainer = styled.div`
 `
 
 const ResultsBox = styled.div`
-  height: 100%;
+  height: calc(100% - 53px);
   text-align: center;
   display: flex;
   padding: 0 10px;
@@ -190,6 +219,6 @@ const ResultsBox = styled.div`
 const Result = styled.div`
   max-width: 750px;
   margin: 0 auto;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
 `

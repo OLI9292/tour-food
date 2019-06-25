@@ -21,10 +21,6 @@ h2 {
   letter-spacing: 1px;
 }
 
-#container > div {
-  height: 100%;
-}
-
 input {
   font-family: inherit;
 }

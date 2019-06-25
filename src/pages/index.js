@@ -26,7 +26,8 @@ import { parseRow, geocode } from "../lib/helpers"
 import colors from "../lib/colors"
 
 const DATA_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPPv-4s_IwrC3f89lf7uesNNyl_Omig9EvbqiAoTcI61z_tPocemFqVPGSfs0feyfoa4qgynMpKU9W/pub?output=csv"
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
+
 const MAX_RESULTS = 30
 
 export default class IndexPage extends React.Component {
@@ -70,6 +71,7 @@ export default class IndexPage extends React.Component {
         const locations = rows
           .split("\n")
           .map(parseRow)
+          .filter(r => r)
           .slice(1)
         this.setState({ locations })
       })
@@ -160,6 +162,7 @@ export default class IndexPage extends React.Component {
 
         <div style={{ margin: "20px 0" }}>
           <Input
+            spellCheck={false}
             onChange={e => this.setState({ locationA: e.target.value })}
             value={locationA || ""}
             type="value"
@@ -172,6 +175,7 @@ export default class IndexPage extends React.Component {
         {searchType === "route" && (
           <div style={{ margin: "20px 0" }}>
             <Input
+              spellCheck={false}
               onChange={e => this.setState({ locationB: e.target.value })}
               value={locationB || ""}
               type="value"
@@ -241,7 +245,7 @@ export default class IndexPage extends React.Component {
     )
 
     return (
-      <Box id="container">
+      <Box>
         <SEO title="Home" />
 
         <HeaderComponent reset={this.reset.bind(this)} siteTitle="Tour Food" />

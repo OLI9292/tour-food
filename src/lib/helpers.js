@@ -3,14 +3,41 @@ const BASE_GEOCODING_URL =
 
 const API_KEY = "&key=" + process.env.GATSBY_GOOGLE_API_KEY
 
+const cleanRow = row =>
+  row
+    .trim()
+    .split(/,(?=(?:(?:[^"]*(?:")){2})*[^"]*$)/)
+    .map(str => {
+      str = str.trim()
+      return str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
+    })
+
 export const parseRow = row => {
-  const data = row.split(",")
-  const name = data[0]
-  const city = data[1]
-  const state = data[2]
-  const latitude = parseFloat(data[3], 10)
-  const longitude = parseFloat(data[4], 10)
-  return { name, city, state, latitude, longitude }
+  try {
+    const data = cleanRow(row)
+
+    const result = {
+      name: data[0],
+      city: data[1],
+      state: data[2],
+      tags: data[4].split(",").map(str => str.trim()),
+      comments: data[5],
+      latitude: parseFloat(data[8], 10),
+      longitude: parseFloat(data[9], 10),
+      url: data[10],
+    }
+
+    console.log(result)
+
+    if (!result.name || !result.city || !result.state) {
+      console.log("ERR: failed to parse\n", row, "\n", result, "\n")
+      return
+    }
+
+    return result
+  } catch (error) {
+    console.log(`ERR: failed to parse ${row}`)
+  }
 }
 
 export const geocode = (addressStr, cb) =>
