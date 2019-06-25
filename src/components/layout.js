@@ -19,19 +19,16 @@ const Layout = ({ children }) => (
     render={data => {
       const { title } = data.site.siteMetadata
 
-      const style =
-        window.location.pathname === "/"
-          ? {
-              height: "100vh",
-              width: "100vw",
-              position: "fixed",
-              display: "flex",
-              flexDirection: "column",
-            }
-          : {}
-
       return (
-        <div style={style}>
+        <div
+          style={{
+            height: "100vh",
+            width: "100vw",
+            position: "fixed",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Header siteTitle={title} />
           {children}
         </div>

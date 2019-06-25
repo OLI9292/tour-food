@@ -9,6 +9,8 @@ import searchByRoute from "../images/search-by-route.png"
 import searchNearby from "../images/search-nearby.png"
 
 import {
+  Box,
+  Text,
   Header,
   SearchBoxes,
   SearchBox,
@@ -17,9 +19,7 @@ import {
   GrayLine,
   Submit,
   Form,
-} from "./components"
-
-import { Box, Text } from "../components/common"
+} from "../components/common"
 
 import { parseRow, geocode } from "../lib/helpers"
 

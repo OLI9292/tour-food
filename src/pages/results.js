@@ -157,7 +157,7 @@ export default class Results extends React.Component {
         )}
 
         {data.location.comments && (
-          <Text color={colors.orange} style={{ textAlign: "left" }}>
+          <Text color={colors.gray} style={{ textAlign: "left" }}>
             {data.location.comments}
           </Text>
         )}

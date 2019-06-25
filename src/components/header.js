@@ -5,7 +5,7 @@ import { FlexedDiv, Text } from "./common"
 import icon from "../images/icon.png"
 import colors from "../lib/colors"
 
-export default class Results extends React.Component {
+export default class Header extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
@@ -22,12 +22,13 @@ export default class Results extends React.Component {
       <Dropdown>
         {filterOptions[attr].map((a, idx) => (
           <Option
+            key={idx}
             onClick={() => {
               this.setState({ displayOptionsFor: undefined })
               this.props.filter(attr, a)
             }}
           >
-            <Text color="black" extraSmall key={idx}>
+            <Text color="black" extraSmall>
               {a}
             </Text>
           </Option>
