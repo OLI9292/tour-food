@@ -12,10 +12,13 @@ import colors from "../lib/colors"
 
 import searchByRouteSquare from "../images/search-by-route-square.png"
 
-const unique = (locations, attr) =>
-  Array.from(new Set(locations.map(l => l[attr]).flat()))
-    .filter(elem => elem)
-    .sort()
+const unique = (locations, attr) => {
+  locations = locations.map(l => l[attr])
+  locations = locations.flat()
+  locations = new Set(locations)
+  locations = Array.from(locations)
+  return locations.filter(elem => elem).sort()
+}
 
 export default class Results extends React.Component {
   constructor(props) {
