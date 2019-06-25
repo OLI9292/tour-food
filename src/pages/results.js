@@ -13,11 +13,13 @@ import colors from "../lib/colors"
 import searchByRouteSquare from "../images/search-by-route-square.png"
 
 const unique = (locations, attr) => {
-  locations = locations.map(l => l[attr])
-  locations = locations.flat()
-  locations = new Set(locations)
-  locations = Array.from(locations)
-  return locations.filter(elem => elem).sort()
+  const elements =
+    attr === "tags"
+      ? [].concat(...locations.map(l => l[attr]))
+      : locations.map(l => l[attr])
+  return Array.from(new Set(elements))
+    .filter(elem => elem)
+    .sort()
 }
 
 export default class Results extends React.Component {
