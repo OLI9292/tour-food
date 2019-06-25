@@ -1,5 +1,6 @@
 import React from "react"
 import styled from "styled-components"
+import { Link } from "gatsby"
 
 import { FlexedDiv, Text } from "./common"
 import icon from "../images/icon.png"
@@ -38,20 +39,21 @@ export default class Header extends React.Component {
 
     return (
       <StyledHeader>
-        <FlexedDiv
-          onClick={this.props.reset.bind(this)}
-          style={{
-            width: "50px",
-            height: "50px",
-            borderRight: `3px solid ${colors.blue}`,
-          }}
-        >
-          <img
-            alt="tour food"
-            style={{ width: "100%", height: "auto", cursor: "pointer" }}
-            src={icon}
-          />
-        </FlexedDiv>
+        <Link to="/">
+          <FlexedDiv
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRight: `3px solid ${colors.blue}`,
+            }}
+          >
+            <img
+              alt="tour food"
+              style={{ width: "100%", height: "auto", cursor: "pointer" }}
+              src={icon}
+            />
+          </FlexedDiv>
+        </Link>
 
         {showFilters && (
           <FlexedDiv

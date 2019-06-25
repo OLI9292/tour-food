@@ -40,14 +40,14 @@ export default class IndexPage extends React.Component {
     }
   }
 
-  reset() {
-    this.setState({
-      searchType: undefined,
-      locationA: undefined,
-      locationB: undefined,
-      results: undefined,
-    })
-  }
+  // reset() {
+  //   this.setState({
+  //     searchType: undefined,
+  //     locationA: undefined,
+  //     locationB: undefined,
+  //     results: undefined,
+  //   })
+  // }
 
   checkLocation() {
     if ("geolocation" in navigator) {
@@ -248,7 +248,7 @@ export default class IndexPage extends React.Component {
       <Box>
         <SEO title="Home" />
 
-        <HeaderComponent reset={this.reset.bind(this)} siteTitle="Tour Food" />
+        <HeaderComponent siteTitle="Tour Food" />
 
         {searchType ? searchComponent : selectSearchComponent}
       </Box>
