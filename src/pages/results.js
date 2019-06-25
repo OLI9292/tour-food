@@ -21,9 +21,12 @@ export default class Results extends React.Component {
   constructor(props) {
     super(props)
 
-    let results, description, locations
+    let results = []
+    let locations = []
+    let description
 
     const { location } = this.props
+
     if (location.state) {
       results = location.state.results
       description = location.state.description
