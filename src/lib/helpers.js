@@ -3,7 +3,7 @@ import * as geolib from "geolib"
 const BASE_GEOCODING_URL =
   "https://maps.googleapis.com/maps/api/geocode/json?address="
 
-const API_KEY = "&key=" + process.env.GATSBY_GOOGLE_API_KEY
+const API_KEY = "&key=AIzaSyBdXkVtyeTG0wf51sEXEEZLyMqvFkoyEqE" // + process.env.GATSBY_GOOGLE_API_KEY
 
 const cleanRow = row =>
   row

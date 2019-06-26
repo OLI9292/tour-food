@@ -72,7 +72,7 @@ export default class Results extends React.Component {
     if (filterBy["state"]) description += "in " + filterBy["state"]
     if (filterBy["city"]) description += "in " + filterBy["city"]
 
-    this.setState({ description, results, filterBy })
+    this.setState({ description, results, filterBy, selected: undefined })
   }
 
   render() {
@@ -82,6 +82,7 @@ export default class Results extends React.Component {
       displayMap,
       filterOptions,
       filterBy,
+      selected,
     } = this.state
 
     const bounds = getBounds(results)
@@ -91,7 +92,13 @@ export default class Results extends React.Component {
       height: 380, // Map height in pixels
     }
 
-    const { center, zoom } = fitBounds(bounds, size)
+    let { center, zoom } = fitBounds(bounds, size)
+    if (selected) {
+      center = {
+        lat: selected.location.latitude,
+        lng: selected.location.longitude,
+      }
+    }
 
     const displayMapBanner = results.length ? (
       <FlexedDiv
@@ -127,6 +134,16 @@ export default class Results extends React.Component {
               lat={r.location.latitude}
               lng={r.location.longitude}
               name={r.location.name}
+              isSelected={
+                selected && selected.location.name === r.location.name
+              }
+              selected={() => {
+                this.setState({ selected: r })
+                const scrollBox = document.getElementById("scroll-box")
+                const element = document.getElementById(r.location.name)
+                if (!element || !scrollBox) return
+                scrollBox.scroll({ top: element.offsetTop, behavior: "smooth" })
+              }}
             />
           ))}
         </GoogleMapReact>
@@ -134,52 +151,62 @@ export default class Results extends React.Component {
     ) : null
 
     const result = (data, idx) => (
-      <Result key={idx}>
-        <FlexedDiv
-          style={{
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
-          <div style={{ textAlign: "left" }}>
-            <a target="_blank" href={data.location.url}>
-              <Text
-                color={colors.blue}
-                large
-                style={{ display: "inline-block", marginRight: "10px" }}
-              >
-                {data.location.name}
+      <ResultBox
+        highlight={selected && selected.location.name === data.location.name}
+        id={data.location.name}
+        key={idx}
+      >
+        <InnerResultBox>
+          <FlexedDiv
+            style={{
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
+            <div style={{ textAlign: "left" }}>
+              <a target="_blank" href={data.location.url}>
+                <Text
+                  color={colors.blue}
+                  large
+                  style={{ display: "inline-block", marginRight: "10px" }}
+                >
+                  {data.location.name}
+                </Text>
+              </a>
+
+              <Text extraSmall style={{ display: "inline-block" }}>
+                {data.location.city}, {data.location.state}
               </Text>
-            </a>
+            </div>
 
-            <Text extraSmall style={{ display: "inline-block" }}>
-              {data.location.city}, {data.location.state}
-            </Text>
-          </div>
+            {data.distance !== undefined && (
+              <Text style={{ marginLeft: "20px" }} color={colors.orange}>
+                {Math.round(data.distance * 10) / 10}m
+              </Text>
+            )}
+          </FlexedDiv>
 
-          {data.distance !== undefined && (
-            <Text style={{ marginLeft: "20px" }} color={colors.orange}>
-              {Math.round(data.distance * 10) / 10}m
+          {data.location.tags.length && (
+            <Text
+              color={colors.orange}
+              extraSmall
+              style={{ textAlign: "left" }}
+            >
+              {data.location.tags.sort().join(", ")}
             </Text>
           )}
-        </FlexedDiv>
 
-        {data.location.tags.length && (
-          <Text color={colors.orange} extraSmall style={{ textAlign: "left" }}>
-            {data.location.tags.sort().join(", ")}
-          </Text>
-        )}
-
-        {data.location.comments && (
-          <Text
-            small
-            color={colors.darkGray}
-            style={{ textAlign: "left", fontWeight: 600, marginTop: "5px" }}
-          >
-            {data.location.comments}
-          </Text>
-        )}
-      </Result>
+          {data.location.comments && (
+            <Text
+              small
+              color={colors.darkGray}
+              style={{ textAlign: "left", fontWeight: 600, marginTop: "5px" }}
+            >
+              {data.location.comments}
+            </Text>
+          )}
+        </InnerResultBox>
+      </ResultBox>
     )
 
     return (
@@ -213,14 +240,14 @@ export default class Results extends React.Component {
             </Text>
           )}
 
-          <ScrollContainer>{(results || []).map(result)}</ScrollContainer>
+          <ScrollBox id="scroll-box">{(results || []).map(result)}</ScrollBox>
         </ResultsBox>
       </Box>
     )
   }
 }
 
-const ScrollContainer = styled.div`
+const ScrollBox = styled.div`
   width: 100%;
   margin: 0 auto;
   overflow: scroll;
@@ -229,6 +256,7 @@ const ScrollContainer = styled.div`
   margin-left: -10px;
   padding: 0 10px;
   box-sizing: border-box;
+  position: relative;
 `
 
 const ResultsBox = styled.div`
@@ -240,9 +268,16 @@ const ResultsBox = styled.div`
   object-fit: contain;
 `
 
-const Result = styled.div`
-  max-width: 750px;
+const ResultBox = styled.div`
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: ${p => p.highlight && colors.lightestGray};
+  width: 100vw;
+  margin-left: -10px;
+  padding: 15px 0;
+`
+
+const InnerResultBox = styled.div`
   margin: 0 auto;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  max-width: 750px;
 `

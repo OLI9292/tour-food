@@ -100,3 +100,10 @@ export const Form = styled.form`
   max-width: 300px;
   margin: 0 auto;
 `
+
+export const MarkerImage = styled.img`
+  width: ${p => (p.highlight ? 50 : 45)}px;
+  height: auto;
+  opacity: ${p => (p.highlight ? 1 : 0.5)};
+  cursor: pointer;
+`
