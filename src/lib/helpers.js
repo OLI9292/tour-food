@@ -1,3 +1,5 @@
+import * as geolib from "geolib"
+
 const BASE_GEOCODING_URL =
   "https://maps.googleapis.com/maps/api/geocode/json?address="
 
@@ -49,11 +51,12 @@ export const geocode = (addressStr, cb) =>
     .then(res => res.json())
     .then(data => {
       try {
-        const { lat, lng } = data["results"][0]["geometry"]["location"]
-        cb(lat, lng)
+        const result = data["results"][0]
+        const { lat, lng } = result["geometry"]["location"]
+        const address = result["formatted_address"].replace(", USA", "")
+        cb(lat, lng, address)
       } catch (error) {
-        console.log("ERR:", error)
-        throw new Error(`Could not geocode location: ${addressStr}`)
+        cb(null, null, null, `Could not find ${addressStr}.`)
       }
     })
 
@@ -83,3 +86,26 @@ export const unique = (locations, attr) => {
     .filter(elem => elem)
     .sort()
 }
+
+export const distanceInMiles = (latA, lngA, latB, lngB) =>
+  geolib.getDistance(
+    { latitude: latA, longitude: lngA },
+    { latitude: latB, longitude: lngB }
+  ) / 1609.344
+
+export const distanceFromLine = (
+  latitude,
+  longitude,
+  lineLatA,
+  lineLngA,
+  lineLatB,
+  lineLngB
+) =>
+  geolib.getDistanceFromLine(
+    {
+      latitude,
+      longitude,
+    },
+    { latitude: lineLatA, longitude: lineLngA },
+    { latitude: lineLatB, longitude: lineLngB }
+  ) / 1609.344

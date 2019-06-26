@@ -1,5 +1,4 @@
 import React from "react"
-import * as geolib from "geolib"
 import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
@@ -21,7 +20,12 @@ import {
   Form,
 } from "../components/common"
 
-import { parseRow, geocode } from "../lib/helpers"
+import {
+  parseRow,
+  geocode,
+  distanceFromLine,
+  distanceInMiles,
+} from "../lib/helpers"
 
 import colors from "../lib/colors"
 
@@ -46,6 +50,7 @@ export default class IndexPage extends React.Component {
       locationA: undefined,
       locationB: undefined,
       results: undefined,
+      error: undefined,
     })
   }
 
@@ -78,80 +83,123 @@ export default class IndexPage extends React.Component {
   }
 
   async findNearLocation(locations, cb) {
-    geocode(locations[0], (lat, lng) => {
+    geocode(locations[0], (lat, lng, address, error) => {
+      if (error) return this.setState({ error })
+
       const results = this.state.locations
         .map(location => ({
           location,
-          distance:
-            geolib.getDistance(
-              { latitude: location.latitude, longitude: location.longitude },
-              { latitude: lat, longitude: lng }
-            ) / 1609.344,
+          distance: distanceInMiles(
+            location.latitude,
+            location.longitude,
+            lat,
+            lng
+          ),
         }))
         .filter(a => a.distance < 25)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
         .slice(0, MAX_RESULTS)
-      cb(results)
+      cb(results, address)
     })
   }
 
   async findAlongRoute(locations, cb) {
-    geocode(locations[0], (latA, lngA) =>
-      geocode(locations[1], (latB, lngB) => {
+    geocode(locations[0], (latA, lngA, addressA, errorA) =>
+      geocode(locations[1], (latB, lngB, addressB, errorB) => {
+        const error = errorA || errorB
+        if (error) return this.setState({ error })
+
         const results = this.state.locations
-          .map(location => ({
-            location,
-            distance:
-              geolib.getDistanceFromLine(
-                {
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                },
-                { latitude: latA, longitude: lngA },
-                { latitude: latB, longitude: lngB }
-              ) / 1609.344,
-          }))
+          .map(location => {
+            const { latitude, longitude } = location
+            return {
+              location,
+              distance: distanceFromLine(
+                latitude,
+                longitude,
+                latA,
+                lngA,
+                latB,
+                lngB
+              ),
+            }
+          })
           .filter(a => a.distance < 25)
-          .map(({ location, distance }) => ({
-            location,
-            distance,
-            minimumDistanceFromLocation: Math.min(
-              geolib.getDistance(
-                {
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                },
-                { latitude: latA, longitude: lngA }
-              ) / 1609.344,
-              geolib.getDistance(
-                {
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                },
-                { latitude: latB, longitude: lngB }
-              ) / 1609.344
-            ),
-          }))
+          .map(({ location, distance }) => {
+            const { latitude, longitude } = location
+            return {
+              location,
+              distance,
+              minimumDistanceFromLocation: Math.min(
+                distanceInMiles(latitude, longitude, latA, lngA),
+                distanceInMiles(latitude, longitude, latB, lngB)
+              ),
+            }
+          })
           .filter(a => a.minimumDistanceFromLocation > 10)
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
           .slice(0, MAX_RESULTS)
-        cb(results)
+
+        cb(results, addressA, addressB)
       })
     )
   }
 
+  glowInput(glow) {
+    if (this.state.glow) return
+    const error = `Please enter a ${
+      glow.includes("A") ? "location" : "destination"
+    }.`
+    this.setState({ glow, error })
+    setTimeout(() => this.setState({ glow: undefined }), 1000)
+  }
+
+  search(locationA, locationB, locations, isSearchingRoute) {
+    if (!locationA) return this.glowInput("locationA")
+    if (isSearchingRoute && !locationB) return this.glowInput("locationB")
+    this.setState({ error: undefined })
+
+    const fn = isSearchingRoute
+      ? this.findAlongRoute.bind(this)
+      : this.findNearLocation.bind(this)
+
+    fn([locationA, locationB], (results, addressA, addressB) => {
+      const location = isSearchingRoute
+        ? ` from ${addressA} to ${addressB}`
+        : ` near ${addressA}`
+
+      if (results.length === 0) {
+        return this.setState({ error: "0 results" + location })
+      }
+
+      let description = `${results.length} result`
+      if (results.length > 1) description += "s"
+      description += location
+
+      const state = { description, results, locations }
+      navigate("/results", { state })
+    })
+  }
+
   render() {
-    const { searchType, locationA, locationB, results, locations } = this.state
+    const {
+      searchType,
+      locationA,
+      locationB,
+      locations,
+      glow,
+      error,
+    } = this.state
 
     const isSearchingDestination = searchType === "destination"
     const isSearchingRoute = searchType === "route"
 
     const searchNearbyHeader = (
-      <Header color={colors.blue}>search nearby</Header>
+      <Header color={colors.orange}>search nearby</Header>
     )
 
     const searchByRouteHeader = (
-      <Header color={colors.orange}>search by route</Header>
+      <Header color={colors.blue}>search by route</Header>
     )
 
     const searchComponent = (
@@ -169,7 +217,7 @@ export default class IndexPage extends React.Component {
             autoFocus={true}
             placeholder={isSearchingDestination ? "Location..." : "From..."}
           />
-          <GrayLine />
+          <GrayLine glow={glow === "locationA"} />
         </div>
 
         {searchType === "route" && (
@@ -181,40 +229,25 @@ export default class IndexPage extends React.Component {
               type="value"
               placeholder="To..."
             />
-            <GrayLine />
+            <GrayLine glow={glow === "locationB"} />
           </div>
         )}
 
         <Submit
           onClick={e => {
             e.preventDefault()
-            const fn = isSearchingDestination
-              ? this.findNearLocation.bind(this)
-              : this.findAlongRoute.bind(this)
-
-            fn([locationA, locationB], results => {
-              const displayResults = results.length > 0
-              let description = ""
-
-              if (displayResults) {
-                description += `${results.length} result`
-                if (results.length > 1) description += "s"
-                if (isSearchingRoute) {
-                  description += ` from ${locationA} to ${locationB}`
-                }
-                if (isSearchingDestination)
-                  description += ` nearby ${locationA}`
-              }
-
-              navigate("/results", {
-                state: { description, results, locations },
-              })
-            })
+            this.search(locationA, locationB, locations, isSearchingRoute)
           }}
           type="submit"
           value="search"
-          color={isSearchingDestination ? colors.blue : colors.orange}
+          color={isSearchingDestination ? colors.orange : colors.blue}
         />
+
+        {error && (
+          <Text small color={colors.red} style={{ marginTop: "15px" }}>
+            {error}
+          </Text>
+        )}
       </Form>
     )
 
@@ -239,7 +272,7 @@ export default class IndexPage extends React.Component {
           }
           style={{ cursor: "pointer", flex: 1, marginTop: "15px" }}
         >
-          <Text>View All</Text>
+          <Text style={{ letterSpacing: "1px" }}>VIEW ALL</Text>
         </div>
       </SearchBoxes>
     )

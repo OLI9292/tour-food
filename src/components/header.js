@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { Link } from "gatsby"
+import "./index.css"
 
 import { FlexedDiv, Text } from "./common"
 import icon from "../images/icon.png"
@@ -29,9 +30,9 @@ export default class Header extends React.Component {
               this.props.filter(attr, a)
             }}
           >
-            <Text color="black" extraSmall>
+            <OptionText color="black" extraSmall>
               {a}
-            </Text>
+            </OptionText>
           </Option>
         ))}
       </Dropdown>
@@ -72,9 +73,9 @@ export default class Header extends React.Component {
                 this.setState({ displayOptionsFor: undefined })
               }
             >
-              <Text style={{ marginRight: "5px" }} color={color("state")}>
+              <FilterHeader color={color("state")}>
                 {filterBy["state"] || "State"}
-              </Text>
+              </FilterHeader>
               <Triangle color={color("state")} />
               {displayOptionsFor === "state" && dropdown("state")}
             </FilterBox>
@@ -89,9 +90,9 @@ export default class Header extends React.Component {
                 borderLeft: `1px solid ${colors.gray}`,
               }}
             >
-              <Text style={{ marginRight: "5px" }} color={color("city")}>
+              <FilterHeader color={color("city")}>
                 {filterBy["city"] || "City"}
-              </Text>
+              </FilterHeader>
               <Triangle color={color("city")} />
               {displayOptionsFor === "city" && dropdown("city")}
             </FilterBox>
@@ -102,9 +103,9 @@ export default class Header extends React.Component {
                 this.setState({ displayOptionsFor: undefined })
               }
             >
-              <Text style={{ marginRight: "5px" }} color={color("tag")}>
+              <FilterHeader color={color("tag")}>
                 {filterBy["tag"] || "Tag"}
-              </Text>
+              </FilterHeader>
               <Triangle color={color("tag")} />
               {displayOptionsFor === "tag" && dropdown("tag")}
             </FilterBox>
@@ -123,8 +124,14 @@ const StyledHeader = styled.header`
   align-items: center;
 `
 
+const FilterHeader = styled(Text)`
+  margin-right: 5px;
+  transition: color 0.15s ease;
+`
+
 const Triangle = styled.div`
   border-color: ${p => p.color} transparent;
+  transition: border-color 0.15s ease;
   border-style: solid;
   border-width: 10px 8px 0px 8px;
   height: 0px;
@@ -148,6 +155,13 @@ const Option = styled.div`
     padding: 10px;
     cursor: pointer;
   }
+`
+
+const OptionText = styled(Text)`
+  &:hover {
+    color: ${colors.orange};
+  }
+  transition: color 0.15s ease;
 `
 
 const Dropdown = styled.div`

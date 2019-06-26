@@ -58,15 +58,17 @@ export const Input = styled.input`
   margin: 0 auto;
   border: 0;
   ::placeholder {
-    color: ${colors.gray};
+    color: ${colors.lightGray};
   }
-  font-size: 1.5em;
+  font-weight: 600;
+  font-size: 1.3em;
   letter-spacing: 1px;
   display: block;
 `
 
 export const GrayLine = styled.div`
-  background-color: ${colors.gray};
+  background-color: ${p => (p.glow ? colors.red : colors.gray)};
+  transition: background-color 0.15s ease;
   height: 4px;
   border-radius: 5px;
   width: 100%;
@@ -82,12 +84,15 @@ export const Submit = styled.input`
   outline: 0;
   border: 0;
   border-radius: 10px;
-  padding: 8px 0;
-  font-size: 1.5em;
+  padding: 10px 0;
+  font-size: 1.3em;
   letter-spacing: 1px;
+  font-weight: 700;
   margin: 0 auto;
   width: 100%;
   display: block;
+  margin-top: 25px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
 `
 
 export const Form = styled.form`

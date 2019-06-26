@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
-import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
 import Header from "../components/header"
@@ -25,9 +24,10 @@ export default class Results extends React.Component {
     const { location } = this.props
 
     if (location.state) {
-      results = location.state.locations.map(location => ({ location }))
+      results = location.state.results
       description = location.state.description
       locations = location.state.locations
+      if (!results.length) results = locations.map(location => ({ location }))
     }
 
     this.state = {
@@ -92,7 +92,6 @@ export default class Results extends React.Component {
     }
 
     const { center, zoom } = fitBounds(bounds, size)
-    console.log(center, zoom)
 
     const displayMapBanner = results.length ? (
       <FlexedDiv
@@ -106,11 +105,11 @@ export default class Results extends React.Component {
         onClick={() => this.setState({ displayMap: true })}
       >
         <img
-          style={{ height: "40px", width: "40px", marginRight: "5px" }}
+          style={{ height: "35px", width: "35px", marginRight: "5px" }}
           src={searchByRouteSquare}
           alt="search by route"
         />
-        <Text>View on Map</Text>
+        <Text small>View on Map</Text>
       </FlexedDiv>
     ) : null
 
@@ -121,7 +120,6 @@ export default class Results extends React.Component {
           bootstrapURLKeys={{ key: process.env.GATSBY_GOOGLE_API_KEY }}
           center={center}
           zoom={zoom}
-          disableDefaultUI={true}
         >
           {results.map(r => (
             <Marker
@@ -144,13 +142,15 @@ export default class Results extends React.Component {
           }}
         >
           <div style={{ textAlign: "left" }}>
-            <Text
-              color={colors.blue}
-              large
-              style={{ display: "inline-block", marginRight: "10px" }}
-            >
-              {data.location.name}
-            </Text>
+            <a target="_blank" href={data.location.url}>
+              <Text
+                color={colors.blue}
+                large
+                style={{ display: "inline-block", marginRight: "10px" }}
+              >
+                {data.location.name}
+              </Text>
+            </a>
 
             <Text extraSmall style={{ display: "inline-block" }}>
               {data.location.city}, {data.location.state}
@@ -171,7 +171,11 @@ export default class Results extends React.Component {
         )}
 
         {data.location.comments && (
-          <Text color={colors.gray} style={{ textAlign: "left" }}>
+          <Text
+            small
+            color={colors.darkGray}
+            style={{ textAlign: "left", fontWeight: 600, marginTop: "5px" }}
+          >
             {data.location.comments}
           </Text>
         )}
@@ -193,14 +197,21 @@ export default class Results extends React.Component {
         <ResultsBox>
           {displayMap ? map : displayMapBanner}
 
-          <Text
-            style={{
-              textAlign: "center",
-              marginTop: "25px",
-            }}
-          >
-            {description}
-          </Text>
+          {description && (
+            <Text
+              small
+              style={{
+                textAlign: "center",
+                padding: "8px 0",
+                width: "100vw",
+                marginLeft: "-10px",
+                color: "white",
+                backgroundColor: colors.blue,
+              }}
+            >
+              {description}
+            </Text>
+          )}
 
           <ScrollContainer>{(results || []).map(result)}</ScrollContainer>
         </ResultsBox>
@@ -214,10 +225,10 @@ const ScrollContainer = styled.div`
   margin: 0 auto;
   overflow: scroll;
   -ms-overflow-style: none;
-  scrollbar-width: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  width: 100vw;
+  margin-left: -10px;
+  padding: 0 10px;
+  box-sizing: border-box;
 `
 
 const ResultsBox = styled.div`
