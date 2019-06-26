@@ -27,9 +27,13 @@ export const parseRow = row => {
       url: data[10],
     }
 
-    console.log(result)
-
-    if (!result.name || !result.city || !result.state) {
+    if (
+      !result.name ||
+      !result.city ||
+      !result.state ||
+      !result.latitude ||
+      !result.longitude
+    ) {
       console.log("ERR: failed to parse\n", row, "\n", result, "\n")
       return
     }
@@ -52,3 +56,30 @@ export const geocode = (addressStr, cb) =>
         throw new Error(`Could not geocode location: ${addressStr}`)
       }
     })
+
+// https://github.com/google-map-react/google-map-react/blob/master/API.md
+export const getBounds = results => {
+  const latitudes = results.map(r => r.location.latitude)
+  const longitudes = results.map(r => r.location.longitude)
+
+  const maxLat = Math.max(...latitudes)
+  const minLat = Math.min(...latitudes)
+  const maxLong = Math.max(...longitudes)
+  const minLong = Math.min(...longitudes)
+
+  return {
+    nw: { lat: maxLat, lng: minLong },
+    se: { lat: minLat, lng: maxLong },
+  }
+}
+
+export const unique = (locations, attr) => {
+  const elements =
+    attr === "tags"
+      ? [].concat(...locations.map(l => l[attr]))
+      : locations.map(l => l[attr])
+
+  return Array.from(new Set(elements))
+    .filter(elem => elem)
+    .sort()
+}

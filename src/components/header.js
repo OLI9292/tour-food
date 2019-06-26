@@ -13,7 +13,7 @@ export default class Header extends React.Component {
   }
 
   render() {
-    const { showFilters, filterOptions, filterBy } = this.props
+    const { showFilters, filterOptions, filterBy, reset } = this.props
     const { displayOptionsFor } = this.state
 
     const color = attr =>
@@ -41,6 +41,9 @@ export default class Header extends React.Component {
       <StyledHeader>
         <Link to="/">
           <FlexedDiv
+            onClick={() => {
+              if (reset) reset()
+            }}
             style={{
               width: "50px",
               height: "50px",

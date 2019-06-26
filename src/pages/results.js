@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
+import { fitBounds } from "google-map-react/utils"
 import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
@@ -9,18 +10,9 @@ import { FlexedDiv, Text, Box } from "../components/common"
 import Marker from "../components/mapMarker"
 
 import colors from "../lib/colors"
+import { getBounds, unique } from "../lib/helpers"
 
 import searchByRouteSquare from "../images/search-by-route-square.png"
-
-const unique = (locations, attr) => {
-  const elements =
-    attr === "tags"
-      ? [].concat(...locations.map(l => l[attr]))
-      : locations.map(l => l[attr])
-  return Array.from(new Set(elements))
-    .filter(elem => elem)
-    .sort()
-}
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -33,7 +25,7 @@ export default class Results extends React.Component {
     const { location } = this.props
 
     if (location.state) {
-      results = location.state.results
+      results = location.state.locations.map(location => ({ location }))
       description = location.state.description
       locations = location.state.locations
     }
@@ -92,6 +84,16 @@ export default class Results extends React.Component {
       filterBy,
     } = this.state
 
+    const bounds = getBounds(results)
+
+    const size = {
+      width: 640, // Map width in pixels
+      height: 380, // Map height in pixels
+    }
+
+    const { center, zoom } = fitBounds(bounds, size)
+    console.log(center, zoom)
+
     const displayMapBanner = results.length ? (
       <FlexedDiv
         style={{
@@ -117,11 +119,8 @@ export default class Results extends React.Component {
         <GoogleMapReact
           disableDefaultUI={true}
           bootstrapURLKeys={{ key: process.env.GATSBY_GOOGLE_API_KEY }}
-          defaultCenter={{
-            lat: results[0].location.latitude,
-            lng: results[0].location.longitude,
-          }}
-          defaultZoom={1}
+          center={center}
+          zoom={zoom}
           disableDefaultUI={true}
         >
           {results.map(r => (
@@ -182,7 +181,6 @@ export default class Results extends React.Component {
     return (
       <Box>
         <Header
-          reset={() => navigate("/")}
           showFilters={true}
           filterBy={filterBy}
           filter={this.filter.bind(this)}
