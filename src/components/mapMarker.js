@@ -11,7 +11,7 @@ export default class Marker extends Component {
       <MarkerImage
         highlight={isSelected}
         onClick={this.props.selected.bind(this)}
-        alt="name"
+        alt={`${name}-marker`}
         src={marker}
       />
     )

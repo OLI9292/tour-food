@@ -103,6 +103,8 @@ export const Form = styled.form`
 
 export const MarkerImage = styled.img`
   width: ${p => (p.highlight ? 50 : 45)}px;
+  margin-left: ${p => (p.highlight ? -25 : -22.5)}px;
+  margin-top: ${p => (p.highlight ? -50 : -45)}px;
   height: auto;
   opacity: ${p => (p.highlight ? 1 : 0.5)};
   cursor: pointer;

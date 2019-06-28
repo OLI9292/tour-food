@@ -38,6 +38,7 @@ export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      locations: [],
       // searchType: "destination",
       // locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
@@ -54,21 +55,21 @@ export default class IndexPage extends React.Component {
     })
   }
 
-  checkLocation() {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          const { latitude, longitude } = coords
-          console.log(latitude, longitude)
-        },
-        error => console.log(error),
-        { timeout: 5000 }
-      )
-    }
-  }
+  // checkLocation() {
+  //   if ("geolocation" in navigator) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       ({ coords }) => {
+  //         const { latitude, longitude } = coords
+  //         console.log(latitude, longitude)
+  //       },
+  //       error => console.log(error),
+  //       { timeout: 5000 }
+  //     )
+  //   }
+  // }
 
   componentDidMount() {
-    this.checkLocation()
+    // this.checkLocation()
 
     fetch(DATA_URL)
       .then(res => res.text())
@@ -78,6 +79,7 @@ export default class IndexPage extends React.Component {
           .map(parseRow)
           .filter(r => r)
           .slice(1)
+        console.log("Data loaded.")
         this.setState({ locations })
       })
   }
@@ -267,9 +269,10 @@ export default class IndexPage extends React.Component {
         </SearchBox>
 
         <div
-          onClick={() =>
+          onClick={() => {
+            if (!locations.length) return
             navigate("/results", { state: { results: [], locations } })
-          }
+          }}
           style={{ cursor: "pointer", flex: 1, marginTop: "15px" }}
         >
           <Text style={{ letterSpacing: "1px" }}>VIEW ALL</Text>

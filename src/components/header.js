@@ -20,9 +20,9 @@ export default class Header extends React.Component {
     const color = attr =>
       displayOptionsFor === attr || filterBy[attr] ? colors.orange : colors.blue
 
-    const dropdown = attr => (
+    const dropdown = (attr, options) => (
       <Dropdown>
-        {filterOptions[attr].map((a, idx) => (
+        {(options || filterOptions[attr]).map((a, idx) => (
           <Option
             key={idx}
             onClick={() => {
@@ -72,6 +72,9 @@ export default class Header extends React.Component {
               onMouseLeave={() =>
                 this.setState({ displayOptionsFor: undefined })
               }
+              onClick={() => {
+                this.setState({ displayOptionsFor: undefined })
+              }}
             >
               <FilterHeader color={color("state")}>
                 {filterBy["state"] || "State"}
@@ -85,6 +88,9 @@ export default class Header extends React.Component {
               onMouseLeave={() =>
                 this.setState({ displayOptionsFor: undefined })
               }
+              onClick={() => {
+                this.setState({ displayOptionsFor: undefined })
+              }}
               style={{
                 borderRight: `1px solid ${colors.gray}`,
                 borderLeft: `1px solid ${colors.gray}`,
@@ -94,7 +100,8 @@ export default class Header extends React.Component {
                 {filterBy["city"] || "City"}
               </FilterHeader>
               <Triangle color={color("city")} />
-              {displayOptionsFor === "city" && dropdown("city")}
+              {displayOptionsFor === "city" &&
+                dropdown("city", filterOptions.topCities)}
             </FilterBox>
 
             <FilterBox
@@ -102,6 +109,9 @@ export default class Header extends React.Component {
               onMouseLeave={() =>
                 this.setState({ displayOptionsFor: undefined })
               }
+              onClick={() => {
+                this.setState({ displayOptionsFor: undefined })
+              }}
             >
               <FilterHeader color={color("tag")}>
                 {filterBy["tag"] || "Tag"}
@@ -125,6 +135,7 @@ const StyledHeader = styled.header`
 `
 
 const FilterHeader = styled(Text)`
+  text-transform: capitalize;
   margin-right: 5px;
   transition: color 0.15s ease;
 `
@@ -147,6 +158,7 @@ const FilterBox = styled(FlexedDiv)`
   @media (max-width: 600px) {
     position: static;
   }
+  z-index: 1000;
 `
 
 const Option = styled.div`
@@ -158,6 +170,7 @@ const Option = styled.div`
 `
 
 const OptionText = styled(Text)`
+  text-transform: capitalize;
   &:hover {
     color: ${colors.orange};
   }

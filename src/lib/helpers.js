@@ -22,7 +22,10 @@ export const parseRow = row => {
       name: data[0],
       city: data[1],
       state: data[2],
-      tags: data[4].split(",").map(str => str.trim()),
+      tags: data[4]
+        .split(",")
+        .map(str => str.trim())
+        .filter(t => t),
       comments: data[5],
       latitude: parseFloat(data[8], 10),
       longitude: parseFloat(data[9], 10),

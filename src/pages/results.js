@@ -2,6 +2,8 @@ import React from "react"
 import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
+import { navigate } from "gatsby"
+import { groupBy, countBy, sortBy, sample } from "lodash"
 
 import SEO from "../components/seo"
 import Header from "../components/header"
@@ -12,6 +14,9 @@ import colors from "../lib/colors"
 import { getBounds, unique } from "../lib/helpers"
 
 import searchByRouteSquare from "../images/search-by-route-square.png"
+import close from "../images/close.png"
+
+const MAX_FILTER_OPTIONS = 40
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -27,8 +32,25 @@ export default class Results extends React.Component {
       results = location.state.results
       description = location.state.description
       locations = location.state.locations
-      if (!results.length) results = locations.map(location => ({ location }))
     }
+
+    const cities = unique(locations, "city")
+
+    const groupedByCity = groupBy(locations, "city")
+
+    const topCities = sortBy(cities, c => groupedByCity[c].length)
+      .reverse()
+      .slice(0, MAX_FILTER_OPTIONS)
+      .sort()
+
+    const tagCounts = countBy([].concat(...locations.map(l => l.tags)))
+
+    const tagOptions = sortBy(Object.keys(tagCounts), t => tagCounts[t])
+      .reverse()
+      .slice(0, MAX_FILTER_OPTIONS)
+      .sort()
+
+    const defaultTag = results.length ? undefined : sample(tagOptions)
 
     this.state = {
       displayMap: false,
@@ -37,14 +59,25 @@ export default class Results extends React.Component {
       filterOptions: {
         state: unique(locations, "state"),
         city: unique(locations, "city"),
-        tag: unique(locations, "tags"),
+        topCities: topCities,
+        tag: tagOptions,
       },
       filterBy: {
         state: undefined,
         city: undefined,
-        tag: undefined,
+        tag: defaultTag,
       },
       description,
+    }
+  }
+
+  componentDidMount() {
+    const { filterBy, results } = this.state
+    const key = Object.keys(filterBy).find(key => filterBy[key])
+    if (key) {
+      this.filter(key, filterBy[key])
+    } else if (!results.length) {
+      navigate("/")
     }
   }
 
@@ -73,6 +106,17 @@ export default class Results extends React.Component {
     if (filterBy["city"]) description += "in " + filterBy["city"]
 
     this.setState({ description, results, filterBy, selected: undefined })
+
+    const scrollBox = document.getElementById("scroll-box")
+    if (scrollBox) scrollBox.scroll({ top: 0 })
+  }
+
+  selected(result) {
+    this.setState({ selected: result, displayMap: true })
+    const scrollBox = document.getElementById("scroll-box")
+    const element = document.getElementById(result.location.name)
+    if (!element || !scrollBox) return
+    scrollBox.scroll({ top: element.offsetTop, behavior: "smooth" })
   }
 
   render() {
@@ -87,12 +131,14 @@ export default class Results extends React.Component {
 
     const bounds = getBounds(results)
 
-    const size = {
-      width: 640, // Map width in pixels
-      height: 380, // Map height in pixels
-    }
+    const mapContainer =
+      typeof window !== "undefined" && document.getElementById("map-box")
+    const width = mapContainer ? mapContainer.clientWidth : 640
+    const height = mapContainer ? mapContainer.clientHeight : 380
+    const size = { width, height }
 
     let { center, zoom } = fitBounds(bounds, size)
+
     if (selected) {
       center = {
         lat: selected.location.latitude,
@@ -108,6 +154,7 @@ export default class Results extends React.Component {
           width: "100vw",
           marginLeft: "-10px",
           cursor: "pointer",
+          minHeight: "35px",
         }}
         onClick={() => this.setState({ displayMap: true })}
       >
@@ -121,7 +168,11 @@ export default class Results extends React.Component {
     ) : null
 
     const map = results.length ? (
-      <div style={{ height: "50%", width: "100vw", marginLeft: "-10px" }}>
+      <MapBox id="map-box">
+        <CloseImage
+          onClick={() => this.setState({ displayMap: false })}
+          src={close}
+        />
         <GoogleMapReact
           disableDefaultUI={true}
           bootstrapURLKeys={{ key: process.env.GATSBY_GOOGLE_API_KEY }}
@@ -137,34 +188,31 @@ export default class Results extends React.Component {
               isSelected={
                 selected && selected.location.name === r.location.name
               }
-              selected={() => {
-                this.setState({ selected: r })
-                const scrollBox = document.getElementById("scroll-box")
-                const element = document.getElementById(r.location.name)
-                if (!element || !scrollBox) return
-                scrollBox.scroll({ top: element.offsetTop, behavior: "smooth" })
-              }}
+              selected={() => this.selected(r)}
             />
           ))}
         </GoogleMapReact>
-      </div>
+      </MapBox>
     ) : null
 
-    const result = (data, idx) => (
-      <ResultBox
-        highlight={selected && selected.location.name === data.location.name}
-        id={data.location.name}
-        key={idx}
-      >
-        <InnerResultBox>
-          <FlexedDiv
-            style={{
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-            }}
-          >
-            <div style={{ textAlign: "left" }}>
-              <a target="_blank" href={data.location.url}>
+    const result = (data, idx) => {
+      const isSelected =
+        selected && selected.location.name === data.location.name
+      return (
+        <ResultBox
+          highlight={isSelected}
+          id={data.location.name}
+          key={idx}
+          onClick={() => this.selected(data)}
+        >
+          <InnerResultBox>
+            <FlexedDiv
+              style={{
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <div style={{ textAlign: "left" }}>
                 <Text
                   color={colors.blue}
                   large
@@ -172,42 +220,52 @@ export default class Results extends React.Component {
                 >
                   {data.location.name}
                 </Text>
-              </a>
 
-              <Text extraSmall style={{ display: "inline-block" }}>
-                {data.location.city}, {data.location.state}
-              </Text>
-            </div>
+                <Text extraSmall style={{ display: "inline-block" }}>
+                  {data.location.city}, {data.location.state}
+                </Text>
+              </div>
 
-            {data.distance !== undefined && (
-              <Text style={{ marginLeft: "20px" }} color={colors.orange}>
-                {Math.round(data.distance * 10) / 10}m
+              {data.distance !== undefined && (
+                <Text style={{ marginLeft: "20px" }} color={colors.orange}>
+                  {Math.round(data.distance * 10) / 10}m
+                </Text>
+              )}
+            </FlexedDiv>
+
+            {data.location.tags.length && (
+              <Text
+                color={colors.orange}
+                extraSmall
+                style={{ textAlign: "left", textTransform: "capitalize" }}
+              >
+                {data.location.tags.sort().join(", ")}
               </Text>
             )}
-          </FlexedDiv>
 
-          {data.location.tags.length && (
-            <Text
-              color={colors.orange}
-              extraSmall
-              style={{ textAlign: "left" }}
-            >
-              {data.location.tags.sort().join(", ")}
-            </Text>
-          )}
-
-          {data.location.comments && (
-            <Text
-              small
-              color={colors.darkGray}
-              style={{ textAlign: "left", fontWeight: 600, marginTop: "5px" }}
-            >
-              {data.location.comments}
-            </Text>
-          )}
-        </InnerResultBox>
-      </ResultBox>
-    )
+            {data.location.comments && (
+              <Text
+                small
+                color={colors.darkGray}
+                style={{
+                  textAlign: "left",
+                  fontWeight: 400,
+                  marginTop: "5px",
+                  width: "calc(100% - 150px)",
+                }}
+              >
+                {data.location.comments}
+              </Text>
+            )}
+            {isSelected && (
+              <a target="_blank" href={data.location.url}>
+                <GoogleMapsLink extraSmall>Open in Google Maps</GoogleMapsLink>
+              </a>
+            )}
+          </InnerResultBox>
+        </ResultBox>
+      )
+    }
 
     return (
       <Box>
@@ -269,8 +327,9 @@ const ResultsBox = styled.div`
 `
 
 const ResultBox = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
   background-color: ${p => p.highlight && colors.lightestGray};
   width: 100vw;
   margin-left: -10px;
@@ -279,5 +338,41 @@ const ResultBox = styled.div`
 
 const InnerResultBox = styled.div`
   margin: 0 auto;
+  min-height: 75px;
   max-width: 750px;
+  padding: 0 15px;
+  position: relative;
+`
+
+const MapBox = styled.div`
+  height: 50%;
+  width: 100vw;
+  margin-left: -10px;
+  position: relative;
+`
+
+const CloseImage = styled.img`
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  border-bottom: 3px solid ${colors.blue};
+  border-left: 3px solid ${colors.blue};
+  z-index: 500;
+`
+
+const GoogleMapsLink = styled(Text)`
+  position: absolute;
+  bottom: 0
+  right: 0;
+  text-transform: capitalize;
+  border: 1px solid ${colors.orange}; 
+  color: ${colors.orange};
+  padding: 5px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  font-weight: 600;
 `
