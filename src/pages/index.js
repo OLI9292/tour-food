@@ -32,7 +32,7 @@ import colors from "../lib/colors"
 const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
 
-const MAX_RESULTS = 30
+const MAX_RESULTS = 75
 
 export default class IndexPage extends React.Component {
   constructor(props) {
@@ -126,19 +126,19 @@ export default class IndexPage extends React.Component {
               ),
             }
           })
-          .filter(a => a.distance < 25)
-          .map(({ location, distance }) => {
-            const { latitude, longitude } = location
-            return {
-              location,
-              distance,
-              minimumDistanceFromLocation: Math.min(
-                distanceInMiles(latitude, longitude, latA, lngA),
-                distanceInMiles(latitude, longitude, latB, lngB)
-              ),
-            }
-          })
-          .filter(a => a.minimumDistanceFromLocation > 10)
+          .filter(a => a.distance < 50)
+          // .map(({ location, distance }) => {
+          //   const { latitude, longitude } = location
+          //   return {
+          //     location,
+          //     distance,
+          //     minimumDistanceFromLocation: Math.min(
+          //       distanceInMiles(latitude, longitude, latA, lngA),
+          //       distanceInMiles(latitude, longitude, latB, lngB)
+          //     ),
+          //   }
+          // })
+          // .filter(a => a.minimumDistanceFromLocation > 10)
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
           .slice(0, MAX_RESULTS)
 
