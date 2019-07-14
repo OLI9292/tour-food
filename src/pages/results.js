@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
-import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
 import Header from "../components/header"
@@ -35,7 +34,7 @@ export default class Results extends React.Component {
 
     let { filterBy, filterOptions } = getFilterOptions(
       locations,
-      filterBy,
+      null,
       MAX_FILTER_OPTIONS
     )
 
@@ -52,18 +51,22 @@ export default class Results extends React.Component {
   componentDidMount() {
     const { filterBy, results } = this.state
     const key = Object.keys(filterBy).find(key => filterBy[key])
-
     if (key) {
       this.filter(key, filterBy[key])
     } else if (!results.length) {
-      navigate("/")
+      this.filter()
     }
   }
 
   filter(key, value) {
     console.log(`Filter ${key} to ${value}.`)
     let { locations, filterBy } = this.state
-    filterBy[key] = value
+    if (key) filterBy[key] = value
+
+    if (key === "city" && !filterBy["state"]) {
+      const location = locations.find(l => l.city === value)
+      if (location) filterBy["state"] = location.state
+    }
 
     locations = locations.filter(l =>
       Object.keys(filterBy).every(key => {

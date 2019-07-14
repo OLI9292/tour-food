@@ -1,6 +1,6 @@
 import React from "react"
 import { navigate } from "gatsby"
-import { uniq } from "lodash"
+import { uniq, uniqBy } from "lodash"
 
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
@@ -60,30 +60,19 @@ export default class IndexPage extends React.Component {
     })
   }
 
-  // checkLocation() {
-  //   if ("geolocation" in navigator) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       ({ coords }) => {
-  //         const { latitude, longitude } = coords
-  //         console.log(latitude, longitude)
-  //       },
-  //       error => console.log(error),
-  //       { timeout: 5000 }
-  //     )
-  //   }
-  // }
-
   componentDidMount() {
-    // this.checkLocation()
-
     fetch(DATA_URL)
       .then(res => res.text())
       .then(rows => {
-        const locations = rows
-          .split("\n")
-          .map(parseRow)
-          .filter(r => r)
-          .slice(1)
+        const locations = uniqBy(
+          rows
+            .split("\n")
+            .map(parseRow)
+            .filter(r => r)
+            .slice(1),
+          l => `${l.latitude} - ${l.longitude}`
+        )
+
         console.log("Data loaded.")
         const autocompleteOptions = uniq(
           locations.map(l => `${l.city}, ${l.state}`)
@@ -174,13 +163,15 @@ export default class IndexPage extends React.Component {
   search(locationA, locationB, locations, isSearchingRoute) {
     if (!locationA) return this.glowInput("locationA")
     if (isSearchingRoute && !locationB) return this.glowInput("locationB")
-    this.setState({ error: undefined })
+    this.setState({ isNetworking: true, error: undefined })
 
     const fn = isSearchingRoute
       ? this.findAlongRoute.bind(this)
       : this.findNearLocation.bind(this)
 
     fn([locationA, locationB], (results, addressA, addressB) => {
+      this.setState({ isNetworking: false })
+
       const location = isSearchingRoute
         ? ` from ${addressA} to ${addressB}`
         : ` near ${addressA}`
@@ -199,8 +190,13 @@ export default class IndexPage extends React.Component {
   }
 
   autocomplete(inputString, inputLetter) {
+    inputString = inputString.toLowerCase()
     const autocompleteResults = this.state.autocompleteOptions
-      .filter(str => str.toLowerCase().startsWith(inputString.toLowerCase()))
+      .filter(
+        str =>
+          str.toLowerCase().startsWith(inputString) &&
+          str.toLowerCase() !== inputString
+      )
       .slice(0, 4)
     this.setState({ autocompleteResults, inputLetter })
   }
@@ -214,6 +210,7 @@ export default class IndexPage extends React.Component {
       glow,
       inputLetter,
       autocompleteResults,
+      isNetworking,
       error,
     } = this.state
 
@@ -262,7 +259,7 @@ export default class IndexPage extends React.Component {
                     this.setState({ locationA: str, autocompleteResults: [] })
                   }
                   style={{ margin: "8px 0", cursor: "pointer" }}
-                  extraSmall
+                  small
                 >
                   {str}
                 </Text>
@@ -308,15 +305,19 @@ export default class IndexPage extends React.Component {
           </div>
         )}
 
-        <Submit
-          onClick={e => {
-            e.preventDefault()
-            this.search(locationA, locationB, locations, isSearchingRoute)
-          }}
-          type="submit"
-          value="search"
-          color={isSearchingDestination ? colors.orange : colors.blue}
-        />
+        {isNetworking ? (
+          <Text color={colors.gray}>Searching...</Text>
+        ) : (
+          <Submit
+            onClick={e => {
+              e.preventDefault()
+              this.search(locationA, locationB, locations, isSearchingRoute)
+            }}
+            type="submit"
+            value="search"
+            color={isSearchingDestination ? colors.orange : colors.blue}
+          />
+        )}
 
         {error && (
           <Text small color={colors.red} style={{ marginTop: "15px" }}>
@@ -348,7 +349,7 @@ export default class IndexPage extends React.Component {
           }}
           style={{ cursor: "pointer", flex: 1, marginTop: "15px" }}
         >
-          <Text style={{ letterSpacing: "1px" }}>VIEW ALL</Text>
+          <Header style={{ color: colors.gray, margin: 0 }}>VIEW ALL</Header>
         </div>
       </SearchBoxes>
     )

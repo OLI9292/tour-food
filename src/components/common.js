@@ -29,7 +29,7 @@ export const Header = styled.h3`
 `
 
 export const SearchBoxes = styled.div`
-  height: calc(100% - 150px);
+  height: calc(100% - 75px);
   text-align: center;
   padding: 20px 0 0 0;
   display: flex;
@@ -59,7 +59,7 @@ export const Input = styled.input`
   width: 100%;
   border: 0;
   ::placeholder {
-    color: ${colors.lightGray};
+    color: ${colors.gray};
   }
   font-weight: 600;
   font-size: 1.2em;
@@ -116,7 +116,7 @@ export const Autocomplete = styled.div`
   width: 100%;
   background-color: white;
   border: 3px solid ${colors.blue};
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 5px 5px;
   text-align: left;
   padding: 0 10px;
   z-index: 500;

@@ -61,7 +61,11 @@ export default class Header extends React.Component {
         {showFilters && (
           <Filters>
             <FilterBox
-              onMouseOver={() => this.setState({ displayOptionsFor: "state" })}
+              onMouseOver={() => {
+                if (!filterBy["state"]) {
+                  this.setState({ displayOptionsFor: "state" })
+                }
+              }}
               onClick={() => {
                 this.setState({ displayOptionsFor: undefined })
                 if (filterBy["state"]) this.props.filter("state", undefined)
@@ -75,7 +79,11 @@ export default class Header extends React.Component {
             </FilterBox>
 
             <FilterBox
-              onMouseOver={() => this.setState({ displayOptionsFor: "city" })}
+              onMouseOver={() => {
+                if (!filterBy["city"]) {
+                  this.setState({ displayOptionsFor: "city" })
+                }
+              }}
               onClick={() => {
                 this.setState({ displayOptionsFor: undefined })
                 if (filterBy["city"]) this.props.filter("city", undefined)
@@ -94,7 +102,11 @@ export default class Header extends React.Component {
             </FilterBox>
 
             <FilterBox
-              onMouseOver={() => this.setState({ displayOptionsFor: "tag" })}
+              onMouseOver={() => {
+                if (!filterBy["tag"]) {
+                  this.setState({ displayOptionsFor: "tag" })
+                }
+              }}
               onClick={() => {
                 this.setState({ displayOptionsFor: undefined })
                 if (filterBy["tag"]) this.props.filter("tag", undefined)
@@ -119,7 +131,7 @@ const Filters = styled(FlexedDiv)`
   margin-left: 100px;
   border-left: 3px solid rgb(21, 126, 251);
   position: absolute;
-  left: 10px;
+  left: 4px;
   right: 0;
   top: 0;
   height: 63px;
