@@ -3,7 +3,6 @@ import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
 import { navigate } from "gatsby"
-import { groupBy, countBy, sortBy, sample } from "lodash"
 
 import SEO from "../components/seo"
 import Header from "../components/header"
@@ -11,7 +10,7 @@ import { FlexedDiv, Text, Box } from "../components/common"
 import Marker from "../components/mapMarker"
 
 import colors from "../lib/colors"
-import { getBounds, unique } from "../lib/helpers"
+import { getBounds, getFilterOptions } from "../lib/helpers"
 
 import searchByRouteSquare from "../images/search-by-route-square.png"
 import close from "../images/close.png"
@@ -34,39 +33,18 @@ export default class Results extends React.Component {
       locations = location.state.locations
     }
 
-    const cities = unique(locations, "city")
-
-    const groupedByCity = groupBy(locations, "city")
-
-    const topCities = sortBy(cities, c => groupedByCity[c].length)
-      .reverse()
-      .slice(0, MAX_FILTER_OPTIONS)
-      .sort()
-
-    const tagCounts = countBy([].concat(...locations.map(l => l.tags)))
-
-    const tagOptions = sortBy(Object.keys(tagCounts), t => tagCounts[t])
-      .reverse()
-      .slice(0, MAX_FILTER_OPTIONS)
-      .sort()
-
-    const defaultTag = results.length ? undefined : sample(tagOptions)
+    let { filterBy, filterOptions } = getFilterOptions(
+      locations,
+      filterBy,
+      MAX_FILTER_OPTIONS
+    )
 
     this.state = {
       displayMap: false,
       results,
       locations,
-      filterOptions: {
-        state: unique(locations, "state"),
-        city: unique(locations, "city"),
-        topCities: topCities,
-        tag: tagOptions,
-      },
-      filterBy: {
-        state: undefined,
-        city: undefined,
-        tag: defaultTag,
-      },
+      filterOptions,
+      filterBy,
       description,
     }
   }
@@ -74,6 +52,7 @@ export default class Results extends React.Component {
   componentDidMount() {
     const { filterBy, results } = this.state
     const key = Object.keys(filterBy).find(key => filterBy[key])
+
     if (key) {
       this.filter(key, filterBy[key])
     } else if (!results.length) {
@@ -82,30 +61,53 @@ export default class Results extends React.Component {
   }
 
   filter(key, value) {
-    const { locations } = this.state
-    const filterBy = {}
+    console.log(`Filter ${key} to ${value}.`)
+    let { locations, filterBy } = this.state
     filterBy[key] = value
 
-    const results = locations
-      .filter(l =>
-        Object.keys(filterBy).every(key => {
-          if (!filterBy[key]) return true
-          return key === "tag"
-            ? l.tags.indexOf(filterBy[key]) > -1
-            : filterBy[key] === l[key]
-        })
-      )
-      .map(location => ({ location }))
+    locations = locations.filter(l =>
+      Object.keys(filterBy).every(key => {
+        if (!filterBy[key]) return true
+        return key === "tag"
+          ? l.tags.indexOf(filterBy[key]) > -1
+          : filterBy[key] === l[key]
+      })
+    )
+
+    const results = locations.map(location => ({ location }))
 
     let description = `${results.length} result${
       results.length === 1 ? "" : "s"
     } `
 
-    if (filterBy["tag"]) description += "for " + filterBy["tag"]
-    if (filterBy["state"]) description += "in " + filterBy["state"]
-    if (filterBy["city"]) description += "in " + filterBy["city"]
+    const stateOrCity = filterBy["state"] || filterBy["city"]
 
-    this.setState({ description, results, filterBy, selected: undefined })
+    if (filterBy["tag"]) {
+      description += "for " + filterBy["tag"]
+      description += stateOrCity ? " " : ""
+    }
+
+    if (filterBy["state"] && filterBy["city"]) {
+      description += `in ${filterBy["city"]}, ${filterBy["state"]}`
+    } else if (filterBy["city"]) {
+      description += `in ${filterBy["city"]}`
+    } else if (filterBy["state"]) {
+      description += `in ${filterBy["state"]}`
+    }
+
+    let { filterOptions } = getFilterOptions(
+      locations,
+      filterBy,
+      MAX_FILTER_OPTIONS
+    )
+
+    this.setState({
+      description,
+      results,
+      filterBy,
+      filterOptions,
+      selected: undefined,
+    })
 
     const scrollBox = document.getElementById("scroll-box")
     if (scrollBox) scrollBox.scroll({ top: 0 })
@@ -179,9 +181,9 @@ export default class Results extends React.Component {
           center={center}
           zoom={zoom}
         >
-          {results.map(r => (
+          {results.map((r, idx) => (
             <Marker
-              key={r.location.name}
+              key={idx}
               lat={r.location.latitude}
               lng={r.location.longitude}
               name={r.location.name}
@@ -228,12 +230,12 @@ export default class Results extends React.Component {
 
               {data.distance !== undefined && (
                 <Text style={{ marginLeft: "20px" }} color={colors.orange}>
-                  {Math.round(data.distance * 10) / 10}m
+                  {Math.round(data.distance * 10) / 10}mi
                 </Text>
               )}
             </FlexedDiv>
 
-            {data.location.tags.length && (
+            {data.location.tags.length > 0 && (
               <Text
                 color={colors.orange}
                 extraSmall
@@ -258,7 +260,11 @@ export default class Results extends React.Component {
               </Text>
             )}
             {isSelected && (
-              <a target="_blank" href={data.location.url}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={data.location.url}
+              >
                 <GoogleMapsLink extraSmall>Open in Google Maps</GoogleMapsLink>
               </a>
             )}
@@ -279,7 +285,7 @@ export default class Results extends React.Component {
 
         <SEO title="Home" />
 
-        <ResultsBox>
+        <ResultsBox style={{ marginTop: displayMap && "-20px" }}>
           {displayMap ? map : displayMapBanner}
 
           {description && (
@@ -318,7 +324,7 @@ const ScrollBox = styled.div`
 `
 
 const ResultsBox = styled.div`
-  height: calc(100% - 53px);
+  height: calc(100% - 62px);
   text-align: center;
   display: flex;
   padding: 0 10px;

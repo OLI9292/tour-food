@@ -22,7 +22,7 @@ export const Box = styled.div`
   flex-direction: column;
 `
 
-export const Header = styled.h2`
+export const Header = styled.h3`
   color: ${p => p.color};
   text-transform: uppercase;
   margin: 10px 5px;
@@ -55,13 +55,14 @@ export const Image = styled.div`
 
 export const Input = styled.input`
   outline: 0;
-  margin: 0 auto;
+  text-align: left;
+  width: 100%;
   border: 0;
   ::placeholder {
     color: ${colors.lightGray};
   }
   font-weight: 600;
-  font-size: 1.3em;
+  font-size: 1.2em;
   letter-spacing: 1px;
   display: block;
 `
@@ -97,7 +98,7 @@ export const Submit = styled.input`
 
 export const Form = styled.form`
   text-align: center;
-  max-width: 300px;
+  width: 280px;
   margin: 0 auto;
 `
 
@@ -108,4 +109,16 @@ export const MarkerImage = styled.img`
   height: auto;
   opacity: ${p => (p.highlight ? 1 : 0.5)};
   cursor: pointer;
+`
+
+export const Autocomplete = styled.div`
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  border: 3px solid ${colors.blue};
+  border-radius: 0 0 10px 10px;
+  text-align: left;
+  padding: 0 10px;
+  z-index: 500;
+  box-sizing: border-box;
 `

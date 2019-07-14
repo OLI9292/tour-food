@@ -2,9 +2,10 @@ import React from "react"
 import styled from "styled-components"
 import { Link } from "gatsby"
 import "./index.css"
+import { sortBy } from "lodash"
 
 import { FlexedDiv, Text } from "./common"
-import icon from "../images/icon.png"
+import icon from "../images/icon.jpg"
 import colors from "../lib/colors"
 
 export default class Header extends React.Component {
@@ -21,59 +22,49 @@ export default class Header extends React.Component {
       displayOptionsFor === attr || filterBy[attr] ? colors.orange : colors.blue
 
     const dropdown = (attr, options) => (
-      <Dropdown>
-        {(options || filterOptions[attr]).map((a, idx) => (
-          <Option
-            key={idx}
-            onClick={() => {
-              this.setState({ displayOptionsFor: undefined })
-              this.props.filter(attr, a)
-            }}
-          >
-            <OptionText color="black" extraSmall>
-              {a}
-            </OptionText>
-          </Option>
-        ))}
+      <Dropdown
+        onMouseLeave={() => this.setState({ displayOptionsFor: undefined })}
+      >
+        {sortBy(options || filterOptions[attr], str => str.toLowerCase()).map(
+          (a, idx) => (
+            <Option
+              key={idx}
+              onClick={e => {
+                e.stopPropagation()
+                this.setState({ displayOptionsFor: undefined })
+                this.props.filter(attr, a)
+              }}
+            >
+              <OptionText color="black" extraSmall>
+                {a}
+              </OptionText>
+            </Option>
+          )
+        )}
       </Dropdown>
     )
 
     return (
       <StyledHeader>
+        <Line />
+
         <Link to="/">
-          <FlexedDiv
+          <Icon
             onClick={() => {
               if (reset) reset()
             }}
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRight: `3px solid ${colors.blue}`,
-            }}
-          >
-            <img
-              alt="tour food"
-              style={{ width: "100%", height: "auto", cursor: "pointer" }}
-              src={icon}
-            />
-          </FlexedDiv>
+            alt="tour food"
+            src={icon}
+          />
         </Link>
 
         {showFilters && (
-          <FlexedDiv
-            style={{
-              flexGrow: 1,
-              justifyContent: "space-around",
-              height: "100%",
-            }}
-          >
+          <Filters>
             <FilterBox
               onMouseOver={() => this.setState({ displayOptionsFor: "state" })}
-              onMouseLeave={() =>
-                this.setState({ displayOptionsFor: undefined })
-              }
               onClick={() => {
                 this.setState({ displayOptionsFor: undefined })
+                if (filterBy["state"]) this.props.filter("state", undefined)
               }}
             >
               <FilterHeader color={color("state")}>
@@ -85,11 +76,9 @@ export default class Header extends React.Component {
 
             <FilterBox
               onMouseOver={() => this.setState({ displayOptionsFor: "city" })}
-              onMouseLeave={() =>
-                this.setState({ displayOptionsFor: undefined })
-              }
               onClick={() => {
                 this.setState({ displayOptionsFor: undefined })
+                if (filterBy["city"]) this.props.filter("city", undefined)
               }}
               style={{
                 borderRight: `1px solid ${colors.gray}`,
@@ -106,11 +95,9 @@ export default class Header extends React.Component {
 
             <FilterBox
               onMouseOver={() => this.setState({ displayOptionsFor: "tag" })}
-              onMouseLeave={() =>
-                this.setState({ displayOptionsFor: undefined })
-              }
               onClick={() => {
                 this.setState({ displayOptionsFor: undefined })
+                if (filterBy["tag"]) this.props.filter("tag", undefined)
               }}
             >
               <FilterHeader color={color("tag")}>
@@ -119,19 +106,42 @@ export default class Header extends React.Component {
               <Triangle color={color("tag")} />
               {displayOptionsFor === "tag" && dropdown("tag")}
             </FilterBox>
-          </FlexedDiv>
+          </Filters>
         )}
       </StyledHeader>
     )
   }
 }
 
+const Filters = styled(FlexedDiv)`
+  flex-grow: 1;
+  justify-content: space-around;
+  margin-left: 100px;
+  border-left: 3px solid rgb(21, 126, 251);
+  position: absolute;
+  left: 10px;
+  right: 0;
+  top: 0;
+  height: 63px;
+`
+
 const StyledHeader = styled.header`
-  height: 50px;
+  height: 80px;
   width: 100%;
-  border-bottom: 3px solid ${colors.blue};
   display: flex;
   align-items: center;
+  position: relative;
+`
+
+const Line = styled.div`
+  position: absolute;
+  border-radius: 5px;
+  width: 100%;
+  left: 0;
+  height: 3px;
+  z-index: 5000;
+  top: 60px;
+  background-color: ${colors.blue};
 `
 
 const FilterHeader = styled(Text)`
@@ -184,7 +194,7 @@ const Dropdown = styled.div`
   box-sizing: border-box;
   border: 3px solid ${colors.blue};
   font-weight: 400;
-  top: 50px;
+  top: 60px;
   left: 0;
   width: 100%;
   display: grid;
@@ -195,9 +205,19 @@ const Dropdown = styled.div`
     padding: 0px;
     grid-template-columns: 1fr;
     overflow: scroll;
-    max-height: calc(100% - 50px);
     border-width: 3px 0;
     width: 100vw;
     left: 0;
+    bottom: 0;
+    position: fixed;
   }
+`
+
+const Icon = styled.img`
+  width: 90px;
+  height: auto;
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  left: 8px;
 `

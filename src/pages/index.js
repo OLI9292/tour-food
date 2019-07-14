@@ -1,11 +1,12 @@
 import React from "react"
 import { navigate } from "gatsby"
+import { uniq } from "lodash"
 
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
 
-import searchByRoute from "../images/search-by-route.png"
-import searchNearby from "../images/search-nearby.png"
+import searchByRoute from "../images/search-by-route.jpg"
+import searchNearby from "../images/search-nearby.jpg"
 
 import {
   Box,
@@ -15,6 +16,7 @@ import {
   SearchBox,
   Image,
   Input,
+  Autocomplete,
   GrayLine,
   Submit,
   Form,
@@ -24,6 +26,7 @@ import {
   parseRow,
   geocode,
   distanceFromLine,
+  directions,
   distanceInMiles,
 } from "../lib/helpers"
 
@@ -39,7 +42,9 @@ export default class IndexPage extends React.Component {
     super(props)
     this.state = {
       locations: [],
-      // searchType: "destination",
+      autocompleteOptions: [],
+      autocompleteResults: [],
+      // searchType: "route",
       // locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
     }
@@ -80,7 +85,10 @@ export default class IndexPage extends React.Component {
           .filter(r => r)
           .slice(1)
         console.log("Data loaded.")
-        this.setState({ locations })
+        const autocompleteOptions = uniq(
+          locations.map(l => `${l.city}, ${l.state}`)
+        )
+        this.setState({ locations, autocompleteOptions })
       })
   }
 
@@ -106,44 +114,51 @@ export default class IndexPage extends React.Component {
   }
 
   async findAlongRoute(locations, cb) {
-    geocode(locations[0], (latA, lngA, addressA, errorA) =>
-      geocode(locations[1], (latB, lngB, addressB, errorB) => {
-        const error = errorA || errorB
-        if (error) return this.setState({ error })
+    directions(
+      locations[0],
+      locations[1],
+      (steps, addressA, addressB, startLocation, error) => {
+        if (!steps) return
 
         const results = this.state.locations
           .map(location => {
             const { latitude, longitude } = location
-            return {
-              location,
-              distance: distanceFromLine(
-                latitude,
-                longitude,
-                latA,
-                lngA,
-                latB,
-                lngB
-              ),
-            }
+
+            const distanceFromRoute = Math.min(
+              ...steps.map(({ start, end }) =>
+                distanceFromLine(
+                  latitude,
+                  longitude,
+                  start.lat,
+                  start.lng,
+                  end.lat,
+                  end.lng
+                )
+              )
+            )
+
+            return { location, distanceFromRoute }
           })
-          .filter(a => a.distance < 50)
-          // .map(({ location, distance }) => {
-          //   const { latitude, longitude } = location
-          //   return {
-          //     location,
-          //     distance,
-          //     minimumDistanceFromLocation: Math.min(
-          //       distanceInMiles(latitude, longitude, latA, lngA),
-          //       distanceInMiles(latitude, longitude, latB, lngB)
-          //     ),
-          //   }
-          // })
-          // .filter(a => a.minimumDistanceFromLocation > 10)
-          .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+          .filter(a => a.distanceFromRoute < 100)
+          .sort(
+            (a, b) =>
+              parseFloat(a.distanceFromRoute) - parseFloat(b.distanceFromRoute)
+          )
           .slice(0, MAX_RESULTS)
+          .map(({ location, distanceFromRoute }) => {
+            const distance = distanceInMiles(
+              location.latitude,
+              location.longitude,
+              startLocation.lat,
+              startLocation.lng
+            )
+
+            return { location, distance }
+          })
+          .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
 
         cb(results, addressA, addressB)
-      })
+      }
     )
   }
 
@@ -183,6 +198,13 @@ export default class IndexPage extends React.Component {
     })
   }
 
+  autocomplete(inputString, inputLetter) {
+    const autocompleteResults = this.state.autocompleteOptions
+      .filter(str => str.toLowerCase().startsWith(inputString.toLowerCase()))
+      .slice(0, 4)
+    this.setState({ autocompleteResults, inputLetter })
+  }
+
   render() {
     const {
       searchType,
@@ -190,6 +212,8 @@ export default class IndexPage extends React.Component {
       locationB,
       locations,
       glow,
+      inputLetter,
+      autocompleteResults,
       error,
     } = this.state
 
@@ -210,27 +234,76 @@ export default class IndexPage extends React.Component {
           {isSearchingDestination ? searchNearbyHeader : searchByRouteHeader}
         </div>
 
-        <div style={{ margin: "20px 0" }}>
+        <div style={{ margin: "20px 0", position: "relative" }}>
           <Input
             spellCheck={false}
-            onChange={e => this.setState({ locationA: e.target.value })}
+            onChange={e => {
+              const locationA = e.target.value
+              this.setState({ locationA }, () =>
+                this.autocomplete(locationA, "A")
+              )
+            }}
             value={locationA || ""}
             type="value"
             autoFocus={true}
-            placeholder={isSearchingDestination ? "Location..." : "From..."}
+            placeholder={
+              isSearchingDestination
+                ? "Location (venue, city, etc.)"
+                : "From (venue, city, etc.)"
+            }
           />
+
+          {inputLetter === "A" && autocompleteResults.length > 0 && (
+            <Autocomplete>
+              {autocompleteResults.map(str => (
+                <Text
+                  key={str}
+                  onClick={() =>
+                    this.setState({ locationA: str, autocompleteResults: [] })
+                  }
+                  style={{ margin: "8px 0", cursor: "pointer" }}
+                  extraSmall
+                >
+                  {str}
+                </Text>
+              ))}
+            </Autocomplete>
+          )}
+
           <GrayLine glow={glow === "locationA"} />
         </div>
 
         {searchType === "route" && (
-          <div style={{ margin: "20px 0" }}>
+          <div style={{ margin: "20px 0", position: "relative" }}>
             <Input
               spellCheck={false}
-              onChange={e => this.setState({ locationB: e.target.value })}
+              onChange={e => {
+                const locationB = e.target.value
+                this.setState({ locationB }, () =>
+                  this.autocomplete(locationB, "B")
+                )
+              }}
               value={locationB || ""}
               type="value"
               placeholder="To..."
             />
+
+            {inputLetter === "B" && autocompleteResults.length > 0 && (
+              <Autocomplete>
+                {autocompleteResults.map(str => (
+                  <Text
+                    onClick={() =>
+                      this.setState({ locationB: str, autocompleteResults: [] })
+                    }
+                    style={{ margin: "8px 0", cursor: "pointer" }}
+                    extraSmall
+                  >
+                    {str}
+                  </Text>
+                ))}
+              </Autocomplete>
+            )}
+
             <GrayLine glow={glow === "locationB"} />
           </div>
         )}
