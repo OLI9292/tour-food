@@ -108,6 +108,15 @@ export const directions = (origin, destination, cb) => {
 
 // https://github.com/google-map-react/google-map-react/blob/master/API.md
 export const getBounds = results => {
+  if (results.length === 1) {
+    const { latitude, longitude } = results[0].location
+
+    return {
+      nw: { lat: latitude + 0.1, lng: longitude - 0.1 },
+      se: { lat: latitude - 0.1, lng: longitude + 0.1 },
+    }
+  }
+
   const latitudes = results.map(r => r.location.latitude)
   const longitudes = results.map(r => r.location.longitude)
 

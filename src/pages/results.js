@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
+import { navigate } from "gatsby"
 
 import SEO from "../components/seo"
 import Header from "../components/header"
@@ -49,8 +50,12 @@ export default class Results extends React.Component {
   }
 
   componentDidMount() {
-    const { filterBy, results } = this.state
+    const { filterBy, results, locations } = this.state
+
+    if (!locations.length) navigate("/")
+
     const key = Object.keys(filterBy).find(key => filterBy[key])
+
     if (key) {
       this.filter(key, filterBy[key])
     } else if (!results.length) {
@@ -288,7 +293,7 @@ export default class Results extends React.Component {
 
         <SEO title="Home" />
 
-        <ResultsBox style={{ marginTop: displayMap && "-20px" }}>
+        <ResultsBox>
           {displayMap ? map : displayMapBanner}
 
           {description && (
@@ -333,6 +338,8 @@ const ResultsBox = styled.div`
   padding: 0 10px;
   flex-direction: column;
   object-fit: contain;
+  position: fixed;
+  top: 62px;
 `
 
 const ResultBox = styled.div`

@@ -191,13 +191,15 @@ export default class IndexPage extends React.Component {
 
   autocomplete(inputString, inputLetter) {
     inputString = inputString.toLowerCase()
-    const autocompleteResults = this.state.autocompleteOptions
-      .filter(
-        str =>
-          str.toLowerCase().startsWith(inputString) &&
-          str.toLowerCase() !== inputString
-      )
-      .slice(0, 4)
+    const autocompleteResults = inputString.length
+      ? this.state.autocompleteOptions
+          .filter(
+            str =>
+              str.toLowerCase().startsWith(inputString) &&
+              str.toLowerCase() !== inputString
+          )
+          .slice(0, 4)
+      : []
     this.setState({ autocompleteResults, inputLetter })
   }
 
@@ -287,8 +289,9 @@ export default class IndexPage extends React.Component {
 
             {inputLetter === "B" && autocompleteResults.length > 0 && (
               <Autocomplete>
-                {autocompleteResults.map(str => (
+                {autocompleteResults.map((str, idx) => (
                   <Text
+                    key={idx}
                     onClick={() =>
                       this.setState({ locationB: str, autocompleteResults: [] })
                     }

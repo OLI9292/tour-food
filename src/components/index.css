@@ -24,3 +24,7 @@ input {
 .gm-bundled-control {
   display: none !important;
 }
+
+h2 {
+  font-size: 1.35em;
+}

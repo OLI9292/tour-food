@@ -22,16 +22,16 @@ export const Box = styled.div`
   flex-direction: column;
 `
 
-export const Header = styled.h3`
+export const Header = styled.h2`
   color: ${p => p.color};
   text-transform: uppercase;
   margin: 10px 5px;
 `
 
 export const SearchBoxes = styled.div`
-  height: calc(100% - 75px);
+  padding-top: 5px;
+  height: calc(100% - 80px);
   text-align: center;
-  padding: 20px 0 0 0;
   display: flex;
   flex-direction: column;
   object-fit: contain;
@@ -86,7 +86,7 @@ export const Submit = styled.input`
   border: 0;
   border-radius: 10px;
   padding: 10px 0;
-  font-size: 1.3em;
+  font-size: 1.2em;
   letter-spacing: 1px;
   font-weight: 700;
   margin: 0 auto;

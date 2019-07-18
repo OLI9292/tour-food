@@ -143,6 +143,9 @@ const StyledHeader = styled.header`
   display: flex;
   align-items: center;
   position: relative;
+  @media (max-width: 600px) {
+    font-size: 0.8em;
+  }
 `
 
 const Line = styled.div`
@@ -160,6 +163,9 @@ const FilterHeader = styled(Text)`
   text-transform: capitalize;
   margin-right: 5px;
   transition: color 0.15s ease;
+  @media (max-width: 600px) {
+    margin-right: 3px;
+  }
 `
 
 const Triangle = styled.div`
@@ -169,6 +175,9 @@ const Triangle = styled.div`
   border-width: 10px 8px 0px 8px;
   height: 0px;
   width: 0px;
+  @media (max-width: 600px) {
+    border-width: 8px 6px 0px 6px;
+  }
 `
 
 const FilterBox = styled(FlexedDiv)`
