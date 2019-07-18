@@ -35,7 +35,7 @@ export const SearchBoxes = styled.div`
   object-fit: contain;
   position: fixed;
   top: 80px;
-  bottom: 80px;
+  bottom: 5px;
   left: 10px;
   right: 10px;
 `

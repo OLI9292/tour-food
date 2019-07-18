@@ -350,7 +350,7 @@ export default class IndexPage extends React.Component {
             if (!locations.length) return
             navigate("/results", { state: { results: [], locations } })
           }}
-          style={{ cursor: "pointer", flex: 1, marginTop: "15px" }}
+          style={{ cursor: "pointer", flex: 1, marginTop: "10px" }}
         >
           <Header style={{ color: colors.gray, margin: 0 }}>VIEW ALL</Header>
         </div>
