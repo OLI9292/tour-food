@@ -29,13 +29,15 @@ export const Header = styled.h2`
 `
 
 export const SearchBoxes = styled.div`
-  padding-top: 5px;
-  height: calc(100% - 120px);
   text-align: center;
   display: flex;
   flex-direction: column;
   object-fit: contain;
-  box-sizing: border-box;
+  position: fixed;
+  top: 80px;
+  bottom: 80px;
+  left: 10px;
+  right: 10px;
 `
 
 export const SearchBox = styled.div`
