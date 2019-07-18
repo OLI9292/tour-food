@@ -67,6 +67,7 @@ export default class Results extends React.Component {
     console.log(`Filter ${key} to ${value}.`)
     let { locations, filterBy } = this.state
     if (key) filterBy[key] = value
+    if (key === "state" && value === undefined) filterBy["city"] = undefined
 
     if (key === "city" && !filterBy["state"]) {
       const location = locations.find(l => l.city === value)

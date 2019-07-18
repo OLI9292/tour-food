@@ -30,7 +30,7 @@ export const Header = styled.h2`
 
 export const SearchBoxes = styled.div`
   padding-top: 5px;
-  height: calc(100% - 80px);
+  height: calc(100% - 120px);
   text-align: center;
   display: flex;
   flex-direction: column;

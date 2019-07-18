@@ -143,9 +143,6 @@ const StyledHeader = styled.header`
   display: flex;
   align-items: center;
   position: relative;
-  @media (max-width: 600px) {
-    font-size: 0.8em;
-  }
 `
 
 const Line = styled.div`
@@ -165,6 +162,7 @@ const FilterHeader = styled(Text)`
   transition: color 0.15s ease;
   @media (max-width: 600px) {
     margin-right: 3px;
+    font-size: 0.9em;
   }
 `
 
@@ -176,7 +174,7 @@ const Triangle = styled.div`
   height: 0px;
   width: 0px;
   @media (max-width: 600px) {
-    border-width: 8px 6px 0px 6px;
+    border-width: 9px 7px 0px 7px;
   }
 `
 
@@ -193,6 +191,7 @@ const FilterBox = styled(FlexedDiv)`
 `
 
 const Option = styled.div`
+  padding: 2px;
   @media (max-width: 600px) {
     border-bottom: 0.5px solid ${colors.lightGray};
     padding: 10px;
@@ -219,7 +218,7 @@ const Dropdown = styled.div`
   left: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 90px);
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
   grid-gap: 4px 15px;
   z-index: 100;
   @media (max-width: 600px) {

@@ -168,10 +168,13 @@ export const distanceFromLine = (
 export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
   const tagCounts = countBy([].concat(...locations.map(l => l.tags)))
 
-  const tagOptions = sortBy(Object.keys(tagCounts), t => tagCounts[t])
+  let tagOptions = sortBy(Object.keys(tagCounts), t => tagCounts[t])
     .reverse()
     .slice(0, MAX_FILTER_OPTIONS)
     .sort()
+
+  let tagsMap = new Map(tagOptions.map(l => [l.toLowerCase(), l]))
+  tagOptions = Array.from(tagsMap.values())
 
   if (!filterBy) {
     filterBy = {
