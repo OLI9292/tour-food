@@ -162,7 +162,7 @@ const FilterHeader = styled(Text)`
   transition: color 0.15s ease;
   @media (max-width: 600px) {
     margin-right: 3px;
-    font-size: 0.9em;
+    font-size: 0.95em;
   }
 `
 
