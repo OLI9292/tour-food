@@ -5,7 +5,7 @@ import "./index.css"
 import { sortBy } from "lodash"
 
 import { FlexedDiv, Text } from "./common"
-import icon from "../images/icon.jpg"
+import icon from "../images/icon.png"
 import colors from "../lib/colors"
 
 export default class Header extends React.Component {
@@ -240,4 +240,5 @@ const Icon = styled.img`
   position: absolute;
   top: 8px;
   left: 8px;
+  z-index: 500;
 `
