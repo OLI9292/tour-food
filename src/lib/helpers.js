@@ -170,7 +170,7 @@ export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
 
   let tagOptions = sortBy(Object.keys(tagCounts), t => tagCounts[t])
     .reverse()
-    .slice(0, MAX_FILTER_OPTIONS)
+    // .slice(0, MAX_FILTER_OPTIONS)
     .sort()
 
   let tagsMap = new Map(tagOptions.map(l => [l.toLowerCase(), l]))
