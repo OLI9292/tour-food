@@ -59,8 +59,10 @@ export const parseRow = (row, logErrors = false) => {
   }
 }
 
-export const geocode = (addressStr, cb) =>
-  fetch(BASE_GEOCODING_URL + addressStr + API_KEY)
+export const geocode = (addressStr, cb) => {
+  const url = BASE_GEOCODING_URL + addressStr + API_KEY
+  console.log(`Fetching ${url}.`)
+  fetch(url)
     .then(res => res.json())
     .then(data => {
       console.log(`Google API geocoding received.`)
@@ -74,12 +76,13 @@ export const geocode = (addressStr, cb) =>
         cb(null, null, null, `Could not find ${addressStr}.`)
       }
     })
+}
 
 export const directions = (origin, destination, cb) => {
-  fetch(
-    // `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
-    `${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
-  )
+  const url = `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
+  // const url = `${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
+  console.log(`Fetching ${url}.`)
+  fetch(url)
     .then(res => res.json())
     .then(data => {
       console.log(`Google API directions received.`)

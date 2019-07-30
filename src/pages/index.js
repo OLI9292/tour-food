@@ -41,6 +41,7 @@ export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      seconds: 1,
       locations: [],
       autocompleteOptions: [],
       autocompleteResults: [],
@@ -61,6 +62,12 @@ export default class IndexPage extends React.Component {
   }
 
   componentDidMount() {
+    const timeout = setInterval(() => {
+      let { seconds } = this.state
+      seconds = seconds === 3 ? 1 : seconds + 1
+      this.setState({ seconds })
+    }, 1000)
+
     fetch(DATA_URL)
       .then(res => res.text())
       .then(rows => {
@@ -77,8 +84,12 @@ export default class IndexPage extends React.Component {
         const autocompleteOptions = uniq(
           locations.map(l => `${l.city}, ${l.state}`)
         )
-        this.setState({ locations, autocompleteOptions })
+        this.setState({ locations, autocompleteOptions, timeout })
       })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.timeout)
   }
 
   async findNearLocation(locations, cb) {
@@ -218,6 +229,7 @@ export default class IndexPage extends React.Component {
       autocompleteResults,
       isNetworking,
       error,
+      seconds,
     } = this.state
 
     const isSearchingDestination = searchType === "destination"
@@ -313,7 +325,7 @@ export default class IndexPage extends React.Component {
         )}
 
         {isNetworking ? (
-          <Text color={colors.gray}>Searching...</Text>
+          <Text color={colors.gray}>Searching{".".repeat(seconds)}</Text>
         ) : (
           <Submit
             onClick={e => {
