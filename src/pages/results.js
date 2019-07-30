@@ -17,50 +17,43 @@ import close from "../images/close.png"
 
 const MAX_FILTER_OPTIONS = 40
 
+const parseProps = props => {
+  if (!props.location.state) return
+  let { locations, results } = props.location.state
+  if (results.length) locations = results.map(r => r.location)
+  const filterOptions = getFilterOptions(locations, null, MAX_FILTER_OPTIONS)
+  return Object.assign(props.location.state, filterOptions)
+}
+
 export default class Results extends React.Component {
   constructor(props) {
     super(props)
 
-    let results = []
-    let locations = []
-    let description
-
-    const { location } = this.props
-
-    if (location.state) {
-      results = location.state.results
-      description = location.state.description
-      locations = location.state.locations
-    }
-
-    let { filterBy, filterOptions } = getFilterOptions(
-      locations,
-      null,
-      MAX_FILTER_OPTIONS
-    )
-
     this.state = {
       displayMap: false,
-      results,
-      locations,
-      filterOptions,
-      filterBy,
-      description,
+      results: [],
+      locations: [],
+      filterOptions: { state: [], city: [], topCities: [], tag: [] },
+      filterBy: { state: undefined, city: undefined, tag: undefined },
     }
   }
 
   componentDidMount() {
-    const { filterBy, results, locations } = this.state
+    console.log("Component mounting.")
+    const state = parseProps(this.props)
+    this.setState(state, () => {
+      const { filterBy, results, locations } = this.state
 
-    if (!locations.length) navigate("/")
+      if (!locations.length) navigate("/")
 
-    const key = Object.keys(filterBy).find(key => filterBy[key])
+      const key = Object.keys(filterBy).find(key => filterBy[key])
 
-    if (key) {
-      this.filter(key, filterBy[key])
-    } else if (!results.length) {
-      this.filter()
-    }
+      if (key) {
+        this.filter(key, filterBy[key])
+      } else if (!results.length) {
+        this.filter()
+      }
+    })
   }
 
   filter(key, value) {

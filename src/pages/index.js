@@ -82,6 +82,7 @@ export default class IndexPage extends React.Component {
   }
 
   async findNearLocation(locations, cb) {
+    console.log("Find nearby:", locations[0])
     geocode(locations[0], (lat, lng, address, error) => {
       if (error) return this.setState({ error })
 
@@ -103,11 +104,13 @@ export default class IndexPage extends React.Component {
   }
 
   async findAlongRoute(locations, cb) {
+    console.log("Find along route:", locations)
     directions(
       locations[0],
       locations[1],
       (steps, addressA, addressB, startLocation, error) => {
         if (!steps) return
+        console.log(`Computing ${steps.length} steps.`)
 
         const results = this.state.locations
           .map(location => {
@@ -170,6 +173,7 @@ export default class IndexPage extends React.Component {
       : this.findNearLocation.bind(this)
 
     fn([locationA, locationB], (results, addressA, addressB) => {
+      console.log(`Found ${results.length} locations.`)
       this.setState({ isNetworking: false })
 
       const location = isSearchingRoute
@@ -296,7 +300,7 @@ export default class IndexPage extends React.Component {
                       this.setState({ locationB: str, autocompleteResults: [] })
                     }
                     style={{ margin: "8px 0", cursor: "pointer" }}
-                    extraSmall
+                    small
                   >
                     {str}
                   </Text>

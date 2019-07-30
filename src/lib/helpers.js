@@ -63,6 +63,8 @@ export const geocode = (addressStr, cb) =>
   fetch(BASE_GEOCODING_URL + addressStr + API_KEY)
     .then(res => res.json())
     .then(data => {
+      console.log(`Google API geocoding received.`)
+
       try {
         const result = data["results"][0]
         const { lat, lng } = result["geometry"]["location"]
@@ -79,6 +81,8 @@ export const directions = (origin, destination, cb) => {
   )
     .then(res => res.json())
     .then(data => {
+      console.log(`Google API directions received.`)
+
       try {
         let { steps, start_address, start_location, end_address } = data[
           "routes"
@@ -166,6 +170,7 @@ export const distanceFromLine = (
   ) / 1609.344
 
 export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
+  console.log(`Getting filter options for ${locations.length} locations.`)
   const tagCounts = countBy([].concat(...locations.map(l => l.tags)))
 
   let tagOptions = sortBy(Object.keys(tagCounts), t => tagCounts[t])
@@ -177,12 +182,7 @@ export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
   tagOptions = Array.from(tagsMap.values())
 
   if (!filterBy) {
-    filterBy = {
-      state: undefined,
-      city: undefined,
-      tag: undefined,
-      // tag: sample(tagOptions),
-    }
+    filterBy = { state: undefined, city: undefined, tag: undefined }
   }
 
   const cities = unique(locations, "city")
