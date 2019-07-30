@@ -77,7 +77,8 @@ export const geocode = (addressStr, cb) =>
 
 export const directions = (origin, destination, cb) => {
   fetch(
-    `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
+    // `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
+    `${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
   )
     .then(res => res.json())
     .then(data => {
