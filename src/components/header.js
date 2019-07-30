@@ -58,7 +58,7 @@ export default class Header extends React.Component {
           />
         </Link>
 
-        {showFilters && (
+        {showFilters && filterBy && (
           <Filters>
             <FilterBox
               onMouseOver={() => {

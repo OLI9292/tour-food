@@ -41,7 +41,7 @@ export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      seconds: 1,
+      seconds: 0,
       locations: [],
       autocompleteOptions: [],
       autocompleteResults: [],
@@ -199,7 +199,20 @@ export default class IndexPage extends React.Component {
       if (results.length > 1) description += "s"
       description += location
 
-      const state = { description, results, locations }
+      const filterBy = { state: undefined, city: undefined, tag: undefined }
+
+      if (!isSearchingRoute) {
+        const autocompleteOption = locations.find(
+          l => `${l.city}, ${l.state}` === locationA
+        )
+        if (autocompleteOption) {
+          filterBy["city"] = autocompleteOption.city
+          filterBy["state"] = autocompleteOption.state
+        }
+      }
+      console.log(filterBy)
+
+      const state = { description, results, locations, filterBy }
       navigate("/results", { state })
     })
   }
@@ -364,7 +377,14 @@ export default class IndexPage extends React.Component {
         <div
           onClick={() => {
             if (!locations.length) return
-            navigate("/results", { state: { results: [], locations } })
+            const filterBy = {
+              state: undefined,
+              city: undefined,
+              tag: undefined,
+            }
+            navigate("/results", {
+              state: { results: [], locations, filterBy },
+            })
           }}
           style={{ cursor: "pointer", flex: 1, marginTop: "10px" }}
         >

@@ -61,7 +61,7 @@ export const parseRow = (row, logErrors = false) => {
 
 export const geocode = (addressStr, cb) => {
   const url = BASE_GEOCODING_URL + addressStr + API_KEY
-  console.log(`Fetching ${url}.`)
+  // console.log(`Fetching ${url}.`)
   fetch(url)
     .then(res => res.json())
     .then(data => {
@@ -81,7 +81,7 @@ export const geocode = (addressStr, cb) => {
 export const directions = (origin, destination, cb) => {
   const url = `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
   // const url = `${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
-  console.log(`Fetching ${url}.`)
+  // console.log(`Fetching ${url}.`)
   fetch(url)
     .then(res => res.json())
     .then(data => {
@@ -184,10 +184,6 @@ export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
 
   let tagsMap = new Map(tagOptions.map(l => [l.toLowerCase(), l]))
   tagOptions = Array.from(tagsMap.values())
-
-  if (!filterBy) {
-    filterBy = { state: undefined, city: undefined, tag: undefined }
-  }
 
   const cities = unique(locations, "city")
 
