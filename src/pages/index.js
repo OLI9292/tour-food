@@ -60,6 +60,8 @@ export default class IndexPage extends React.Component {
   }
 
   componentDidMount() {
+    this.requestLocation()
+
     if (REVOKE_GEOLOCATION_PERMISSION) {
       // navigator.permissions.revoke({ name: "geolocation" })
     }
@@ -202,6 +204,7 @@ export default class IndexPage extends React.Component {
 
     const goUp = e.key.toLowerCase().includes("up")
     const goDown = e.key.toLowerCase().includes("down")
+
     if (autocompleteResults.length === 0 || (!goUp && !goDown)) return
 
     let index
@@ -443,8 +446,7 @@ export default class IndexPage extends React.Component {
                   selectedAutocomplete: undefined,
                 }
                 state[`location${inputLetter}`] =
-                  autocompleteResults[selectAutocomplete]
-                console.log(state)
+                  autocompleteResults[selectedAutocomplete]
                 this.setState(state)
               } else {
                 this.search(locationA, locationB, locations, isSearchingRoute)
@@ -474,11 +476,7 @@ export default class IndexPage extends React.Component {
           {searchByRouteHeader}
         </SearchBox>
 
-        <SearchBox
-          onClick={() =>
-            this.setState({ searchType: "destination" }, this.requestLocation)
-          }
-        >
+        <SearchBox onClick={() => this.setState({ searchType: "destination" })}>
           <Image style={{ backgroundImage: `url("${searchNearby}")` }} />
           {searchNearbyHeader}
         </SearchBox>

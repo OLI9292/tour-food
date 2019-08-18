@@ -67,7 +67,6 @@ export const Input = styled.input`
   }
   font-weight: 600;
   font-size: 1.2em;
-  letter-spacing: 1px;
   display: block;
 `
 
@@ -102,7 +101,7 @@ export const Submit = styled.input`
 
 export const Form = styled.form`
   text-align: center;
-  width: 280px;
+  width: 320px;
   margin: 0 auto;
 `
 
@@ -119,6 +118,7 @@ export const Autocomplete = styled.div`
   position: absolute;
   width: 100%;
   background-color: white;
+  font-family: BrandonGrotesqueLight;
   border: 3px solid ${colors.blue};
   border-radius: 0 0 5px 5px;
   text-align: left;

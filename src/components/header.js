@@ -23,7 +23,7 @@ export default class Header extends React.Component {
 
     const dropdown = (attr, options) => (
       <Dropdown
-        onMouseLeave={() => this.setState({ displayOptionsFor: undefined })}
+      // onMouseLeave={() => this.setState({ displayOptionsFor: undefined })}
       >
         {sortBy(options || filterOptions[attr], str => str.toLowerCase()).map(
           (a, idx) => (
@@ -98,7 +98,7 @@ export default class Header extends React.Component {
               </FilterHeader>
               <Triangle color={color("city")} />
               {displayOptionsFor === "city" &&
-                dropdown("city", filterOptions.topCities)}
+                dropdown("city", filterOptions.cities)}
             </FilterBox>
 
             <FilterBox
@@ -205,22 +205,22 @@ const OptionText = styled(Text)`
     color: ${colors.orange};
   }
   transition: color 0.15s ease;
+  font-family: BrandonGrotesqueLight;
 `
 
 const Dropdown = styled.div`
-  position: absolute;
   background-color: white;
   padding: 10px;
   box-sizing: border-box;
   border: 3px solid ${colors.blue};
   font-weight: 400;
+  width: 100%;
+  z-index: 100;
+  position: absolute;
   top: 60px;
   left: 0;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  grid-gap: 4px 15px;
-  z-index: 100;
+  max-height: 500px;
+  overflow: scroll;
   @media (max-width: 600px) {
     padding: 0px;
     grid-template-columns: 1fr;
@@ -228,6 +228,7 @@ const Dropdown = styled.div`
     border-width: 3px 0;
     width: 100vw;
     left: 0;
+    max-height: none;
     bottom: 0;
     position: fixed;
   }
