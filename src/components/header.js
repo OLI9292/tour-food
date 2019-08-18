@@ -25,7 +25,7 @@ export default class Header extends React.Component {
 
     const dropdown = (attr, options) => (
       <Dropdown
-      // onMouseLeave={() => this.setState({ displayOptionsFor: undefined })}
+        onMouseLeave={() => this.setState({ displayOptionsFor: undefined })}
       >
         {sortBy(options || filterOptions[attr], str => str.toLowerCase()).map(
           (a, idx) => (
@@ -142,6 +142,7 @@ const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
   margin: 0 80px;
+  margin: 0 66px 0 76px;
   border-left: 3px solid rgb(21, 126, 251);
   border-right: 3px solid rgb(21, 126, 251);
   position: absolute;

@@ -3,6 +3,7 @@ import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
 import { navigate } from "gatsby"
+import { isEqual } from "lodash"
 
 import SEO from "../components/seo"
 import Header from "../components/header"
@@ -204,8 +205,7 @@ export default class Results extends React.Component {
     ) : null
 
     const result = (data, idx) => {
-      const isSelected =
-        selected && selected.location.name === data.location.name
+      const isSelected = isEqual(selected, data)
       return (
         <ResultBox
           highlight={isSelected}
