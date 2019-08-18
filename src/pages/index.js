@@ -38,6 +38,10 @@ const DATA_URL =
 
 const MAX_RESULTS = 75
 
+const MIN_DISTANCE_FROM_LOCATION = 25
+const MIN_DISTANCE_FROM_ROUTE = 30
+const REVOKE_GEOLOCATION_PERMISSION = true
+
 export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
@@ -56,6 +60,10 @@ export default class IndexPage extends React.Component {
   }
 
   componentDidMount() {
+    if (REVOKE_GEOLOCATION_PERMISSION) {
+      // navigator.permissions.revoke({ name: "geolocation" })
+    }
+
     document.addEventListener("keydown", this.handleKeyDown, false)
 
     const timeout = setInterval(() => {
@@ -131,7 +139,7 @@ export default class IndexPage extends React.Component {
 
             return { location, distanceFromRoute }
           })
-          .filter(a => a.distanceFromRoute < 100)
+          .filter(a => a.distanceFromRoute < MIN_DISTANCE_FROM_ROUTE)
           .sort(
             (a, b) =>
               parseFloat(a.distanceFromRoute) - parseFloat(b.distanceFromRoute)
@@ -169,7 +177,7 @@ export default class IndexPage extends React.Component {
             lng
           ),
         }))
-        .filter(a => a.distance < 25)
+        .filter(a => a.distance < MIN_DISTANCE_FROM_LOCATION)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
         .slice(0, MAX_RESULTS)
       cb(results, address)
@@ -209,30 +217,43 @@ export default class IndexPage extends React.Component {
     const state = { selectedAutocomplete: index }
     const result = autocompleteResults[index]
     state[inputLetter === "A" ? "locationA" : "locationB"] = result
-    console.log(state)
     this.setState(state)
   }
 
   requestLocation() {
     // https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API/Using_the_Permissions_API
-    navigator.permissions.query({ name: "geolocation" }).then(result => {
-      // granted / prompt / denied
-      if (result.state === "denied") return
+    if (!navigator) return
+    const permissions = navigator.permissions !== undefined
+    const options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+
+    const handlePosition = position => {
+      if (!position || !position.coords) return
+      const { latitude, longitude } = position.coords
+      // https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
+      reverseGeocode(`${latitude},${longitude}`, address => {
+        if (!address) return
+        this.setState({ locationA: address })
+      })
+    }
+
+    if (permissions) {
+      navigator.permissions.query({ name: "geolocation" }).then(result => {
+        // granted / prompt / denied
+        if (result.state === "denied") return
+
+        navigator.geolocation.getCurrentPosition(
+          handlePosition,
+          err => console.log(`ERR: ${err}`),
+          options
+        )
+      })
+    } else {
       navigator.geolocation.getCurrentPosition(
-        position => {
-          console.log(position)
-          if (!position || !position.coords) return
-          const { latitude, longitude } = position.coords
-          // https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
-          reverseGeocode(`${latitude},${longitude}`, address => {
-            if (!address) return
-            this.setState({ locationA: address })
-          })
-        },
+        handlePosition,
         err => console.log(`ERR: ${err}`),
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        options
       )
-    })
+    }
   }
 
   reset() {
@@ -417,7 +438,14 @@ export default class IndexPage extends React.Component {
               const selectAutocomplete =
                 autocompleteResults.length && isNumber(selectedAutocomplete)
               if (selectAutocomplete) {
-                this.setState({ autocompleteResults: [] })
+                const state = {
+                  autocompleteResults: [],
+                  selectedAutocomplete: undefined,
+                }
+                state[`location${inputLetter}`] =
+                  autocompleteResults[selectAutocomplete]
+                console.log(state)
+                this.setState(state)
               } else {
                 this.search(locationA, locationB, locations, isSearchingRoute)
               }
