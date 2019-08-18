@@ -47,8 +47,8 @@ export default class IndexPage extends React.Component {
       locations: [],
       autocompleteOptions: [],
       autocompleteResults: [],
-      searchType: "destination",
-      locationA: "Brooklyn, NY",
+      // searchType: "destination",
+      // locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
     }
 
