@@ -46,7 +46,7 @@ export default class ContactPage extends React.Component {
 
           <Submit
             onClick={e => {
-              e.preventDefault()
+              // e.preventDefault()
               this.setState({ submitted: true })
             }}
             color={submitted ? colors.gray : colors.blue}

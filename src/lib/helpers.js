@@ -23,7 +23,7 @@ const cleanRow = row =>
       return str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
     })
 
-export const parseRow = (row, logErrors = false) => {
+export const parseRow = (row, idx) => {
   try {
     const data = cleanRow(row)
 
@@ -41,24 +41,18 @@ export const parseRow = (row, logErrors = false) => {
       url: data[10],
     }
 
-    if (
-      !result.name ||
-      !result.city ||
-      !result.state ||
-      !result.latitude ||
-      !result.longitude
-    ) {
-      if (logErrors === true) {
-        console.log("ERR: missing field\n", row, "\n", result, "\n")
+    const attributes = ["name", "city", "state", "latitude", "longitude"]
+
+    attributes.forEach(attr => {
+      if (!result[attr]) {
+        console.log(`ERR: row ${idx + 1} missing field ${attr}: ${row}`)
+        return
       }
-      return
-    }
+    })
 
     return result
   } catch (error) {
-    if (logErrors === true) {
-      console.log(`ERR: failed to parse ${row}`)
-    }
+    console.log(`ERR: failed to parse row ${idx + 1}: ${row}`)
   }
 }
 
@@ -92,7 +86,10 @@ export const reverseGeocode = (latLng, cb) => {
       try {
         const result = data["results"][0]
         const { lat, lng } = result["geometry"]["location"]
-        const address = result["formatted_address"].replace(", USA", "")
+        const address = result["formatted_address"]
+          .replace(", USA", "")
+          .replace(/\d+$/, "")
+          .trim()
         cb(address)
       } catch (error) {
         cb(null, `Could not find ${latLng}.`)

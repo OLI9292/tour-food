@@ -61,6 +61,7 @@ export const Input = styled.input`
   outline: 0;
   text-align: left;
   width: 100%;
+  font-family: BrandonGrotesqueLight;
   border: 0;
   ::placeholder {
     color: ${colors.gray};

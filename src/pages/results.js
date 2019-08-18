@@ -276,7 +276,12 @@ export default class Results extends React.Component {
                 target="_blank"
                 href={data.location.url}
               >
-                <GoogleMapsLink extraSmall>Open in Google Maps</GoogleMapsLink>
+                <GoogleMapsLink
+                  style={{ fontFamily: "BrandonGrotesqueLight" }}
+                  extraSmall
+                >
+                  Open in Google Maps
+                </GoogleMapsLink>
               </a>
             )}
           </InnerResultBox>
