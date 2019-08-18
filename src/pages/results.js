@@ -224,7 +224,12 @@ export default class Results extends React.Component {
                 <Text
                   color={colors.blue}
                   large
-                  style={{ display: "inline-block", marginRight: "10px" }}
+                  style={{
+                    display: "inline-block",
+                    marginRight: "10px",
+                    fontFamily: "BrandonGrotesqueBold",
+                    letterSpacing: "0.5px",
+                  }}
                 >
                   {data.location.name}
                 </Text>
@@ -254,12 +259,12 @@ export default class Results extends React.Component {
             {data.location.comments && (
               <Text
                 small
-                color={colors.darkGray}
                 style={{
                   textAlign: "left",
                   fontWeight: 400,
                   marginTop: "5px",
                   width: "calc(100% - 150px)",
+                  fontFamily: "BrandonGrotesqueLight",
                 }}
               >
                 {data.location.comments}
@@ -321,6 +326,7 @@ const ScrollBox = styled.div`
   width: 100%;
   margin: 0 auto;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   width: 100vw;
   margin-left: -10px;

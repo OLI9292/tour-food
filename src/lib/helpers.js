@@ -4,6 +4,9 @@ import { groupBy, countBy, sortBy } from "lodash"
 const BASE_GEOCODING_URL =
   "https://maps.googleapis.com/maps/api/geocode/json?address="
 
+const BASE_REVERSE_GEOCODING_URL =
+  "https://maps.googleapis.com/maps/api/geocode/json?latlng="
+
 const BASE_DIRECTIONS_URL =
   "https://maps.googleapis.com/maps/api/directions/json?"
 
@@ -61,7 +64,7 @@ export const parseRow = (row, logErrors = false) => {
 
 export const geocode = (addressStr, cb) => {
   const url = BASE_GEOCODING_URL + addressStr + API_KEY
-  // console.log(`Fetching ${url}.`)
+  console.log(`Fetching ${url}.`)
   fetch(url)
     .then(res => res.json())
     .then(data => {
@@ -74,6 +77,25 @@ export const geocode = (addressStr, cb) => {
         cb(lat, lng, address)
       } catch (error) {
         cb(null, null, null, `Could not find ${addressStr}.`)
+      }
+    })
+}
+
+export const reverseGeocode = (latLng, cb) => {
+  const url = BASE_REVERSE_GEOCODING_URL + latLng + API_KEY
+  console.log(`Fetching ${url}.`)
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      console.log(`Google API reverse geocoding received.`)
+
+      try {
+        const result = data["results"][0]
+        const { lat, lng } = result["geometry"]["location"]
+        const address = result["formatted_address"].replace(", USA", "")
+        cb(address)
+      } catch (error) {
+        cb(null, `Could not find ${latLng}.`)
       }
     })
 }

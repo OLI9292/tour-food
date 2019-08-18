@@ -1,6 +1,6 @@
 import React from "react"
 import { navigate } from "gatsby"
-import { uniq, uniqBy } from "lodash"
+import { isNumber, uniq, uniqBy } from "lodash"
 
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
@@ -25,6 +25,7 @@ import {
 import {
   parseRow,
   geocode,
+  reverseGeocode,
   distanceFromLine,
   directions,
   distanceInMiles,
@@ -40,28 +41,23 @@ const MAX_RESULTS = 75
 export default class IndexPage extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       seconds: 0,
       locations: [],
       autocompleteOptions: [],
       autocompleteResults: [],
-      // searchType: "route",
-      // locationA: "Brooklyn, NY",
+      searchType: "destination",
+      locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
     }
-  }
 
-  reset() {
-    this.setState({
-      searchType: undefined,
-      locationA: undefined,
-      locationB: undefined,
-      results: undefined,
-      error: undefined,
-    })
+    this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
   componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown, false)
+
     const timeout = setInterval(() => {
       let { seconds } = this.state
       seconds = seconds === 3 ? 1 : seconds + 1
@@ -90,28 +86,21 @@ export default class IndexPage extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.state.timeout)
+    document.removeEventListener("keydown", this.handleKeyDown, false)
   }
 
-  async findNearLocation(locations, cb) {
-    console.log("Find nearby:", locations[0])
-    geocode(locations[0], (lat, lng, address, error) => {
-      if (error) return this.setState({ error })
-
-      const results = this.state.locations
-        .map(location => ({
-          location,
-          distance: distanceInMiles(
-            location.latitude,
-            location.longitude,
-            lat,
-            lng
-          ),
-        }))
-        .filter(a => a.distance < 25)
-        .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-        .slice(0, MAX_RESULTS)
-      cb(results, address)
-    })
+  autocomplete(inputString, inputLetter) {
+    inputString = inputString.toLowerCase()
+    const autocompleteResults = inputString.length
+      ? this.state.autocompleteOptions
+          .filter(
+            str =>
+              str.toLowerCase().startsWith(inputString) &&
+              str.toLowerCase() !== inputString
+          )
+          .slice(0, 4)
+      : []
+    this.setState({ autocompleteResults, inputLetter })
   }
 
   async findAlongRoute(locations, cb) {
@@ -165,6 +154,28 @@ export default class IndexPage extends React.Component {
     )
   }
 
+  async findNearLocation(locations, cb) {
+    console.log("Find nearby:", locations[0])
+    geocode(locations[0], (lat, lng, address, error) => {
+      if (error) return this.setState({ error })
+
+      const results = this.state.locations
+        .map(location => ({
+          location,
+          distance: distanceInMiles(
+            location.latitude,
+            location.longitude,
+            lat,
+            lng
+          ),
+        }))
+        .filter(a => a.distance < 25)
+        .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+        .slice(0, MAX_RESULTS)
+      cb(results, address)
+    })
+  }
+
   glowInput(glow) {
     if (this.state.glow) return
     const error = `Please enter a ${
@@ -172,6 +183,68 @@ export default class IndexPage extends React.Component {
     }.`
     this.setState({ glow, error })
     setTimeout(() => this.setState({ glow: undefined }), 1000)
+  }
+
+  handleKeyDown(e) {
+    const {
+      autocompleteResults,
+      inputLetter,
+      selectedAutocomplete,
+    } = this.state
+
+    const goUp = e.key.toLowerCase().includes("up")
+    const goDown = e.key.toLowerCase().includes("down")
+    if (autocompleteResults.length === 0 || (!goUp && !goDown)) return
+
+    let index
+    if (goDown) {
+      index = isNumber(selectedAutocomplete)
+        ? Math.min(autocompleteResults.length - 1, selectedAutocomplete + 1)
+        : 0
+    } else if (selectedAutocomplete) {
+      index = Math.max(0, selectedAutocomplete - 1)
+    }
+    if (!isNumber(index)) return
+
+    const state = { selectedAutocomplete: index }
+    const result = autocompleteResults[index]
+    state[inputLetter === "A" ? "locationA" : "locationB"] = result
+    console.log(state)
+    this.setState(state)
+  }
+
+  requestLocation() {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API/Using_the_Permissions_API
+    navigator.permissions.query({ name: "geolocation" }).then(result => {
+      // granted / prompt / denied
+      if (result.state === "denied") return
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          console.log(position)
+          if (!position || !position.coords) return
+          const { latitude, longitude } = position.coords
+          // https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
+          reverseGeocode(`${latitude},${longitude}`, address => {
+            if (!address) return
+            this.setState({ locationA: address })
+          })
+        },
+        err => console.log(`ERR: ${err}`),
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      )
+    })
+  }
+
+  reset() {
+    this.setState({
+      autocompleteResults: [],
+      error: undefined,
+      locationA: undefined,
+      locationB: undefined,
+      results: undefined,
+      searchType: undefined,
+      selectedAutocomplete: undefined,
+    })
   }
 
   search(locationA, locationB, locations, isSearchingRoute) {
@@ -217,43 +290,34 @@ export default class IndexPage extends React.Component {
     })
   }
 
-  autocomplete(inputString, inputLetter) {
-    inputString = inputString.toLowerCase()
-    const autocompleteResults = inputString.length
-      ? this.state.autocompleteOptions
-          .filter(
-            str =>
-              str.toLowerCase().startsWith(inputString) &&
-              str.toLowerCase() !== inputString
-          )
-          .slice(0, 4)
-      : []
-    this.setState({ autocompleteResults, inputLetter })
-  }
-
   render() {
     const {
-      searchType,
+      autocompleteResults,
+      error,
+      glow,
+      inputLetter,
+      isNetworking,
       locationA,
       locationB,
       locations,
-      glow,
-      inputLetter,
-      autocompleteResults,
-      isNetworking,
-      error,
+      searchType,
       seconds,
+      selectedAutocomplete,
     } = this.state
 
     const isSearchingDestination = searchType === "destination"
     const isSearchingRoute = searchType === "route"
 
     const searchNearbyHeader = (
-      <Header color={colors.orange}>search nearby</Header>
+      <Header color={searchType ? colors.orange : "white"}>
+        search by location
+      </Header>
     )
 
     const searchByRouteHeader = (
-      <Header color={colors.blue}>search by route</Header>
+      <Header color={searchType ? colors.blue : "white"}>
+        search by route
+      </Header>
     )
 
     const searchComponent = (
@@ -283,9 +347,10 @@ export default class IndexPage extends React.Component {
 
           {inputLetter === "A" && autocompleteResults.length > 0 && (
             <Autocomplete>
-              {autocompleteResults.map(str => (
+              {autocompleteResults.map((str, idx) => (
                 <Text
-                  key={str}
+                  key={idx}
+                  color={idx === selectedAutocomplete ? colors.orange : "black"}
                   onClick={() =>
                     this.setState({ locationA: str, autocompleteResults: [] })
                   }
@@ -322,7 +387,13 @@ export default class IndexPage extends React.Component {
                   <Text
                     key={idx}
                     onClick={() =>
-                      this.setState({ locationB: str, autocompleteResults: [] })
+                      this.setState({
+                        locationB: str,
+                        autocompleteResults: [],
+                      })
+                    }
+                    color={
+                      idx === selectedAutocomplete ? colors.orange : "black"
                     }
                     style={{ margin: "8px 0", cursor: "pointer" }}
                     small
@@ -343,7 +414,13 @@ export default class IndexPage extends React.Component {
           <Submit
             onClick={e => {
               e.preventDefault()
-              this.search(locationA, locationB, locations, isSearchingRoute)
+              const selectAutocomplete =
+                autocompleteResults.length && isNumber(selectedAutocomplete)
+              if (selectAutocomplete) {
+                this.setState({ autocompleteResults: [] })
+              } else {
+                this.search(locationA, locationB, locations, isSearchingRoute)
+              }
             }}
             type="submit"
             value="search"
@@ -369,7 +446,11 @@ export default class IndexPage extends React.Component {
           {searchByRouteHeader}
         </SearchBox>
 
-        <SearchBox onClick={() => this.setState({ searchType: "destination" })}>
+        <SearchBox
+          onClick={() =>
+            this.setState({ searchType: "destination" }, this.requestLocation)
+          }
+        >
           <Image style={{ backgroundImage: `url("${searchNearby}")` }} />
           {searchNearbyHeader}
         </SearchBox>
@@ -388,13 +469,13 @@ export default class IndexPage extends React.Component {
           }}
           style={{ cursor: "pointer", flex: 1, marginTop: "10px" }}
         >
-          <Header style={{ color: colors.gray, margin: 0 }}>VIEW ALL</Header>
+          <Header style={{ color: "white", margin: 0 }}>VIEW ALL</Header>
         </div>
       </SearchBoxes>
     )
 
     return (
-      <Box>
+      <Box style={{ backgroundColor: searchType ? "white" : colors.orange }}>
         <SEO title="Home" />
 
         <HeaderComponent reset={this.reset.bind(this)} siteTitle="Tour Food" />

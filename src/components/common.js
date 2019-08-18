@@ -10,7 +10,7 @@ export const FlexedDiv = styled.div`
 
 export const Text = styled.p`
   margin: 0;
-  color: ${p => p.color || colors.gray};
+  color: ${p => p.color || "black"};
   font-size: ${p => (p.large ? 1.4 : p.small ? 1 : p.extraSmall ? 0.8 : 1.2)}em;
 `
 
@@ -25,6 +25,8 @@ export const Box = styled.div`
 export const Header = styled.h2`
   color: ${p => p.color};
   text-transform: uppercase;
+  font-family: BrandonGrotesqueBold;
+  letter-spacing: 1.5px;
   margin: 10px 5px;
 `
 

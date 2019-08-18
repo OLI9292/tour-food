@@ -5,7 +5,7 @@ import "./index.css"
 import { sortBy } from "lodash"
 
 import { FlexedDiv, Text } from "./common"
-import icon from "../images/icon.png"
+import icon from "../images/icon-non-transparent.jpg"
 import colors from "../lib/colors"
 
 export default class Header extends React.Component {
@@ -45,7 +45,7 @@ export default class Header extends React.Component {
     )
 
     return (
-      <StyledHeader>
+      <StyledHeader style={{ backgroundColor: "white" }}>
         <Line />
 
         <Link to="/">
@@ -128,7 +128,7 @@ export default class Header extends React.Component {
 const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
-  margin-left: 100px;
+  margin-left: 80px;
   border-left: 3px solid rgb(21, 126, 251);
   position: absolute;
   left: 4px;
@@ -138,7 +138,7 @@ const Filters = styled(FlexedDiv)`
 `
 
 const StyledHeader = styled.header`
-  height: 80px;
+  height: 65px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -152,7 +152,7 @@ const Line = styled.div`
   left: 0;
   height: 3px;
   z-index: 5000;
-  top: 60px;
+  bottom: 0;
   background-color: ${colors.blue};
 `
 
@@ -234,11 +234,11 @@ const Dropdown = styled.div`
 `
 
 const Icon = styled.img`
-  width: 90px;
+  width: 75px;
   height: auto;
   cursor: pointer;
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 5px;
+  left: 5px;
   z-index: 500;
 `
