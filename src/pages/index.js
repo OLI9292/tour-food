@@ -246,14 +246,14 @@ export default class IndexPage extends React.Component {
 
         navigator.geolocation.getCurrentPosition(
           handlePosition,
-          err => console.log(`ERR: ${err}`),
+          err => console.log(`ERR: ${err.message}`),
           options
         )
       })
     } else {
       navigator.geolocation.getCurrentPosition(
         handlePosition,
-        err => console.log(`ERR: ${err}`),
+        err => console.log(`ERR: ${err.message}`),
         options
       )
     }

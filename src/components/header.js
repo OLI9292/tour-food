@@ -5,18 +5,20 @@ import "./index.css"
 import { sortBy } from "lodash"
 
 import { FlexedDiv, Text } from "./common"
+import Menu from "./menu"
 import icon from "../images/icon-non-transparent.jpg"
+import hamburger from "../images/hamburger.png"
 import colors from "../lib/colors"
 
 export default class Header extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = { displayMenu: false }
   }
 
   render() {
     const { showFilters, filterOptions, filterBy, reset } = this.props
-    const { displayOptionsFor } = this.state
+    const { displayMenu, displayOptionsFor } = this.state
 
     const color = attr =>
       displayOptionsFor === attr || filterBy[attr] ? colors.orange : colors.blue
@@ -48,7 +50,7 @@ export default class Header extends React.Component {
       <StyledHeader style={{ backgroundColor: "white" }}>
         <Line />
 
-        <Link to="/">
+        <Link style={{ height: "75%" }} to="/">
           <Icon
             onClick={() => {
               if (reset) reset()
@@ -120,6 +122,17 @@ export default class Header extends React.Component {
             </FilterBox>
           </Filters>
         )}
+
+        <HamburgerIcon
+          onClick={() => this.setState({ displayMenu: !displayMenu })}
+          onMouseOver={() => this.setState({ displayMenu: true })}
+          alt="menu"
+          src={hamburger}
+        />
+
+        {displayMenu && (
+          <Menu onMouseLeave={() => this.setState({ displayMenu: false })} />
+        )}
       </StyledHeader>
     )
   }
@@ -128,13 +141,17 @@ export default class Header extends React.Component {
 const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
-  margin-left: 80px;
+  margin: 0 80px;
   border-left: 3px solid rgb(21, 126, 251);
+  border-right: 3px solid rgb(21, 126, 251);
   position: absolute;
   left: 4px;
   right: 0;
   top: 0;
-  height: 63px;
+  height: 100%;
+  @media (max-width: 600px) {
+    margin: 0 52px 0 60px;
+  }
 `
 
 const StyledHeader = styled.header`
@@ -143,11 +160,13 @@ const StyledHeader = styled.header`
   display: flex;
   align-items: center;
   position: relative;
+  @media (max-width: 600px) {
+    height: 50px;
+  }
 `
 
 const Line = styled.div`
   position: absolute;
-  border-radius: 5px;
   width: 100%;
   left: 0;
   height: 3px;
@@ -217,15 +236,18 @@ const Dropdown = styled.div`
   width: 100%;
   z-index: 100;
   position: absolute;
-  top: 60px;
+  top: 62px;
   left: 0;
   max-height: 500px;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  border-top-width: 0px;
   @media (max-width: 600px) {
     padding: 0px;
+    top: 47px;
     grid-template-columns: 1fr;
     overflow: scroll;
-    border-width: 3px 0;
+    border-width: 0 0 3px 0;
     width: 100vw;
     left: 0;
     max-height: none;
@@ -235,11 +257,19 @@ const Dropdown = styled.div`
 `
 
 const Icon = styled.img`
-  width: 75px;
-  height: auto;
+  width: auto;
+  height: 80%;
   cursor: pointer;
   position: absolute;
-  top: 5px;
   left: 5px;
+  z-index: 500;
+`
+
+const HamburgerIcon = styled.img`
+  width: auto;
+  height: 80%;
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
   z-index: 500;
 `

@@ -344,6 +344,10 @@ const ResultsBox = styled.div`
   object-fit: contain;
   position: fixed;
   top: 62px;
+  @media (max-width: 600px) {
+    height: calc(100% - 47px);
+    top: 47px;
+  }
 `
 
 const ResultBox = styled.div`
