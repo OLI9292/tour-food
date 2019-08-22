@@ -1,5 +1,5 @@
 import * as geolib from "geolib"
-import { groupBy, countBy, sortBy } from "lodash"
+import { groupBy, countBy, sortBy, isNaN } from "lodash"
 
 const BASE_GEOCODING_URL =
   "https://maps.googleapis.com/maps/api/geocode/json?address="
@@ -23,6 +23,8 @@ const cleanRow = row =>
       return str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
     })
 
+const LOG_ERRORS = false
+
 export const parseRow = (row, idx) => {
   try {
     const data = cleanRow(row)
@@ -45,14 +47,25 @@ export const parseRow = (row, idx) => {
 
     attributes.forEach(attr => {
       if (!result[attr]) {
-        console.log(`ERR: row ${idx + 1} missing field ${attr}: ${row}`)
+        if (LOG_ERRORS) {
+          console.log(`ERR: row ${idx + 1} missing field ${attr}: ${row}`)
+        }
         return
       }
     })
 
+    if (["latitude", "longitude"].some(attr => isNaN(result[attr]))) {
+      if (LOG_ERRORS) {
+        console.log(`ERR: row ${idx + 1} invalid lat/lng: ${row}`)
+      }
+      return
+    }
+
     return result
   } catch (error) {
-    console.log(`ERR: failed to parse row ${idx + 1}: ${row}`)
+    if (LOG_ERRORS) {
+      console.log(`ERR: failed to parse row ${idx + 1}: ${row}`)
+    }
   }
 }
 

@@ -31,30 +31,51 @@ export const Header = styled.h2`
 `
 
 export const SearchBoxes = styled.div`
+  height: calc(100vh - 130px);
+  width: 100vw;
+  justify-content: center;
   text-align: center;
+  flex-direction: row;
   display: flex;
-  flex-direction: column;
-  object-fit: contain;
-  position: fixed;
-  top: 80px;
-  bottom: 5px;
-  left: 10px;
-  right: 10px;
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `
 
 export const SearchBox = styled.div`
-  flex: 7;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 50%;
   cursor: pointer;
+  justify-content: center;
+  @media (max-width: 900px) {
+    height: 50%;
+    width: 100%;
+  }
 `
 
-export const Image = styled.div`
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  flex: 1;
+// export const Image = styled.div`
+//   background-size: contain;
+//   background-position: center;
+//   background-repeat: no-repeat;
+//   flex: 1;
+// `
+
+export const Image = styled.img`
+  width: 100%;
+  height: auto;
+  padding: 0 40px;
+  box-sizing: border-box;
+  @media (max-width: 900px) {
+    padding: 15px 0;
+    height: calc(100% - 50px);
+    object-fit: contain;
+    width: auto;
+  }
+  @media (max-width: 375px) {
+    object-fit: cover;
+  }
 `
 
 export const Input = styled.input`

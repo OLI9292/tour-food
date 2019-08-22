@@ -20,6 +20,7 @@ import {
   GrayLine,
   Submit,
   Form,
+  FlexedDiv,
 } from "../components/common"
 
 import {
@@ -51,6 +52,7 @@ export default class IndexPage extends React.Component {
       locations: [],
       autocompleteOptions: [],
       autocompleteResults: [],
+      dataLoaded: false,
       // searchType: "destination",
       // locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
@@ -87,10 +89,17 @@ export default class IndexPage extends React.Component {
         )
 
         console.log("Data loaded.")
+
         const autocompleteOptions = uniq(
           locations.map(l => `${l.city}, ${l.state}`)
         )
-        this.setState({ locations, autocompleteOptions, timeout })
+
+        this.setState({
+          locations,
+          autocompleteOptions,
+          timeout,
+          dataLoaded: true,
+        })
       })
   }
 
@@ -319,6 +328,7 @@ export default class IndexPage extends React.Component {
       autocompleteResults,
       error,
       glow,
+      dataLoaded,
       inputLetter,
       isNetworking,
       locationA,
@@ -467,19 +477,20 @@ export default class IndexPage extends React.Component {
     )
 
     const selectSearchComponent = (
-      <SearchBoxes>
-        <SearchBox
-          style={{ marginBottom: "15px" }}
-          onClick={() => this.setState({ searchType: "route" })}
-        >
-          <Image style={{ backgroundImage: `url("${searchByRoute}")` }} />
-          {searchByRouteHeader}
-        </SearchBox>
+      <div>
+        <SearchBoxes>
+          <SearchBox onClick={() => this.setState({ searchType: "route" })}>
+            <Image src={searchByRoute} />
+            {searchByRouteHeader}
+          </SearchBox>
 
-        <SearchBox onClick={() => this.setState({ searchType: "destination" })}>
-          <Image style={{ backgroundImage: `url("${searchNearby}")` }} />
-          {searchNearbyHeader}
-        </SearchBox>
+          <SearchBox
+            onClick={() => this.setState({ searchType: "destination" })}
+          >
+            <Image src={searchNearby} />
+            {searchNearbyHeader}
+          </SearchBox>
+        </SearchBoxes>
 
         <div
           onClick={() => {
@@ -493,11 +504,21 @@ export default class IndexPage extends React.Component {
               state: { results: [], locations, filterBy },
             })
           }}
-          style={{ cursor: "pointer", flex: 1, marginTop: "10px" }}
+          style={{
+            cursor: "pointer",
+            position: "fixed",
+            bottom: 0,
+            width: "100vw",
+            boxSizing: "border-box",
+            textAlign: "center",
+            padding: "20px",
+          }}
         >
-          <Header style={{ color: "white", margin: 0 }}>VIEW ALL</Header>
+          {dataLoaded && (
+            <Header style={{ color: "white", margin: 0 }}>VIEW ALL</Header>
+          )}
         </div>
-      </SearchBoxes>
+      </div>
     )
 
     return (

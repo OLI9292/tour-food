@@ -26,11 +26,9 @@ export default class Menu extends Component {
 const Box = styled.div`
   line-height: 40px;
   min-width: 150px;
-  letter-spacing: 1px;
   border: 4px solid #157efb;
   background-color: white;
   position: absolute;
-  font-family: BrandonGrotesqueLight;
   padding: 10px;
   box-sizing: border-box;
   right: -4px;
@@ -42,7 +40,9 @@ const Box = styled.div`
   }
 `
 
-const StyledText = styled(Text)`
+export const StyledText = styled(Text)`
+  font-family: BrandonGrotesqueLight;
+  letter-spacing: 1px;
   cursor: pointer;
   &:hover {
     color: ${colors.orange};

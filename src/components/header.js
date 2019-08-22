@@ -5,7 +5,7 @@ import "./index.css"
 import { sortBy } from "lodash"
 
 import { FlexedDiv, Text } from "./common"
-import Menu from "./menu"
+import Menu, { StyledText } from "./menu"
 import icon from "../images/icon-non-transparent.jpg"
 import hamburger from "../images/hamburger.png"
 import colors from "../lib/colors"
@@ -13,12 +13,26 @@ import colors from "../lib/colors"
 export default class Header extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { displayMenu: false }
+    this.state = { displayMenu: false, isMobile: false }
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.resize.bind(this))
+    this.resize()
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.resize.bind(this))
+  }
+
+  resize() {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 900
+    this.setState({ isMobile })
   }
 
   render() {
     const { showFilters, filterOptions, filterBy, reset } = this.props
-    const { displayMenu, displayOptionsFor } = this.state
+    const { isMobile, displayMenu, displayOptionsFor } = this.state
 
     const color = attr =>
       displayOptionsFor === attr || filterBy[attr] ? colors.orange : colors.blue
@@ -123,14 +137,28 @@ export default class Header extends React.Component {
           </Filters>
         )}
 
-        <HamburgerIcon
-          onClick={() => this.setState({ displayMenu: !displayMenu })}
-          onMouseOver={() => this.setState({ displayMenu: true })}
-          alt="menu"
-          src={hamburger}
-        />
+        {isMobile ? (
+          <HamburgerIcon
+            onClick={() => this.setState({ displayMenu: !displayMenu })}
+            onMouseOver={() => this.setState({ displayMenu: true })}
+            alt="menu"
+            src={hamburger}
+          />
+        ) : (
+          <div style={{ position: "absolute", right: 0, display: "flex" }}>
+            <Link style={{ textDecoration: "none" }} to="/about">
+              <StyledText style={{ marginRight: "20px" }}>About</StyledText>
+            </Link>
+            <Link style={{ textDecoration: "none" }} to="/faq">
+              <StyledText style={{ marginRight: "20px" }}>FAQ</StyledText>
+            </Link>
+            <Link style={{ textDecoration: "none" }} to="/contact">
+              <StyledText style={{ marginRight: "10px" }}>Contact</StyledText>
+            </Link>
+          </div>
+        )}
 
-        {displayMenu && (
+        {displayMenu && isMobile && (
           <Menu onMouseLeave={() => this.setState({ displayMenu: false })} />
         )}
       </StyledHeader>
@@ -142,7 +170,7 @@ const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
   margin: 0 80px;
-  margin: 0 66px 0 76px;
+  margin: 0 235px 0 76px;
   border-left: 3px solid rgb(21, 126, 251);
   border-right: 3px solid rgb(21, 126, 251);
   position: absolute;
@@ -150,6 +178,9 @@ const Filters = styled(FlexedDiv)`
   right: 0;
   top: 0;
   height: 100%;
+  @media (max-width: 900px) {
+    margin: 0 66px 0 76px;
+  }
   @media (max-width: 600px) {
     margin: 0 52px 0 60px;
   }
