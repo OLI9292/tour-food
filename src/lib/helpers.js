@@ -148,12 +148,14 @@ export const directions = (origin, destination, cb) => {
 
 // https://github.com/google-map-react/google-map-react/blob/master/API.md
 export const getBounds = results => {
+  let BUFFER = 0.05
+
   if (results.length === 1) {
     const { latitude, longitude } = results[0].location
 
     return {
-      nw: { lat: latitude + 0.1, lng: longitude - 0.1 },
-      se: { lat: latitude - 0.1, lng: longitude + 0.1 },
+      nw: { lat: latitude + BUFFER, lng: longitude - BUFFER },
+      se: { lat: latitude - BUFFER, lng: longitude + BUFFER },
     }
   }
 
@@ -165,9 +167,16 @@ export const getBounds = results => {
   const maxLong = Math.max(...longitudes)
   const minLong = Math.min(...longitudes)
 
+  const multiplier = Math.max(
+    Math.abs(maxLat - minLat),
+    Math.abs(maxLong - minLong),
+    1
+  )
+  BUFFER = Math.min(1, BUFFER * multiplier)
+
   return {
-    nw: { lat: maxLat, lng: minLong },
-    se: { lat: minLat, lng: maxLong },
+    nw: { lat: maxLat + BUFFER, lng: minLong - BUFFER },
+    se: { lat: minLat - BUFFER, lng: maxLong + BUFFER },
   }
 }
 

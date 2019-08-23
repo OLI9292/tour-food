@@ -316,9 +316,18 @@ export default class IndexPage extends React.Component {
           filterBy["state"] = autocompleteOption.state
         }
       }
-      console.log(filterBy)
 
-      const state = { description, results, locations, filterBy }
+      const state = {
+        description,
+        results,
+        locations,
+        filterBy,
+      }
+
+      if (addressA && addressB) {
+        state["route"] = { origin: addressA, destination: addressB }
+      }
+
       navigate("/results", { state })
     })
   }
@@ -343,13 +352,19 @@ export default class IndexPage extends React.Component {
     const isSearchingRoute = searchType === "route"
 
     const searchNearbyHeader = (
-      <Header color={searchType ? colors.orange : "white"}>
+      <Header
+        style={{ margin: "10px 0" }}
+        color={searchType ? colors.orange : "white"}
+      >
         search by location
       </Header>
     )
 
     const searchByRouteHeader = (
-      <Header color={searchType ? colors.blue : "white"}>
+      <Header
+        style={{ margin: "10px 0" }}
+        color={searchType ? colors.blue : "white"}
+      >
         search by route
       </Header>
     )
@@ -443,7 +458,7 @@ export default class IndexPage extends React.Component {
         )}
 
         {isNetworking ? (
-          <Text color={colors.gray}>Searching{".".repeat(seconds)}</Text>
+          <Text>Searching{".".repeat(seconds)}</Text>
         ) : (
           <Submit
             onClick={e => {

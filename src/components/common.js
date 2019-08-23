@@ -31,9 +31,10 @@ export const Header = styled.h2`
 `
 
 export const SearchBoxes = styled.div`
-  height: calc(100vh - 130px);
+  height: calc(100vh - 200px);
   width: 100vw;
   justify-content: center;
+  margin-top: 15px;
   text-align: center;
   flex-direction: row;
   display: flex;
@@ -55,26 +56,16 @@ export const SearchBox = styled.div`
   }
 `
 
-// export const Image = styled.div`
-//   background-size: contain;
-//   background-position: center;
-//   background-repeat: no-repeat;
-//   flex: 1;
-// `
-
 export const Image = styled.img`
   width: 100%;
   height: auto;
   padding: 0 40px;
   box-sizing: border-box;
   @media (max-width: 900px) {
-    padding: 15px 0;
+    padding: 5px 0;
     height: calc(100% - 50px);
     object-fit: contain;
     width: auto;
-  }
-  @media (max-width: 375px) {
-    object-fit: cover;
   }
 `
 
@@ -93,7 +84,7 @@ export const Input = styled.input`
 `
 
 export const GrayLine = styled.div`
-  background-color: ${p => (p.glow ? colors.red : colors.gray)};
+  background-color: ${p => (p.glow ? colors.red : "black")};
   transition: background-color 0.15s ease;
   height: 4px;
   border-radius: 5px;

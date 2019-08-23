@@ -13,6 +13,7 @@ import Marker from "../components/mapMarker"
 import colors from "../lib/colors"
 import { getBounds, getFilterOptions } from "../lib/helpers"
 
+import upArrow from "../images/icon-up-arrow.png"
 import searchByRouteSquare from "../images/search-by-route-square.png"
 import close from "../images/close.png"
 
@@ -45,7 +46,7 @@ export default class Results extends React.Component {
   componentDidMount() {
     console.log("Component mounting.")
     const state = parseProps(this.props)
-
+    console.log(state)
     this.setState(state, () => {
       const { filterBy, results, locations } = this.state
 
@@ -116,6 +117,10 @@ export default class Results extends React.Component {
       selected: undefined,
     })
 
+    this.scrollToTop()
+  }
+
+  scrollToTop() {
     const scrollBox = document.getElementById("scroll-box")
     if (scrollBox) scrollBox.scroll({ top: 0 })
   }
@@ -134,6 +139,7 @@ export default class Results extends React.Component {
       description,
       displayMap,
       filterOptions,
+      route,
       filterBy,
       selected,
     } = this.state
@@ -183,10 +189,16 @@ export default class Results extends React.Component {
           src={close}
         />
         <GoogleMapReact
+          resetBoundsOnResize={false}
           disableDefaultUI={true}
           bootstrapURLKeys={{ key: process.env.GATSBY_GOOGLE_API_KEY }}
           center={center}
+          yesIWantToUseGoogleMapApiInternals={true}
           zoom={zoom}
+          onGoogleApiLoaded={({ map, maps }) => {
+            if (!route) return
+            googleApiIsLoaded(map, maps, route.origin, route.destination)
+          }}
         >
           {results.map((r, idx) => (
             <Marker
@@ -203,6 +215,31 @@ export default class Results extends React.Component {
         </GoogleMapReact>
       </MapBox>
     ) : null
+
+    // https://github.com/google-map-react/google-map-react/issues/457
+    const googleApiIsLoaded = (map, maps, origin, destination) => {
+      console.log(origin, destination)
+      const directionsService = new maps.DirectionsService()
+      const directionsDisplay = new maps.DirectionsRenderer()
+
+      directionsService.route(
+        { origin, destination, travelMode: "DRIVING" },
+        (res, status) => {
+          if (status !== "OK") {
+            console.log("Directions request failed due to " + status)
+            return
+          }
+          directionsDisplay.setDirections(res)
+          const path = res.routes[0].overview_path
+          const routePolyline = new maps.Polyline({
+            path,
+            strokeColor: colors.blue,
+            strokeWeight: 2.5,
+          })
+          routePolyline.setMap(map)
+        }
+      )
+    }
 
     const result = (data, idx) => {
       const isSelected = isEqual(selected, data)
@@ -320,6 +357,8 @@ export default class Results extends React.Component {
             </Text>
           )}
 
+          <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
+
           <ScrollBox id="scroll-box">{(results || []).map(result)}</ScrollBox>
         </ResultsBox>
       </Box>
@@ -338,6 +377,20 @@ const ScrollBox = styled.div`
   padding: 0 10px;
   box-sizing: border-box;
   position: relative;
+`
+
+const GoUp = styled.img`
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 400;
+  width: 50px;
+  height: auto;
+  padding: 10px;
+  cursor: pointer;
+  @media (max-width: 600px) {
+    padding: 5px;
+  }
 `
 
 const ResultsBox = styled.div`
