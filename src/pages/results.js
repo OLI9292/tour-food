@@ -237,6 +237,7 @@ export default class Results extends React.Component {
             strokeWeight: 2.5,
           })
           routePolyline.setMap(map)
+          this.setState({ directionsDisplay })
         }
       )
     }

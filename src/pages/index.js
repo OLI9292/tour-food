@@ -39,9 +39,9 @@ const DATA_URL =
 
 const MAX_RESULTS = 75
 
-const MIN_DISTANCE_FROM_LOCATION = 25
-const MIN_DISTANCE_FROM_ROUTE = 30
-const REVOKE_GEOLOCATION_PERMISSION = true
+const REVOKE_GEOLOCATION_PERMISSION = false
+const RADII = [5, 10, 20].map(String)
+const DEFAULT_RADIUS_INDEX = 1
 
 export default class IndexPage extends React.Component {
   constructor(props) {
@@ -53,6 +53,7 @@ export default class IndexPage extends React.Component {
       autocompleteOptions: [],
       autocompleteResults: [],
       dataLoaded: false,
+      radius: RADII[DEFAULT_RADIUS_INDEX],
       // searchType: "destination",
       // locationA: "Brooklyn, NY",
       // locationB: "Austin, TX",
@@ -150,7 +151,7 @@ export default class IndexPage extends React.Component {
 
             return { location, distanceFromRoute }
           })
-          .filter(a => a.distanceFromRoute < MIN_DISTANCE_FROM_ROUTE)
+          .filter(a => a.distanceFromRoute < parseInt(this.state.radius))
           .sort(
             (a, b) =>
               parseFloat(a.distanceFromRoute) - parseFloat(b.distanceFromRoute)
@@ -188,7 +189,7 @@ export default class IndexPage extends React.Component {
             lng
           ),
         }))
-        .filter(a => a.distance < MIN_DISTANCE_FROM_LOCATION)
+        .filter(a => a.distance < parseInt(this.state.radius))
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
         .slice(0, MAX_RESULTS)
       cb(results, address)
@@ -243,7 +244,7 @@ export default class IndexPage extends React.Component {
       const { latitude, longitude } = position.coords
       // https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
       reverseGeocode(`${latitude},${longitude}`, address => {
-        if (!address) return
+        if (!address || this.state.locationA) return
         this.setState({ locationA: address })
       })
     }
@@ -344,6 +345,7 @@ export default class IndexPage extends React.Component {
       locationB,
       locations,
       searchType,
+      radius,
       seconds,
       selectedAutocomplete,
     } = this.state
@@ -457,8 +459,38 @@ export default class IndexPage extends React.Component {
           </div>
         )}
 
+        <FlexedDiv
+          style={{
+            fontFamily: "BrandonGrotesqueLight",
+            justifyContent: "space-between",
+            marginTop: "20px",
+            textAlign: "left",
+          }}
+        >
+          <Text small>Within</Text>
+          <FlexedDiv style={{ flexGrow: 1, justifyContent: "space-around" }}>
+            {RADII.map(r => (
+              <FlexedDiv style={{ justifyContent: "flex-end", flexGrow: 1 }}>
+                <input
+                  style={{ cursor: "pointer" }}
+                  onChange={e => this.setState({ radius: e.target.value })}
+                  checked={r === radius}
+                  type="radio"
+                  name={r}
+                  value={r}
+                />
+                <Text small style={{ marginLeft: "5px" }}>
+                  {r} miles
+                </Text>
+              </FlexedDiv>
+            ))}
+          </FlexedDiv>
+        </FlexedDiv>
+
         {isNetworking ? (
-          <Text>Searching{".".repeat(seconds)}</Text>
+          <Text style={{ marginTop: "15px" }}>
+            Searching{".".repeat(seconds)}
+          </Text>
         ) : (
           <Submit
             onClick={e => {
