@@ -433,7 +433,7 @@ const InnerResultBox = styled.div`
 `
 
 const MapBox = styled.div`
-  height: 50%;
+  height: 44vh;
   width: 100vw;
   margin-left: -10px;
   position: relative;

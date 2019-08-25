@@ -67,7 +67,7 @@ export default class IndexPage extends React.Component {
     this.requestLocation()
 
     if (REVOKE_GEOLOCATION_PERMISSION) {
-      // navigator.permissions.revoke({ name: "geolocation" })
+      navigator.permissions.revoke({ name: "geolocation" })
     }
 
     document.addEventListener("keydown", this.handleKeyDown, false)
