@@ -126,7 +126,11 @@ export const directions = (origin, destination, cb) => {
           start_location,
           end_address,
           end_location,
+          distance,
         } = data["routes"][0]["legs"][0]
+
+        // 100,000 meters ~= 60 miles
+        const isShortRoute = distance["value"] < 100000
 
         steps = steps
           .filter(step => step.distance.value > 1000)
@@ -137,11 +141,12 @@ export const directions = (origin, destination, cb) => {
           start_address.replace(", USA", ""),
           end_address.replace(", USA", ""),
           start_location,
-          end_location
+          end_location,
+          isShortRoute
         )
       } catch (error) {
         const message = `Could not find directions from ${origin} to ${destination}.`
-        cb(null, null, null, null, message)
+        cb(null, null, null, null, null, message)
       }
     })
     .catch(error => console.log(error))

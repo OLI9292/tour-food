@@ -233,6 +233,10 @@ export default class Results extends React.Component {
           const path = res.routes[0].overview_path
           const routePolyline = new maps.Polyline({
             path,
+            icons: [
+              { icon: { path: maps.SymbolPath.CIRCLE }, offset: "100%" },
+              { icon: { path: maps.SymbolPath.CIRCLE }, offset: "0%" },
+            ],
             strokeColor: colors.blue,
             strokeWeight: 2.5,
           })
@@ -347,9 +351,10 @@ export default class Results extends React.Component {
               small
               style={{
                 textAlign: "center",
-                padding: "8px 0",
+                padding: "8px",
                 width: "100vw",
                 marginLeft: "-10px",
+                boxSizing: "border-box",
                 color: "white",
                 backgroundColor: colors.blue,
               }}

@@ -84,13 +84,13 @@ export default class IndexPage extends React.Component {
         const locations = uniqBy(
           rows
             .split("\n")
+            .slice(1)
             .map(parseRow)
-            .filter(r => r)
-            .slice(1),
-          l => `${l.latitude} - ${l.longitude}`
+            .filter(r => r),
+          l => `${l.name} ${l.latitude} ${l.longitude}`
         )
 
-        console.log("Data loaded.")
+        console.log(`Data loaded: ${locations.length} locations.`)
 
         const autocompleteOptions = uniq(
           locations.map(l => `${l.city}, ${l.state}`)
@@ -129,9 +129,18 @@ export default class IndexPage extends React.Component {
     directions(
       locations[0],
       locations[1],
-      (steps, addressA, addressB, startLocation, endLocation, error) => {
+      (
+        steps,
+        addressA,
+        addressB,
+        startLocation,
+        endLocation,
+        isShortRoute,
+        error
+      ) => {
         if (!steps || error) return
         console.log(`Computing ${steps.length} steps.`)
+        const MIN_DISTANCE_FROM_ENDPOINT = isShortRoute ? 0 : 10
 
         const results = this.state.locations
           .map(location => {
@@ -174,7 +183,11 @@ export default class IndexPage extends React.Component {
 
             return { location, distance, distanceFromEnd }
           })
-          .filter(a => a.distance > 10 && a.distanceFromEnd > 10)
+          .filter(
+            a =>
+              a.distance > MIN_DISTANCE_FROM_ENDPOINT &&
+              a.distanceFromEnd > MIN_DISTANCE_FROM_ENDPOINT
+          )
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
           .slice(0, MAX_RESULTS)
 
