@@ -38,6 +38,7 @@ const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
 
 const MAX_RESULTS = 75
+const MIN_DISTANCE_FROM_LOCATION = 20
 
 const REVOKE_GEOLOCATION_PERMISSION = false
 const RADII = [5, 10, 20].map(String)
@@ -128,8 +129,8 @@ export default class IndexPage extends React.Component {
     directions(
       locations[0],
       locations[1],
-      (steps, addressA, addressB, startLocation, error) => {
-        if (!steps) return
+      (steps, addressA, addressB, startLocation, endLocation, error) => {
+        if (!steps || error) return
         console.log(`Computing ${steps.length} steps.`)
 
         const results = this.state.locations
@@ -156,8 +157,7 @@ export default class IndexPage extends React.Component {
             (a, b) =>
               parseFloat(a.distanceFromRoute) - parseFloat(b.distanceFromRoute)
           )
-          .slice(0, MAX_RESULTS)
-          .map(({ location, distanceFromRoute }) => {
+          .map(({ location }) => {
             const distance = distanceInMiles(
               location.latitude,
               location.longitude,
@@ -165,9 +165,18 @@ export default class IndexPage extends React.Component {
               startLocation.lng
             )
 
-            return { location, distance }
+            const distanceFromEnd = distanceInMiles(
+              location.latitude,
+              location.longitude,
+              endLocation.lat,
+              endLocation.lng
+            )
+
+            return { location, distance, distanceFromEnd }
           })
+          .filter(a => a.distance > 10 && a.distanceFromEnd > 10)
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+          .slice(0, MAX_RESULTS)
 
         cb(results, addressA, addressB)
       }
@@ -189,7 +198,7 @@ export default class IndexPage extends React.Component {
             lng
           ),
         }))
-        .filter(a => a.distance < parseInt(this.state.radius))
+        .filter(a => a.distance < MIN_DISTANCE_FROM_LOCATION)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
         .slice(0, MAX_RESULTS)
       cb(results, address)
@@ -456,36 +465,44 @@ export default class IndexPage extends React.Component {
             )}
 
             <GrayLine glow={glow === "locationB"} />
+
+            <FlexedDiv
+              style={{
+                fontFamily: "BrandonGrotesqueLight",
+                justifyContent: "space-between",
+                marginTop: "20px",
+                textAlign: "left",
+              }}
+            >
+              <Text small>Within</Text>
+              <FlexedDiv
+                style={{ flexGrow: 1, justifyContent: "space-around" }}
+              >
+                {RADII.map(r => (
+                  <FlexedDiv
+                    key={r}
+                    style={{
+                      justifyContent: "flex-end",
+                      flexGrow: 1,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => this.setState({ radius: r })}
+                  >
+                    <input
+                      checked={r === radius}
+                      type="radio"
+                      name={r}
+                      value={r}
+                    />
+                    <Text small style={{ marginLeft: "5px" }}>
+                      {r} miles
+                    </Text>
+                  </FlexedDiv>
+                ))}
+              </FlexedDiv>
+            </FlexedDiv>
           </div>
         )}
-
-        <FlexedDiv
-          style={{
-            fontFamily: "BrandonGrotesqueLight",
-            justifyContent: "space-between",
-            marginTop: "20px",
-            textAlign: "left",
-          }}
-        >
-          <Text small>Within</Text>
-          <FlexedDiv style={{ flexGrow: 1, justifyContent: "space-around" }}>
-            {RADII.map(r => (
-              <FlexedDiv style={{ justifyContent: "flex-end", flexGrow: 1 }}>
-                <input
-                  style={{ cursor: "pointer" }}
-                  onChange={e => this.setState({ radius: e.target.value })}
-                  checked={r === radius}
-                  type="radio"
-                  name={r}
-                  value={r}
-                />
-                <Text small style={{ marginLeft: "5px" }}>
-                  {r} miles
-                </Text>
-              </FlexedDiv>
-            ))}
-          </FlexedDiv>
-        </FlexedDiv>
 
         {isNetworking ? (
           <Text style={{ marginTop: "15px" }}>
@@ -561,9 +578,16 @@ export default class IndexPage extends React.Component {
             padding: "20px",
           }}
         >
-          {dataLoaded && (
-            <Header style={{ color: "white", margin: 0 }}>VIEW ALL</Header>
-          )}
+          <Header
+            style={{
+              color: "white",
+              margin: 0,
+              opacity: dataLoaded ? 1 : 0,
+              transition: "opacity 0.5s",
+            }}
+          >
+            VIEW ALL
+          </Header>
         </div>
       </div>
     )
