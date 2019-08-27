@@ -11,7 +11,7 @@ import { FlexedDiv, Text, Box } from "../components/common"
 import Marker from "../components/mapMarker"
 
 import colors from "../lib/colors"
-import { getBounds, getFilterOptions } from "../lib/helpers"
+import { getBounds, getFilterOptions, idForLocation } from "../lib/helpers"
 
 import upArrow from "../images/icon-up-arrow.png"
 import searchByRouteSquare from "../images/search-by-route-square.png"
@@ -128,7 +128,7 @@ export default class Results extends React.Component {
   selected(result) {
     this.setState({ selected: result, displayMap: true })
     const scrollBox = document.getElementById("scroll-box")
-    const element = document.getElementById(result.location.name)
+    const element = document.getElementById(idForLocation(result))
     if (!element || !scrollBox) return
     scrollBox.scroll({ top: element.offsetTop, behavior: "smooth" })
   }
@@ -207,7 +207,7 @@ export default class Results extends React.Component {
               lng={r.location.longitude}
               name={r.location.name}
               isSelected={
-                selected && selected.location.name === r.location.name
+                selected && idForLocation(selected) === idForLocation(r)
               }
               selected={() => this.selected(r)}
             />
@@ -251,7 +251,7 @@ export default class Results extends React.Component {
       return (
         <ResultBox
           highlight={isSelected}
-          id={data.location.name}
+          id={idForLocation(data)}
           key={idx}
           onClick={() => this.selected(data)}
         >

@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 
 import marker from "../images/marker.png"
+import blueMarker from "../images/marker-blue.png"
 import { MarkerImage } from "./common"
 
 export default class Marker extends Component {
@@ -12,7 +13,7 @@ export default class Marker extends Component {
         highlight={isSelected}
         onClick={this.props.selected.bind(this)}
         alt={`${name}-marker`}
-        src={marker}
+        src={isSelected ? blueMarker : marker}
       />
     )
   }

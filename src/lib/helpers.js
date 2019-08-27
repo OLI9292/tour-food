@@ -154,7 +154,7 @@ export const directions = (origin, destination, cb) => {
 
 // https://github.com/google-map-react/google-map-react/blob/master/API.md
 export const getBounds = results => {
-  let BUFFER = 0.05
+  let BUFFER = 0.02
 
   if (results.length === 1) {
     const { latitude, longitude } = results[0].location
@@ -250,3 +250,6 @@ export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
 
   return { filterOptions, filterBy }
 }
+
+export const idForLocation = result =>
+  `${result.location.name} ${result.location.latitude} ${result.location.longitude}`

@@ -125,6 +125,7 @@ export const MarkerImage = styled.img`
   height: auto;
   opacity: ${p => (p.highlight ? 1 : 0.5)};
   cursor: pointer;
+  z-index: ${p => (p.highlight ? 1000 : 50)};
 `
 
 export const Autocomplete = styled.div`

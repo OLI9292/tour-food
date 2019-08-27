@@ -37,7 +37,9 @@ import colors from "../lib/colors"
 const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
 
-const MAX_RESULTS = 75
+const MY_LOCATION_TEXT = "My Location - "
+const MAX_RESULTS_FROM_LOCATION = 100
+const MAX_RESULTS_FROM_ROUTE = 200
 const MIN_DISTANCE_FROM_LOCATION = 20
 
 const REVOKE_GEOLOCATION_PERMISSION = false
@@ -110,10 +112,11 @@ export default class IndexPage extends React.Component {
     document.removeEventListener("keydown", this.handleKeyDown, false)
   }
 
-  autocomplete(inputString, inputLetter) {
+  autocomplete(inputString = "", inputLetter = "A") {
+    const { autocompleteOptions, myLocation } = this.state
     inputString = inputString.toLowerCase()
-    const autocompleteResults = inputString.length
-      ? this.state.autocompleteOptions
+    let autocompleteResults = inputString.length
+      ? autocompleteOptions
           .filter(
             str =>
               str.toLowerCase().startsWith(inputString) &&
@@ -121,6 +124,7 @@ export default class IndexPage extends React.Component {
           )
           .slice(0, 4)
       : []
+    if (myLocation) autocompleteResults.unshift(myLocation)
     this.setState({ autocompleteResults, inputLetter })
   }
 
@@ -174,22 +178,10 @@ export default class IndexPage extends React.Component {
               startLocation.lng
             )
 
-            const distanceFromEnd = distanceInMiles(
-              location.latitude,
-              location.longitude,
-              endLocation.lat,
-              endLocation.lng
-            )
-
-            return { location, distance, distanceFromEnd }
+            return { location, distance }
           })
-          .filter(
-            a =>
-              a.distance > MIN_DISTANCE_FROM_ENDPOINT &&
-              a.distanceFromEnd > MIN_DISTANCE_FROM_ENDPOINT
-          )
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-          .slice(0, MAX_RESULTS)
+          .slice(0, MAX_RESULTS_FROM_ROUTE)
 
         cb(results, addressA, addressB)
       }
@@ -213,7 +205,7 @@ export default class IndexPage extends React.Component {
         }))
         .filter(a => a.distance < MIN_DISTANCE_FROM_LOCATION)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-        .slice(0, MAX_RESULTS)
+        .slice(0, MAX_RESULTS_FROM_LOCATION)
       cb(results, address)
     })
   }
@@ -250,7 +242,7 @@ export default class IndexPage extends React.Component {
     if (!isNumber(index)) return
 
     const state = { selectedAutocomplete: index }
-    const result = autocompleteResults[index]
+    const result = autocompleteResults[index].replace(MY_LOCATION_TEXT, "")
     state[inputLetter === "A" ? "locationA" : "locationB"] = result
     this.setState(state)
   }
@@ -267,7 +259,8 @@ export default class IndexPage extends React.Component {
       // https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
       reverseGeocode(`${latitude},${longitude}`, address => {
         if (!address || this.state.locationA) return
-        this.setState({ locationA: address })
+        this.setState({ myLocation: `${MY_LOCATION_TEXT}${address}` })
+        this.autocomplete()
       })
     }
 
@@ -420,19 +413,33 @@ export default class IndexPage extends React.Component {
 
           {inputLetter === "A" && autocompleteResults.length > 0 && (
             <Autocomplete>
-              {autocompleteResults.map((str, idx) => (
-                <Text
-                  key={idx}
-                  color={idx === selectedAutocomplete ? colors.orange : "black"}
-                  onClick={() =>
-                    this.setState({ locationA: str, autocompleteResults: [] })
-                  }
-                  style={{ margin: "8px 0", cursor: "pointer" }}
-                  small
-                >
-                  {str}
-                </Text>
-              ))}
+              {autocompleteResults.map((str, idx) => {
+                const isMyLocation = str.includes(MY_LOCATION_TEXT)
+
+                const color =
+                  idx === selectedAutocomplete
+                    ? colors.orange
+                    : isMyLocation
+                    ? colors.blue
+                    : "black"
+
+                return (
+                  <Text
+                    key={idx}
+                    color={color}
+                    onClick={() =>
+                      this.setState({
+                        locationA: str.replace(MY_LOCATION_TEXT, ""),
+                        autocompleteResults: [],
+                      })
+                    }
+                    style={{ margin: "8px 0", cursor: "pointer" }}
+                    small
+                  >
+                    {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
+                  </Text>
+                )
+              })}
             </Autocomplete>
           )}
 
@@ -456,24 +463,33 @@ export default class IndexPage extends React.Component {
 
             {inputLetter === "B" && autocompleteResults.length > 0 && (
               <Autocomplete>
-                {autocompleteResults.map((str, idx) => (
-                  <Text
-                    key={idx}
-                    onClick={() =>
-                      this.setState({
-                        locationB: str,
-                        autocompleteResults: [],
-                      })
-                    }
-                    color={
-                      idx === selectedAutocomplete ? colors.orange : "black"
-                    }
-                    style={{ margin: "8px 0", cursor: "pointer" }}
-                    small
-                  >
-                    {str}
-                  </Text>
-                ))}
+                {autocompleteResults.map((str, idx) => {
+                  const isMyLocation = str.includes(MY_LOCATION_TEXT)
+
+                  const color =
+                    idx === selectedAutocomplete
+                      ? colors.orange
+                      : isMyLocation
+                      ? colors.blue
+                      : "black"
+
+                  return (
+                    <Text
+                      key={idx}
+                      onClick={() =>
+                        this.setState({
+                          locationB: str.replace(MY_LOCATION_TEXT, ""),
+                          autocompleteResults: [],
+                        })
+                      }
+                      color={color}
+                      style={{ margin: "8px 0", cursor: "pointer" }}
+                      small
+                    >
+                      {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
+                    </Text>
+                  )
+                })}
               </Autocomplete>
             )}
 
@@ -532,8 +548,9 @@ export default class IndexPage extends React.Component {
                   autocompleteResults: [],
                   selectedAutocomplete: undefined,
                 }
-                state[`location${inputLetter}`] =
-                  autocompleteResults[selectedAutocomplete]
+                state[`location${inputLetter}`] = autocompleteResults[
+                  selectedAutocomplete
+                ].replace(MY_LOCATION_TEXT, "")
                 this.setState(state)
               } else {
                 this.search(locationA, locationB, locations, isSearchingRoute)
