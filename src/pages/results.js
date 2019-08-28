@@ -345,7 +345,7 @@ export default class Results extends React.Component {
       )
     }
 
-    const searchProps = window.searchProps
+    const searchProps = typeof window !== "undefined" && window.searchProps
 
     return (
       <Box>

@@ -269,11 +269,13 @@ export default class Search extends React.Component {
         miniature,
       } = this.props
 
-      window.searchProps = {
-        searchType,
-        autocompleteOptions,
-        myLocation,
-        locations,
+      if (typeof window !== "undefined") {
+        window.searchProps = {
+          searchType,
+          autocompleteOptions,
+          myLocation,
+          locations,
+        }
       }
 
       const state = {
