@@ -22,7 +22,7 @@ export default class ContactPage extends React.Component {
       <Box>
         <SEO title="Contact" />
 
-        <HeaderComponent siteTitle="Tour Food" />
+        <HeaderComponent searchProps={{}} siteTitle="Tour Food" />
 
         <Header
           style={{ textAlign: "center", marginTop: "40px" }}

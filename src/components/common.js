@@ -77,16 +77,21 @@ export const Input = styled.input`
   border: 0;
   ::placeholder {
     color: ${colors.gray};
+    text-overflow: ellipsis;
   }
   font-weight: 600;
-  font-size: 1.2em;
+  font-size: ${p => (p.miniature ? 1 : 1.2)}em;
   display: block;
+  @media (max-width: 600px) {
+    font-size: ${p => (p.miniature ? 0.8 : 1.2)}em;
+  }
 `
 
 export const GrayLine = styled.div`
   background-color: ${p => (p.glow ? colors.red : "black")};
   transition: background-color 0.15s ease;
   height: 4px;
+  height: ${p => (p.miniature ? 2 : 4)}px;
   border-radius: 5px;
   width: 100%;
 `
@@ -112,10 +117,49 @@ export const Submit = styled.input`
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
 `
 
+export const SubmitIcon = styled.img`
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
+  margin: 0 5px;
+  width: 45px;
+  height: 45px;
+  background-color: ${p => (p.isNetworking ? colors.orange : colors.blue)};
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 500;
+  box-sizing: border-box;
+  cursor: pointer;
+  @media (max-width: 600px) {
+    font-size: 0.95em;
+    width: 35px;
+    height: 35px;
+  }
+`
+
+export const InputBox = styled.div`
+  margin: ${p => (p.miniature ? 0 : "20px 0")};
+  position: relative;
+  @media (min-width: 600px) {
+    margin-left: ${p => (p.miniature && p.destination ? 10 : 0)}px;
+  }
+`
+
+export const InputBoxes = styled.div`
+  height: ${p => p.miniature && "100%"};
+  @media (min-width: 600px) {
+    display: ${p => p.miniature && "flex"};
+    align-items: ${p => p.miniature && "center"};
+  }
+`
+
 export const Form = styled.form`
+  flex: 2;
   text-align: center;
   width: 320px;
-  margin: 0 auto;
+  margin: ${p => (p.miniature ? "0 5px" : "0 auto")};
+  height: ${p => p.miniature && "100%"};
+  display: ${p => (p.miniature ? "flex" : "inline-block")};
+  align-items: ${p => p.miniature && "center"};
+  justify-content: ${p => p.miniature && "space-around"};
 `
 
 export const MarkerImage = styled.img`
@@ -137,6 +181,6 @@ export const Autocomplete = styled.div`
   border-radius: 0 0 5px 5px;
   text-align: left;
   padding: 0 10px;
-  z-index: 500;
+  z-index: 100000;
   box-sizing: border-box;
 `
