@@ -13,7 +13,7 @@ export default class FAQPage extends React.Component {
       <Box>
         <SEO title="FAQ" />
 
-        <HeaderComponent siteTitle="Tour Food" />
+        <HeaderComponent searchProps={{}} siteTitle="Tour Food" />
 
         <Header
           style={{ textAlign: "center", marginTop: "40px" }}

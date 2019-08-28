@@ -4,6 +4,7 @@ import { Link } from "gatsby"
 import "./index.css"
 import { sortBy } from "lodash"
 
+import Search from "./search"
 import { FlexedDiv, Text } from "./common"
 import Menu, { StyledText } from "./menu"
 import icon from "../images/icon-non-transparent.jpg"
@@ -31,7 +32,17 @@ export default class Header extends React.Component {
   }
 
   render() {
-    const { showFilters, filterOptions, filterBy, reset } = this.props
+    const {
+      showFilters,
+      filterOptions,
+      filterBy,
+      reset,
+      searchType,
+      locations,
+      autocompleteOptions,
+      myLocation,
+    } = this.props
+
     const { isMobile, displayMenu, displayOptionsFor } = this.state
 
     const color = attr =>
@@ -60,6 +71,84 @@ export default class Header extends React.Component {
       </Dropdown>
     )
 
+    const filters = () => (
+      <Filters>
+        {searchType && (
+          <Search
+            reset={this.props.reset.bind(this)}
+            autocompleteOptions={autocompleteOptions}
+            locations={locations}
+            myLocation={myLocation}
+            miniature={true}
+            searchType={searchType}
+          />
+        )}
+
+        {!searchType && (
+          <FilterBox
+            onMouseOver={() => {
+              if (!filterBy["state"]) {
+                this.setState({ displayOptionsFor: "state" })
+              }
+            }}
+            onClick={() => {
+              this.setState({ displayOptionsFor: undefined })
+              if (filterBy["state"]) this.props.filter("state", undefined)
+            }}
+          >
+            <FilterHeader color={color("state")}>
+              {filterBy["state"] || "State"}
+            </FilterHeader>
+            <Triangle color={color("state")} />
+            {displayOptionsFor === "state" && dropdown("state")}
+          </FilterBox>
+        )}
+
+        {!searchType && (
+          <FilterBox
+            onMouseOver={() => {
+              if (!filterBy["city"]) {
+                this.setState({ displayOptionsFor: "city" })
+              }
+            }}
+            onClick={() => {
+              this.setState({ displayOptionsFor: undefined })
+              if (filterBy["city"]) this.props.filter("city", undefined)
+            }}
+            style={{
+              borderLeft: `1px solid ${colors.gray}`,
+            }}
+          >
+            <FilterHeader color={color("city")}>
+              {filterBy["city"] || "City"}
+            </FilterHeader>
+            <Triangle color={color("city")} />
+            {displayOptionsFor === "city" &&
+              dropdown("city", filterOptions.cities)}
+          </FilterBox>
+        )}
+
+        <FilterBox
+          onMouseOver={() => {
+            if (!filterBy["tag"]) {
+              this.setState({ displayOptionsFor: "tag" })
+            }
+          }}
+          style={{ borderLeft: `1px solid ${colors.gray}` }}
+          onClick={() => {
+            this.setState({ displayOptionsFor: undefined })
+            if (filterBy["tag"]) this.props.filter("tag", undefined)
+          }}
+        >
+          <FilterHeader color={color("tag")}>
+            {filterBy["tag"] || "Tag"}
+          </FilterHeader>
+          <Triangle color={color("tag")} />
+          {displayOptionsFor === "tag" && dropdown("tag")}
+        </FilterBox>
+      </Filters>
+    )
+
     return (
       <StyledHeader style={{ backgroundColor: "white" }}>
         <Line />
@@ -74,68 +163,7 @@ export default class Header extends React.Component {
           />
         </Link>
 
-        {showFilters && filterBy && (
-          <Filters>
-            <FilterBox
-              onMouseOver={() => {
-                if (!filterBy["state"]) {
-                  this.setState({ displayOptionsFor: "state" })
-                }
-              }}
-              onClick={() => {
-                this.setState({ displayOptionsFor: undefined })
-                if (filterBy["state"]) this.props.filter("state", undefined)
-              }}
-            >
-              <FilterHeader color={color("state")}>
-                {filterBy["state"] || "State"}
-              </FilterHeader>
-              <Triangle color={color("state")} />
-              {displayOptionsFor === "state" && dropdown("state")}
-            </FilterBox>
-
-            <FilterBox
-              onMouseOver={() => {
-                if (!filterBy["city"]) {
-                  this.setState({ displayOptionsFor: "city" })
-                }
-              }}
-              onClick={() => {
-                this.setState({ displayOptionsFor: undefined })
-                if (filterBy["city"]) this.props.filter("city", undefined)
-              }}
-              style={{
-                borderRight: `1px solid ${colors.gray}`,
-                borderLeft: `1px solid ${colors.gray}`,
-              }}
-            >
-              <FilterHeader color={color("city")}>
-                {filterBy["city"] || "City"}
-              </FilterHeader>
-              <Triangle color={color("city")} />
-              {displayOptionsFor === "city" &&
-                dropdown("city", filterOptions.cities)}
-            </FilterBox>
-
-            <FilterBox
-              onMouseOver={() => {
-                if (!filterBy["tag"]) {
-                  this.setState({ displayOptionsFor: "tag" })
-                }
-              }}
-              onClick={() => {
-                this.setState({ displayOptionsFor: undefined })
-                if (filterBy["tag"]) this.props.filter("tag", undefined)
-              }}
-            >
-              <FilterHeader color={color("tag")}>
-                {filterBy["tag"] || "Tag"}
-              </FilterHeader>
-              <Triangle color={color("tag")} />
-              {displayOptionsFor === "tag" && dropdown("tag")}
-            </FilterBox>
-          </Filters>
-        )}
+        {showFilters && filterBy && filters()}
 
         {isMobile ? (
           <HamburgerIcon
@@ -232,6 +260,7 @@ const Triangle = styled.div`
 const FilterBox = styled(FlexedDiv)`
   justify-content: center;
   flex-grow: 1;
+  flex: 1;
   cursor: pointer;
   position: relative;
   height: 100%;

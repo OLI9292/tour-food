@@ -3,15 +3,15 @@ import styled from "styled-components"
 import GoogleMapReact from "google-map-react"
 import { fitBounds } from "google-map-react/utils"
 import { navigate } from "gatsby"
-import { isEqual } from "lodash"
+import { isEqual, get } from "lodash"
 
 import SEO from "../components/seo"
-import Header from "../components/header"
+import HeaderComponent from "../components/header"
 import { FlexedDiv, Text, Box } from "../components/common"
 import Marker from "../components/mapMarker"
 
 import colors from "../lib/colors"
-import { getBounds, getFilterOptions } from "../lib/helpers"
+import { getBounds, getFilterOptions, idForLocation } from "../lib/helpers"
 
 import upArrow from "../images/icon-up-arrow.png"
 import searchByRouteSquare from "../images/search-by-route-square.png"
@@ -44,9 +44,14 @@ export default class Results extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Component mounting.")
-    const state = parseProps(this.props)
-    console.log(state)
+    this.reset(this.props)
+  }
+
+  reset(props) {
+    if (!props) return
+
+    const state = parseProps(props)
+
     this.setState(state, () => {
       const { filterBy, results, locations } = this.state
 
@@ -59,7 +64,16 @@ export default class Results extends React.Component {
       } else if (!results.length) {
         this.filter()
       }
+
+      this.resetMap()
     })
+  }
+
+  resetMap() {
+    const { map, maps, route, routePolyline } = this.state
+    if (!map || !maps || !route) return
+    routePolyline.setMap(null)
+    this.drawRoute(map, maps, route.origin, route.destination)
   }
 
   filter(key, value) {
@@ -128,19 +142,48 @@ export default class Results extends React.Component {
   selected(result) {
     this.setState({ selected: result, displayMap: true })
     const scrollBox = document.getElementById("scroll-box")
-    const element = document.getElementById(result.location.name)
+    const element = document.getElementById(idForLocation(result))
     if (!element || !scrollBox) return
     scrollBox.scroll({ top: element.offsetTop, behavior: "smooth" })
   }
 
+  // https://github.com/google-map-react/google-map-react/issues/457
+  drawRoute(map, maps, origin, destination) {
+    const directionsService = new maps.DirectionsService()
+    const directionsDisplay = new maps.DirectionsRenderer()
+
+    directionsService.route(
+      { origin, destination, travelMode: "DRIVING" },
+      (res, status) => {
+        if (status !== "OK") {
+          console.log("Directions request failed due to " + status)
+          return
+        }
+        directionsDisplay.setDirections(res)
+        const path = res.routes[0].overview_path
+        const routePolyline = new maps.Polyline({
+          path,
+          icons: [
+            { icon: { path: maps.SymbolPath.CIRCLE }, offset: "100%" },
+            { icon: { path: maps.SymbolPath.CIRCLE }, offset: "0%" },
+          ],
+          strokeColor: colors.blue,
+          strokeWeight: 2.5,
+        })
+        routePolyline.setMap(map)
+        this.setState({ routePolyline })
+      }
+    )
+  }
+
   render() {
     const {
-      results,
       description,
       displayMap,
-      filterOptions,
-      route,
       filterBy,
+      filterOptions,
+      results,
+      route,
       selected,
     } = this.state
 
@@ -150,6 +193,7 @@ export default class Results extends React.Component {
       typeof window !== "undefined" && document.getElementById("map-box")
     const width = mapContainer ? mapContainer.clientWidth : 640
     const height = mapContainer ? mapContainer.clientHeight : 380
+
     const size = { width, height }
 
     let { center, zoom } = fitBounds(bounds, size)
@@ -189,15 +233,15 @@ export default class Results extends React.Component {
           src={close}
         />
         <GoogleMapReact
-          resetBoundsOnResize={false}
           disableDefaultUI={true}
           bootstrapURLKeys={{ key: process.env.GATSBY_GOOGLE_API_KEY }}
           center={center}
           yesIWantToUseGoogleMapApiInternals={true}
           zoom={zoom}
           onGoogleApiLoaded={({ map, maps }) => {
+            this.setState({ map, maps })
             if (!route) return
-            googleApiIsLoaded(map, maps, route.origin, route.destination)
+            this.drawRoute(map, maps, route.origin, route.destination)
           }}
         >
           {results.map((r, idx) => (
@@ -207,7 +251,7 @@ export default class Results extends React.Component {
               lng={r.location.longitude}
               name={r.location.name}
               isSelected={
-                selected && selected.location.name === r.location.name
+                selected && idForLocation(selected) === idForLocation(r)
               }
               selected={() => this.selected(r)}
             />
@@ -216,42 +260,12 @@ export default class Results extends React.Component {
       </MapBox>
     ) : null
 
-    // https://github.com/google-map-react/google-map-react/issues/457
-    const googleApiIsLoaded = (map, maps, origin, destination) => {
-      console.log(origin, destination)
-      const directionsService = new maps.DirectionsService()
-      const directionsDisplay = new maps.DirectionsRenderer()
-
-      directionsService.route(
-        { origin, destination, travelMode: "DRIVING" },
-        (res, status) => {
-          if (status !== "OK") {
-            console.log("Directions request failed due to " + status)
-            return
-          }
-          directionsDisplay.setDirections(res)
-          const path = res.routes[0].overview_path
-          const routePolyline = new maps.Polyline({
-            path,
-            icons: [
-              { icon: { path: maps.SymbolPath.CIRCLE }, offset: "100%" },
-              { icon: { path: maps.SymbolPath.CIRCLE }, offset: "0%" },
-            ],
-            strokeColor: colors.blue,
-            strokeWeight: 2.5,
-          })
-          routePolyline.setMap(map)
-          this.setState({ directionsDisplay })
-        }
-      )
-    }
-
     const result = (data, idx) => {
       const isSelected = isEqual(selected, data)
       return (
         <ResultBox
           highlight={isSelected}
-          id={data.location.name}
+          id={idForLocation(data)}
           key={idx}
           onClick={() => this.selected(data)}
         >
@@ -331,9 +345,16 @@ export default class Results extends React.Component {
       )
     }
 
+    const searchProps = window.searchProps
+
     return (
       <Box>
-        <Header
+        <HeaderComponent
+          reset={this.reset.bind(this)}
+          searchType={get(searchProps, "searchType")}
+          autocompleteOptions={get(searchProps, "autocompleteOptions")}
+          myLocation={get(searchProps, "myLocation")}
+          locations={get(searchProps, "locations")}
           showFilters={true}
           filterBy={filterBy}
           filter={this.filter.bind(this)}
@@ -437,6 +458,7 @@ const MapBox = styled.div`
   width: 100vw;
   margin-left: -10px;
   position: relative;
+  display: inline-table;
 `
 
 const CloseImage = styled.img`

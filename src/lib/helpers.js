@@ -23,7 +23,7 @@ const cleanRow = row =>
       return str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
     })
 
-const LOG_ERRORS = true
+const LOG_ERRORS = false
 
 export const parseRow = (row, idx) => {
   try {
@@ -79,10 +79,12 @@ export const geocode = (addressStr, cb) => {
 
       try {
         const result = data["results"][0]
+        console.log(result)
         const { lat, lng } = result["geometry"]["location"]
         const address = result["formatted_address"].replace(", USA", "")
         cb(lat, lng, address)
       } catch (error) {
+        console.log(error)
         cb(null, null, null, `Could not find ${addressStr}.`)
       }
     })
@@ -98,7 +100,6 @@ export const reverseGeocode = (latLng, cb) => {
 
       try {
         const result = data["results"][0]
-        const { lat, lng } = result["geometry"]["location"]
         const address = result["formatted_address"]
           .replace(", USA", "")
           .replace(/\d+$/, "")
@@ -120,17 +121,9 @@ export const directions = (origin, destination, cb) => {
       console.log(`Google API directions received.`)
 
       try {
-        let {
-          steps,
-          start_address,
-          start_location,
-          end_address,
-          end_location,
-          distance,
-        } = data["routes"][0]["legs"][0]
-
-        // 100,000 meters ~= 60 miles
-        const isShortRoute = distance["value"] < 100000
+        let { steps, start_address, start_location, end_address } = data[
+          "routes"
+        ][0]["legs"][0]
 
         steps = steps
           .filter(step => step.distance.value > 1000)
@@ -140,13 +133,11 @@ export const directions = (origin, destination, cb) => {
           steps,
           start_address.replace(", USA", ""),
           end_address.replace(", USA", ""),
-          start_location,
-          end_location,
-          isShortRoute
+          start_location
         )
       } catch (error) {
         const message = `Could not find directions from ${origin} to ${destination}.`
-        cb(null, null, null, null, null, message)
+        cb(null, null, null, message)
       }
     })
     .catch(error => console.log(error))
@@ -154,7 +145,7 @@ export const directions = (origin, destination, cb) => {
 
 // https://github.com/google-map-react/google-map-react/blob/master/API.md
 export const getBounds = results => {
-  let BUFFER = 0.05
+  let BUFFER = 0.02
 
   if (results.length === 1) {
     const { latitude, longitude } = results[0].location
@@ -250,3 +241,6 @@ export const getFilterOptions = (locations, filterBy, MAX_FILTER_OPTIONS) => {
 
   return { filterOptions, filterBy }
 }
+
+export const idForLocation = result =>
+  `${result.location.name} ${result.location.latitude} ${result.location.longitude}`
