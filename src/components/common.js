@@ -83,6 +83,7 @@ export const Input = styled.input`
   font-size: ${p => (p.miniature ? 1 : 1.2)}em;
   display: block;
   @media (max-width: 600px) {
+    margin: 0;
     font-size: ${p => (p.miniature ? 0.8 : 1.2)}em;
   }
 `
@@ -145,9 +146,13 @@ export const InputBox = styled.div`
 
 export const InputBoxes = styled.div`
   height: ${p => p.miniature && "100%"};
+  display: ${p => p.miniature && "flex"};
   @media (min-width: 600px) {
-    display: ${p => p.miniature && "flex"};
     align-items: ${p => p.miniature && "center"};
+  }
+  @media (max-width: 600px) {
+    justify-content: ${p => p.miniature && "center"};
+    flex-direction: ${p => p.miniature && "column"};
   }
 `
 
@@ -180,7 +185,7 @@ export const Autocomplete = styled.div`
   border: 3px solid ${colors.blue};
   border-radius: 0 0 5px 5px;
   text-align: left;
-  padding: 0 10px;
+  padding: 0 5px;
   z-index: 100000;
   box-sizing: border-box;
 `

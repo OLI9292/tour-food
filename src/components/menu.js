@@ -36,7 +36,7 @@ const Box = styled.div`
   z-index: 600;
   border: 2px solid ${colors.blue};
   @media (max-width: 600px) {
-    top: 47px;
+    top: 57px;
   }
 `
 

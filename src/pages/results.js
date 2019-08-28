@@ -393,6 +393,21 @@ export default class Results extends React.Component {
   }
 }
 
+const ResultsBox = styled.div`
+  height: calc(100% - 62px);
+  text-align: center;
+  display: flex;
+  padding: 0 10px;
+  flex-direction: column;
+  object-fit: contain;
+  position: fixed;
+  top: 62px;
+  @media (max-width: 600px) {
+    height: calc(100% - 57px);
+    top: 57px;
+  }
+`
+
 const ScrollBox = styled.div`
   width: 100%;
   margin: 0 auto;
@@ -417,21 +432,6 @@ const GoUp = styled.img`
   cursor: pointer;
   @media (max-width: 600px) {
     padding: 5px;
-  }
-`
-
-const ResultsBox = styled.div`
-  height: calc(100% - 62px);
-  text-align: center;
-  display: flex;
-  padding: 0 10px;
-  flex-direction: column;
-  object-fit: contain;
-  position: fixed;
-  top: 62px;
-  @media (max-width: 600px) {
-    height: calc(100% - 47px);
-    top: 47px;
   }
 `
 

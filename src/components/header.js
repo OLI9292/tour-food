@@ -221,7 +221,7 @@ const StyledHeader = styled.header`
   align-items: center;
   position: relative;
   @media (max-width: 600px) {
-    height: 50px;
+    height: 60px;
   }
 `
 
@@ -305,7 +305,7 @@ const Dropdown = styled.div`
   border-top-width: 0px;
   @media (max-width: 600px) {
     padding: 0px;
-    top: 47px;
+    top: 57px;
     grid-template-columns: 1fr;
     overflow: scroll;
     border-width: 0 0 3px 0;
@@ -319,10 +319,10 @@ const Dropdown = styled.div`
 
 const Icon = styled.img`
   width: auto;
-  height: 80%;
+  height: 70%;
   cursor: pointer;
   position: absolute;
-  left: 5px;
+  left: 3px;
   z-index: 500;
 `
 
