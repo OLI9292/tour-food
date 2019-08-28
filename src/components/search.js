@@ -225,7 +225,16 @@ export default class Search extends React.Component {
     }
   }
 
+  rescale() {
+    const scale = "scale(1)"
+    document.body.style.webkitTransform = scale
+    document.body.style.msTransform = scale
+    document.body.style.transform = scale
+  }
+
   search(locationA, locationB, locations, isSearchingRoute) {
+    this.rescale()
+
     if (!locationA) return this.glowInput("locationA")
     if (isSearchingRoute && !locationB) return this.glowInput("locationB")
     this.setState({ isNetworking: true, error: undefined })
