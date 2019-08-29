@@ -37,6 +37,7 @@ export default class Header extends React.Component {
       filterOptions,
       filterBy,
       reset,
+      route,
       searchType,
       locations,
       autocompleteOptions,
@@ -47,6 +48,8 @@ export default class Header extends React.Component {
 
     const color = attr =>
       displayOptionsFor === attr || filterBy[attr] ? colors.orange : colors.blue
+
+    const displaySearch = searchType === "route"
 
     const dropdown = (attr, options) => (
       <Dropdown
@@ -73,18 +76,19 @@ export default class Header extends React.Component {
 
     const filters = () => (
       <Filters>
-        {searchType && (
+        {displaySearch && (
           <Search
             reset={this.props.reset.bind(this)}
             autocompleteOptions={autocompleteOptions}
             locations={locations}
+            route={route}
             myLocation={myLocation}
             miniature={true}
             searchType={searchType}
           />
         )}
 
-        {!searchType && (
+        {!displaySearch && (
           <FilterBox
             onMouseOver={() => {
               if (!filterBy["state"]) {
@@ -104,7 +108,7 @@ export default class Header extends React.Component {
           </FilterBox>
         )}
 
-        {!searchType && (
+        {!displaySearch && (
           <FilterBox
             onMouseOver={() => {
               if (!filterBy["city"]) {
@@ -153,7 +157,17 @@ export default class Header extends React.Component {
       <StyledHeader style={{ backgroundColor: "white" }}>
         <Line />
 
-        <Link style={{ height: "75%" }} to="/">
+        <Link
+          style={{
+            height: "100%",
+            position: "absolute",
+            left: 0,
+            top: 0,
+            display: "flex",
+            alignItems: "center",
+          }}
+          to="/"
+        >
           <Icon
             onClick={() => {
               if (reset) reset()
@@ -207,10 +221,10 @@ const Filters = styled(FlexedDiv)`
   top: 0;
   height: 100%;
   @media (max-width: 900px) {
-    margin: 0 66px 0 76px;
+    margin: 0 66px 0 78px;
   }
   @media (max-width: 600px) {
-    margin: 0 52px 0 60px;
+    margin: 0 58px 0 72px;
   }
 `
 
@@ -305,7 +319,7 @@ const Dropdown = styled.div`
   border-top-width: 0px;
   @media (max-width: 600px) {
     padding: 0px;
-    top: 57px;
+    top: 59px;
     grid-template-columns: 1fr;
     overflow: scroll;
     border-width: 0 0 3px 0;
@@ -319,7 +333,7 @@ const Dropdown = styled.div`
 
 const Icon = styled.img`
   width: auto;
-  height: 70%;
+  height: 85%;
   cursor: pointer;
   position: absolute;
   left: 3px;

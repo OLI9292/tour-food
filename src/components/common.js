@@ -28,6 +28,9 @@ export const Header = styled.h2`
   font-family: BrandonGrotesqueBold;
   letter-spacing: 1.5px;
   margin: 10px 5px;
+  @media (max-width: 600px) {
+    font-size: 1.2em;
+  }
 `
 
 export const SearchBoxes = styled.div`
@@ -59,10 +62,8 @@ export const SearchBox = styled.div`
 export const Image = styled.img`
   width: 100%;
   height: auto;
-  padding: 0 40px;
-  box-sizing: border-box;
+  border-radius: 5px;
   @media (max-width: 900px) {
-    padding: 5px 0;
     height: calc(100% - 50px);
     object-fit: contain;
     width: auto;
@@ -75,9 +76,11 @@ export const Input = styled.input`
   width: 100%;
   font-family: BrandonGrotesqueLight;
   border: 0;
+  padding: 2px;
+  text-overflow: ellipsis;
   ::placeholder {
-    color: ${colors.gray};
     text-overflow: ellipsis;
+    color: ${colors.gray};
   }
   font-weight: 600;
   font-size: ${p => (p.miniature ? 1 : 1.2)}em;
@@ -153,6 +156,9 @@ export const InputBoxes = styled.div`
   @media (max-width: 600px) {
     justify-content: ${p => p.miniature && "center"};
     flex-direction: ${p => p.miniature && "column"};
+  }
+  @media (max-width: 400px) {
+    width: ${p => p.miniature && "100px"};
   }
 `
 

@@ -17,7 +17,7 @@ export default class AboutPage extends React.Component {
 
         <Header
           style={{ textAlign: "center", marginTop: "40px" }}
-          color={colors.orange}
+          color={colors.blue}
         >
           about
         </Header>

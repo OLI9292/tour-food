@@ -51,6 +51,7 @@ export default class Search extends React.Component {
   }
 
   componentDidMount() {
+    const { route } = this.props
     document.addEventListener("keydown", this.handleKeyDown, false)
 
     const timeout = setInterval(() => {
@@ -59,7 +60,14 @@ export default class Search extends React.Component {
       this.setState({ seconds })
     }, 1000)
 
-    this.setState({ timeout })
+    const state = { timeout }
+
+    if (route) {
+      state.locationA = route.origin
+      state.locationB = route.destination
+    }
+
+    this.setState(state)
   }
 
   componentWillUnmount() {
@@ -90,7 +98,7 @@ export default class Search extends React.Component {
       locations[0],
       locations[1],
       (steps, addressA, addressB, startLocation, error) => {
-        if (!steps || error) return
+        if (error) return this.setState({ error, isNetworking: false })
         console.log(`Computing ${steps.length} steps.`)
 
         const results = this.props.locations
@@ -138,7 +146,7 @@ export default class Search extends React.Component {
   async findNearLocation(locations, cb) {
     console.log("Find nearby:", locations[0])
     geocode(locations[0], (lat, lng, address, error) => {
-      if (error) return this.setState({ error })
+      if (error) return this.setState({ error, isNetworking: false })
 
       const results = this.props.locations
         .map(location => ({
@@ -175,6 +183,9 @@ export default class Search extends React.Component {
 
     const goUp = e.key.toLowerCase().includes("up")
     const goDown = e.key.toLowerCase().includes("down")
+    const submit = e.key.toLowerCase().includes("enter")
+
+    if (submit && this.props.miniature) return this.handleSubmit()
 
     if (autocompleteResults.length === 0 || (!goUp && !goDown)) return
 
@@ -195,7 +206,7 @@ export default class Search extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault()
+    if (e) e.preventDefault()
 
     const { locations, searchType } = this.props
 
@@ -278,12 +289,15 @@ export default class Search extends React.Component {
         miniature,
       } = this.props
 
+      const route = { origin: addressA, destination: addressB }
+
       if (typeof window !== "undefined") {
         window.searchProps = {
           searchType,
           autocompleteOptions,
           myLocation,
           locations,
+          route,
         }
       }
 
@@ -295,7 +309,7 @@ export default class Search extends React.Component {
       }
 
       addressA && addressB
-        ? (state["route"] = { origin: addressA, destination: addressB })
+        ? (state["route"] = route)
         : (state["location"] = addressA)
 
       miniature
@@ -324,10 +338,7 @@ export default class Search extends React.Component {
 
     const header = (
       <div style={{ margin: "40px 0" }}>
-        <Header
-          style={{ margin: "10px 0" }}
-          color={searchType ? colors.orange : "white"}
-        >
+        <Header style={{ margin: "10px 0" }} color={colors.blue}>
           search by {isSearchingDestination ? "location" : "route"}
         </Header>
       </div>
@@ -383,7 +394,7 @@ export default class Search extends React.Component {
         onClick={this.handleSubmit.bind(this)}
         type="submit"
         value="search"
-        color={isSearchingDestination ? colors.orange : colors.blue}
+        color={colors.blue}
       />
     )
 
@@ -404,7 +415,7 @@ export default class Search extends React.Component {
               }}
               value={locationA || ""}
               type="value"
-              autoFocus={true}
+              autoFocus={!miniature}
               placeholder={
                 isSearchingDestination
                   ? "Location (venue, city, etc.)"

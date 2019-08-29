@@ -19,15 +19,21 @@ import close from "../images/close.png"
 
 const MAX_FILTER_OPTIONS = 40
 
-const parseProps = props => {
-  if (!props.location.state) return
+const parseProps = (props, onlyFilterResults) => {
   let { locations, results, filterBy } = props.location.state
+
   if (results.length) locations = results.map(r => r.location)
+
+  if (onlyFilterResults) {
+    props.location.state.locations = locations
+  }
+
   const filterOptions = getFilterOptions(
     locations,
     filterBy,
     MAX_FILTER_OPTIONS
   )
+
   return Object.assign(props.location.state, filterOptions)
 }
 
@@ -48,9 +54,12 @@ export default class Results extends React.Component {
   }
 
   reset(props) {
-    if (!props) return
+    const searchProps = typeof window !== "undefined" && window.searchProps
+    if (!get(get(props, "location"), "state")) return navigate("/")
 
-    const state = parseProps(props)
+    const onlyFilterResults = get(searchProps, "searchType") === "route"
+    const state = parseProps(props, onlyFilterResults)
+    state.searchProps = searchProps
 
     this.setState(state, () => {
       const { filterBy, results, locations } = this.state
@@ -79,7 +88,9 @@ export default class Results extends React.Component {
   filter(key, value) {
     console.log(`Filter ${key} to ${value}.`)
     let { locations, filterBy } = this.state
+
     if (key) filterBy[key] = value
+
     if (key === "state" && value === undefined) filterBy["city"] = undefined
 
     if (key === "city" && !filterBy["state"]) {
@@ -185,6 +196,7 @@ export default class Results extends React.Component {
       results,
       route,
       selected,
+      searchProps,
     } = this.state
 
     const bounds = getBounds(results)
@@ -345,12 +357,11 @@ export default class Results extends React.Component {
       )
     }
 
-    const searchProps = typeof window !== "undefined" && window.searchProps
-
     return (
       <Box>
         <HeaderComponent
           reset={this.reset.bind(this)}
+          route={get(searchProps, "route")}
           searchType={get(searchProps, "searchType")}
           autocompleteOptions={get(searchProps, "autocompleteOptions")}
           myLocation={get(searchProps, "myLocation")}
@@ -403,8 +414,8 @@ const ResultsBox = styled.div`
   position: fixed;
   top: 62px;
   @media (max-width: 600px) {
-    height: calc(100% - 57px);
-    top: 57px;
+    height: calc(100% - 59px);
+    top: 59px;
   }
 `
 

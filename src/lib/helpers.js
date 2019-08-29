@@ -120,6 +120,8 @@ export const directions = (origin, destination, cb) => {
     .then(data => {
       console.log(`Google API directions received.`)
 
+      const errorMessage = `Could not find directions from ${origin} to ${destination}.`
+
       try {
         let { steps, start_address, start_location, end_address } = data[
           "routes"
@@ -129,6 +131,8 @@ export const directions = (origin, destination, cb) => {
           .filter(step => step.distance.value > 1000)
           .map(step => ({ start: step.start_location, end: step.end_location }))
 
+        if (!steps.length) return cb(null, null, null, null, errorMessage)
+
         cb(
           steps,
           start_address.replace(", USA", ""),
@@ -136,8 +140,8 @@ export const directions = (origin, destination, cb) => {
           start_location
         )
       } catch (error) {
-        const message = `Could not find directions from ${origin} to ${destination}.`
-        cb(null, null, null, message)
+        console.log(`Error: ${error}`)
+        cb(null, null, null, null, errorMessage)
       }
     })
     .catch(error => console.log(error))

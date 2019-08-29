@@ -48,6 +48,10 @@ export default class IndexPage extends React.Component {
       navigator.permissions.revoke({ name: "geolocation" })
     }
 
+    window.locations ? this.setData(window.locations) : this.loadData()
+  }
+
+  loadData() {
     fetch(DATA_URL)
       .then(res => res.text())
       .then(rows => {
@@ -59,19 +63,23 @@ export default class IndexPage extends React.Component {
             .filter(r => r),
           l => `${l.name} ${l.latitude} ${l.longitude}`
         )
-
-        console.log(`Data loaded: ${locations.length} locations.`)
-
-        const autocompleteOptions = uniq(
-          locations.map(l => `${l.city}, ${l.state}`)
-        )
-
-        this.setState({
-          locations,
-          autocompleteOptions,
-          dataLoaded: true,
-        })
+        window.locations = locations
+        this.setData(locations)
       })
+  }
+
+  setData(locations) {
+    console.log(`Data loaded: ${locations.length} locations.`)
+
+    const autocompleteOptions = uniq(
+      locations.map(l => `${l.city}, ${l.state}`)
+    )
+
+    this.setState({
+      locations,
+      autocompleteOptions,
+      dataLoaded: true,
+    })
   }
 
   requestLocation() {
@@ -87,8 +95,6 @@ export default class IndexPage extends React.Component {
       reverseGeocode(`${latitude},${longitude}`, address => {
         if (!address || this.state.locationA) return
         this.setState({ myLocation: `${MY_LOCATION_TEXT}${address}` })
-        console.log("TODO // this.autocomplete()")
-        // this.autocomplete()
       })
     }
 
@@ -135,10 +141,7 @@ export default class IndexPage extends React.Component {
           <SearchBox onClick={() => this.setState({ searchType: "route" })}>
             <Image src={searchByRoute} />
 
-            <Header
-              style={{ margin: "10px 0" }}
-              color={searchType ? colors.blue : "white"}
-            >
+            <Header style={{ margin: "10px 0" }} color={"white"}>
               search by route
             </Header>
           </SearchBox>
@@ -148,10 +151,7 @@ export default class IndexPage extends React.Component {
           >
             <Image src={searchNearby} />
 
-            <Header
-              style={{ margin: "10px 0" }}
-              color={searchType ? colors.orange : "white"}
-            >
+            <Header style={{ margin: "10px 0" }} color={"white"}>
               search by location
             </Header>
           </SearchBox>
@@ -207,6 +207,7 @@ export default class IndexPage extends React.Component {
           <Search
             autocompleteOptions={autocompleteOptions}
             locations={locations}
+            miniature={false}
             myLocation={myLocation}
             searchType={searchType}
           />
