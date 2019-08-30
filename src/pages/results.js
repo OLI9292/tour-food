@@ -86,6 +86,9 @@ export default class Results extends React.Component {
   }
 
   filter(key, value) {
+    // If it's a location search and the filter is tag
+    //   add to description
+    //   filter what is there
     console.log(`Filter ${key} to ${value}.`)
     let { locations, filterBy } = this.state
 
@@ -98,14 +101,29 @@ export default class Results extends React.Component {
       if (location) filterBy["state"] = location.state
     }
 
+    const filterTagsNearLocation =
+      this.state.description.includes(" near ") && key === "tag"
+
     locations = locations.filter(l =>
       Object.keys(filterBy).every(key => {
         if (!filterBy[key]) return true
-        return key === "tag"
-          ? l.tags
+
+        if (key === "tag") {
+          const matchesTag =
+            l.tags
               .map(s => s.toLowerCase())
               .indexOf(filterBy[key].toLowerCase()) > -1
-          : filterBy[key].toLowerCase() === l[key].toLowerCase()
+
+          if (!filterTagsNearLocation) return matchesTag
+          const nearLocation =
+            matchesTag &&
+            window.locationResults.some(
+              r => idForLocation(r) === idForLocation({ location: l })
+            )
+          return matchesTag && nearLocation
+        } else {
+          return filterBy[key].toLowerCase() === l[key].toLowerCase()
+        }
       })
     )
 
@@ -115,19 +133,24 @@ export default class Results extends React.Component {
       results.length === 1 ? "" : "s"
     } `
 
-    const stateOrCity = filterBy["state"] || filterBy["city"]
+    if (filterBy["tag"]) description += "for " + filterBy["tag"]
 
-    if (filterBy["tag"]) {
-      description += "for " + filterBy["tag"]
-      description += stateOrCity ? " " : ""
-    }
+    if (filterTagsNearLocation) {
+      description += ` near ${this.state.description.split("near")[1]}`
+    } else {
+      const stateOrCity = filterBy["state"] || filterBy["city"]
 
-    if (filterBy["state"] && filterBy["city"]) {
-      description += `in ${filterBy["city"]}, ${filterBy["state"]}`
-    } else if (filterBy["city"]) {
-      description += `in ${filterBy["city"]}`
-    } else if (filterBy["state"]) {
-      description += `in ${filterBy["state"]}`
+      if (filterBy["tag"]) {
+        description += stateOrCity ? " " : ""
+      }
+
+      if (filterBy["state"] && filterBy["city"]) {
+        description += `in ${filterBy["city"]}, ${filterBy["state"]}`
+      } else if (filterBy["city"]) {
+        description += `in ${filterBy["city"]}`
+      } else if (filterBy["state"]) {
+        description += `in ${filterBy["state"]}`
+      }
     }
 
     let { filterOptions } = getFilterOptions(
@@ -396,9 +419,10 @@ export default class Results extends React.Component {
             </Text>
           )}
 
-          <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
-
-          <ScrollBox id="scroll-box">{(results || []).map(result)}</ScrollBox>
+          <ScrollBox id="scroll-box">
+            <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
+            {(results || []).map(result)}
+          </ScrollBox>
         </ResultsBox>
       </Box>
     )
@@ -429,22 +453,22 @@ const ScrollBox = styled.div`
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   width: 100%;
-  padding: 0 10px;
   box-sizing: border-box;
   position: relative;
 `
 
 const GoUp = styled.img`
   position: fixed;
-  right: 5px;
+  right: 15px;
   bottom: 5px;
   z-index: 400;
   width: 50px;
   height: auto;
-  padding: 10px;
+  border-radius: 50px;
+  background-color: white;
   cursor: pointer;
-  @media (max-width: 650px) {
-    bottom: 75px;
+  @media (display-mode: browser) and (max-width: 650px) {
+    bottom: 20px;
   }
 `
 
@@ -455,6 +479,7 @@ const ResultBox = styled.div`
   background-color: ${p => p.highlight && colors.lightestGray};
   width: 100%;
   padding: 15px 0;
+  box-sizing: border-box;
 `
 
 const InnerResultBox = styled.div`

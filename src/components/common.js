@@ -44,6 +44,9 @@ export const SearchBoxes = styled.div`
   @media (max-width: 900px) {
     flex-direction: column;
   }
+  @media (display-mode: browser) and (max-width: 650px) {
+    height: calc(100vh - 200px);
+  }
 `
 
 export const SearchBox = styled.div`

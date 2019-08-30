@@ -18,12 +18,14 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `Tour Food`,
+        short_name: `Tour Food`,
         start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
-        display: `minimal-ui`,
+        background_color: `#FB6320`,
+        theme_color: `#157EFB`,
+        display: `fullscreen`,
+        icon: `src/images/icon.png`,
+        orientation: "portrait",
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality

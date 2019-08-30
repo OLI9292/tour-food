@@ -28,7 +28,6 @@ import {
 import iconRight from "../images/icon-right.png"
 
 const DEFAULT_RADIUS_INDEX = 1
-const MAX_RESULTS_FROM_LOCATION = 100
 const MIN_DISTANCE_FROM_LOCATION = 20
 const MY_LOCATION_TEXT = "My Location - "
 const RADII = [5, 10, 20].map(String)
@@ -154,7 +153,7 @@ export default class Search extends React.Component {
     geocode(locations[0], (lat, lng, address, error) => {
       if (error) return this.setError(error)
 
-      const results = this.props.locations
+      window.locationResults = this.props.locations
         .map(location => ({
           location,
           distance: distanceInMiles(
@@ -166,8 +165,8 @@ export default class Search extends React.Component {
         }))
         .filter(a => a.distance < MIN_DISTANCE_FROM_LOCATION)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-        .slice(0, MAX_RESULTS_FROM_LOCATION)
-      cb(results, address)
+
+      cb(window.locationResults, address)
     })
   }
 
@@ -517,7 +516,7 @@ export default class Search extends React.Component {
 
         {error && miniature ? errorComponent : inputs}
 
-        {submit}
+        {window.locations && submit}
 
         {!miniature && errorComponent}
       </Form>

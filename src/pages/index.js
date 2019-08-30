@@ -44,6 +44,8 @@ export default class IndexPage extends React.Component {
   componentDidMount() {
     this.requestLocation()
 
+    window.scrollTo(0, 1)
+
     if (REVOKE_GEOLOCATION_PERMISSION) {
       navigator.permissions.revoke({ name: "geolocation" })
     }
