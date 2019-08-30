@@ -222,8 +222,7 @@ export default class Results extends React.Component {
         style={{
           borderBottom: `3px solid ${colors.blue}`,
           padding: "8px 0",
-          width: "100vw",
-          marginLeft: "-10px",
+          width: "100%",
           cursor: "pointer",
           minHeight: "35px",
         }}
@@ -384,8 +383,7 @@ export default class Results extends React.Component {
               style={{
                 textAlign: "center",
                 padding: "8px",
-                width: "100vw",
-                marginLeft: "-10px",
+                width: "100%",
                 boxSizing: "border-box",
                 color: "white",
                 backgroundColor: colors.blue,
@@ -408,11 +406,11 @@ const ResultsBox = styled.div`
   height: calc(100% - 62px);
   text-align: center;
   display: flex;
-  padding: 0 10px;
   flex-direction: column;
   object-fit: contain;
   position: fixed;
   top: 62px;
+  width: 100%;
   @media (max-width: 600px) {
     height: calc(100% - 59px);
     top: 59px;
@@ -422,11 +420,12 @@ const ResultsBox = styled.div`
 const ScrollBox = styled.div`
   width: 100%;
   margin: 0 auto;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
-  width: 100vw;
-  margin-left: -10px;
+  width: 100%;
   padding: 0 10px;
   box-sizing: border-box;
   position: relative;
@@ -434,15 +433,15 @@ const ScrollBox = styled.div`
 
 const GoUp = styled.img`
   position: fixed;
-  right: 0;
-  bottom: 0;
+  right: 5px;
+  bottom: 5px;
   z-index: 400;
   width: 50px;
   height: auto;
   padding: 10px;
   cursor: pointer;
-  @media (max-width: 600px) {
-    padding: 5px;
+  @media (max-width: 650px) {
+    bottom: 75px;
   }
 `
 
@@ -451,8 +450,7 @@ const ResultBox = styled.div`
   margin-top: 10px;
   margin-bottom: 10px;
   background-color: ${p => p.highlight && colors.lightestGray};
-  width: 100vw;
-  margin-left: -10px;
+  width: 100%;
   padding: 15px 0;
 `
 
@@ -466,8 +464,7 @@ const InnerResultBox = styled.div`
 
 const MapBox = styled.div`
   height: 44vh;
-  width: 100vw;
-  margin-left: -10px;
+  width: 100%;
   position: relative;
   display: inline-table;
 `

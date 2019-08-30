@@ -96,7 +96,9 @@ export default class Header extends React.Component {
               }
             }}
             onClick={() => {
-              this.setState({ displayOptionsFor: undefined })
+              const updated =
+                displayOptionsFor === "state" ? undefined : "state"
+              this.setState({ displayOptionsFor: updated })
               if (filterBy["state"]) this.props.filter("state", undefined)
             }}
           >
@@ -116,7 +118,8 @@ export default class Header extends React.Component {
               }
             }}
             onClick={() => {
-              this.setState({ displayOptionsFor: undefined })
+              const updated = displayOptionsFor === "city" ? undefined : "city"
+              this.setState({ displayOptionsFor: updated })
               if (filterBy["city"]) this.props.filter("city", undefined)
             }}
             style={{
@@ -140,7 +143,8 @@ export default class Header extends React.Component {
           }}
           style={{ borderLeft: `1px solid ${colors.gray}` }}
           onClick={() => {
-            this.setState({ displayOptionsFor: undefined })
+            const updated = displayOptionsFor === "tag" ? undefined : "tag"
+            this.setState({ displayOptionsFor: updated })
             if (filterBy["tag"]) this.props.filter("tag", undefined)
           }}
         >
@@ -314,14 +318,14 @@ const Dropdown = styled.div`
   top: 62px;
   left: 0;
   max-height: 500px;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   border-top-width: 0px;
   @media (max-width: 600px) {
     padding: 0px;
     top: 59px;
     grid-template-columns: 1fr;
-    overflow: scroll;
     border-width: 0 0 3px 0;
     width: 100vw;
     left: 0;

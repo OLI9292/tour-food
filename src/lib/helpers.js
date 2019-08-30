@@ -149,7 +149,7 @@ export const directions = (origin, destination, cb) => {
 
 // https://github.com/google-map-react/google-map-react/blob/master/API.md
 export const getBounds = results => {
-  let BUFFER = 0.02
+  let BUFFER = 0.005
 
   if (results.length === 1) {
     const { latitude, longitude } = results[0].location

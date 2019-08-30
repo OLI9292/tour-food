@@ -136,12 +136,18 @@ export default class IndexPage extends React.Component {
     } = this.state
 
     const selectSearchComponent = (
-      <div>
+      <div
+        style={{
+          height: "calc(100vh - 60px)",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <SearchBoxes>
           <SearchBox onClick={() => this.setState({ searchType: "route" })}>
             <Image src={searchByRoute} />
 
-            <Header style={{ margin: "10px 0" }} color={"white"}>
+            <Header style={{ margin: 0, lineHeight: "40px" }} color={"white"}>
               search by route
             </Header>
           </SearchBox>
@@ -151,13 +157,13 @@ export default class IndexPage extends React.Component {
           >
             <Image src={searchNearby} />
 
-            <Header style={{ margin: "10px 0" }} color={"white"}>
+            <Header style={{ margin: 0, lineHeight: "40px" }} color={"white"}>
               search by location
             </Header>
           </SearchBox>
         </SearchBoxes>
 
-        <div
+        <Header
           onClick={() => {
             if (!locations.length) return
             const filterBy = {
@@ -170,26 +176,19 @@ export default class IndexPage extends React.Component {
             })
           }}
           style={{
-            cursor: "pointer",
-            position: "fixed",
-            bottom: 0,
-            width: "100vw",
-            boxSizing: "border-box",
             textAlign: "center",
-            padding: "20px",
+            lineHeight: "60px",
+            boxSizing: "border-box",
+            width: "100%",
+            cursor: "pointer",
+            color: "white",
+            margin: 0,
+            opacity: dataLoaded ? 1 : 0,
+            transition: "opacity 0.5s",
           }}
         >
-          <Header
-            style={{
-              color: "white",
-              margin: 0,
-              opacity: dataLoaded ? 1 : 0,
-              transition: "opacity 0.5s",
-            }}
-          >
-            VIEW ALL
-          </Header>
-        </div>
+          VIEW ALL
+        </Header>
       </div>
     )
 

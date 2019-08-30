@@ -24,7 +24,12 @@ export default class AboutPage extends React.Component {
 
         <Text
           small
-          style={{ padding: "10px 40px", fontFamily: "BrandonGrotesqueLight" }}
+          style={{
+            padding: "10px 40px",
+            fontFamily: "BrandonGrotesqueLight",
+            maxWidth: "900px",
+            margin: "0 auto",
+          }}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget
           feugiat diam. Integer in rhoncus odio. Suspendisse cursus quis tellus

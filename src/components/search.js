@@ -29,7 +29,6 @@ import iconRight from "../images/icon-right.png"
 
 const DEFAULT_RADIUS_INDEX = 1
 const MAX_RESULTS_FROM_LOCATION = 100
-const MAX_RESULTS_FROM_ROUTE = 200
 const MIN_DISTANCE_FROM_LOCATION = 20
 const MY_LOCATION_TEXT = "My Location - "
 const RADII = [5, 10, 20].map(String)
@@ -88,8 +87,16 @@ export default class Search extends React.Component {
           )
           .slice(0, 4)
       : []
-    if (myLocation) autocompleteResults.unshift(myLocation)
+    if (myLocation && inputString.length < 7) {
+      autocompleteResults.unshift(myLocation)
+    }
     this.setState({ autocompleteResults, inputLetter })
+  }
+
+  setError(error) {
+    clearTimeout(this.timeout)
+    const timeout = setTimeout(() => this.setState({ error: undefined }), 3500)
+    this.setState({ timeout, error, isNetworking: false })
   }
 
   async findAlongRoute(locations, cb) {
@@ -98,7 +105,7 @@ export default class Search extends React.Component {
       locations[0],
       locations[1],
       (steps, addressA, addressB, startLocation, error) => {
-        if (error) return this.setState({ error, isNetworking: false })
+        if (error) return this.setError(error)
         console.log(`Computing ${steps.length} steps.`)
 
         const results = this.props.locations
@@ -136,7 +143,6 @@ export default class Search extends React.Component {
             return { location, distance }
           })
           .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-          .slice(0, MAX_RESULTS_FROM_ROUTE)
 
         cb(results, addressA, addressB)
       }
@@ -146,7 +152,7 @@ export default class Search extends React.Component {
   async findNearLocation(locations, cb) {
     console.log("Find nearby:", locations[0])
     geocode(locations[0], (lat, lng, address, error) => {
-      if (error) return this.setState({ error, isNetworking: false })
+      if (error) return this.setError(error)
 
       const results = this.props.locations
         .map(location => ({
@@ -236,16 +242,7 @@ export default class Search extends React.Component {
     }
   }
 
-  rescale() {
-    const scale = "scale(1)"
-    document.body.style.webkitTransform = scale
-    document.body.style.msTransform = scale
-    document.body.style.transform = scale
-  }
-
   search(locationA, locationB, locations, isSearchingRoute) {
-    this.rescale()
-
     if (!locationA) return this.glowInput("locationA")
     if (isSearchingRoute && !locationB) return this.glowInput("locationB")
     this.setState({ isNetworking: true, error: undefined })
@@ -271,16 +268,6 @@ export default class Search extends React.Component {
       description += location
 
       const filterBy = { state: undefined, city: undefined, tag: undefined }
-
-      if (!isSearchingRoute) {
-        const autocompleteOption = locations.find(
-          l => `${l.city}, ${l.state}` === locationA
-        )
-        if (autocompleteOption) {
-          filterBy["city"] = autocompleteOption.city
-          filterBy["state"] = autocompleteOption.state
-        }
-      }
 
       const {
         autocompleteOptions,
@@ -381,6 +368,119 @@ export default class Search extends React.Component {
       </FlexedDiv>
     )
 
+    const inputs = (
+      <InputBoxes miniature={miniature}>
+        <InputBox miniature={miniature}>
+          <Input
+            miniature={miniature}
+            spellCheck={false}
+            onChange={e => {
+              const locationA = e.target.value
+              this.setState({ locationA }, () =>
+                this.autocomplete(locationA, "A")
+              )
+            }}
+            value={locationA || ""}
+            type="value"
+            autoFocus={!miniature}
+            placeholder={
+              isSearchingDestination
+                ? "Location (venue, city, etc.)"
+                : "From (venue, city, etc.)"
+            }
+          />
+
+          {inputLetter === "A" && autocompleteResults.length > 0 && (
+            <Autocomplete>
+              {autocompleteResults.map((str, idx) => {
+                const isMyLocation = str.includes(MY_LOCATION_TEXT)
+
+                const color =
+                  idx === selectedAutocomplete
+                    ? colors.orange
+                    : isMyLocation
+                    ? colors.blue
+                    : "black"
+
+                return (
+                  <Text
+                    key={idx}
+                    color={color}
+                    onClick={() =>
+                      this.setState({
+                        locationA: str.replace(MY_LOCATION_TEXT, ""),
+                        autocompleteResults: [],
+                      })
+                    }
+                    style={{ margin: "8px 0", cursor: "pointer" }}
+                    small
+                  >
+                    {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
+                  </Text>
+                )
+              })}
+            </Autocomplete>
+          )}
+
+          <GrayLine miniature={miniature} glow={glow === "locationA"} />
+        </InputBox>
+
+        {searchType === "route" && (
+          <InputBox destination={true} miniature={miniature}>
+            <Input
+              miniature={miniature}
+              spellCheck={false}
+              onChange={e => {
+                const locationB = e.target.value
+                this.setState({ locationB }, () =>
+                  this.autocomplete(locationB, "B")
+                )
+              }}
+              value={locationB || ""}
+              type="value"
+              placeholder="To..."
+            />
+
+            {inputLetter === "B" && autocompleteResults.length > 0 && (
+              <Autocomplete>
+                {autocompleteResults.map((str, idx) => {
+                  const isMyLocation = str.includes(MY_LOCATION_TEXT)
+
+                  const color =
+                    idx === selectedAutocomplete
+                      ? colors.orange
+                      : isMyLocation
+                      ? colors.blue
+                      : "black"
+
+                  return (
+                    <Text
+                      key={idx}
+                      onClick={() =>
+                        this.setState({
+                          locationB: str.replace(MY_LOCATION_TEXT, ""),
+                          autocompleteResults: [],
+                        })
+                      }
+                      color={color}
+                      style={{ margin: "8px 0", cursor: "pointer" }}
+                      small
+                    >
+                      {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
+                    </Text>
+                  )
+                })}
+              </Autocomplete>
+            )}
+
+            <GrayLine miniature={miniature} glow={glow === "locationB"} />
+
+            {!miniature && withinFilter}
+          </InputBox>
+        )}
+      </InputBoxes>
+    )
+
     const submit = miniature ? (
       <SubmitIcon
         isNetworking={isNetworking}
@@ -398,128 +498,28 @@ export default class Search extends React.Component {
       />
     )
 
+    const errorComponent = error && (
+      <Text
+        color={colors.red}
+        style={{
+          marginTop: miniature ? 0 : "15px",
+          fontSize: miniature ? "0.7em" : "1em",
+          flexGrow: miniature ? 1 : 0,
+        }}
+      >
+        {error}
+      </Text>
+    )
+
     return (
       <Form miniature={miniature}>
         {!miniature && header}
 
-        <InputBoxes miniature={miniature}>
-          <InputBox miniature={miniature}>
-            <Input
-              miniature={miniature}
-              spellCheck={false}
-              onChange={e => {
-                const locationA = e.target.value
-                this.setState({ locationA }, () =>
-                  this.autocomplete(locationA, "A")
-                )
-              }}
-              value={locationA || ""}
-              type="value"
-              autoFocus={!miniature}
-              placeholder={
-                isSearchingDestination
-                  ? "Location (venue, city, etc.)"
-                  : "From (venue, city, etc.)"
-              }
-            />
-
-            {inputLetter === "A" && autocompleteResults.length > 0 && (
-              <Autocomplete>
-                {autocompleteResults.map((str, idx) => {
-                  const isMyLocation = str.includes(MY_LOCATION_TEXT)
-
-                  const color =
-                    idx === selectedAutocomplete
-                      ? colors.orange
-                      : isMyLocation
-                      ? colors.blue
-                      : "black"
-
-                  return (
-                    <Text
-                      key={idx}
-                      color={color}
-                      onClick={() =>
-                        this.setState({
-                          locationA: str.replace(MY_LOCATION_TEXT, ""),
-                          autocompleteResults: [],
-                        })
-                      }
-                      style={{ margin: "8px 0", cursor: "pointer" }}
-                      small
-                    >
-                      {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
-                    </Text>
-                  )
-                })}
-              </Autocomplete>
-            )}
-
-            <GrayLine miniature={miniature} glow={glow === "locationA"} />
-          </InputBox>
-
-          {searchType === "route" && (
-            <InputBox destination={true} miniature={miniature}>
-              <Input
-                miniature={miniature}
-                spellCheck={false}
-                onChange={e => {
-                  const locationB = e.target.value
-                  this.setState({ locationB }, () =>
-                    this.autocomplete(locationB, "B")
-                  )
-                }}
-                value={locationB || ""}
-                type="value"
-                placeholder="To..."
-              />
-
-              {inputLetter === "B" && autocompleteResults.length > 0 && (
-                <Autocomplete>
-                  {autocompleteResults.map((str, idx) => {
-                    const isMyLocation = str.includes(MY_LOCATION_TEXT)
-
-                    const color =
-                      idx === selectedAutocomplete
-                        ? colors.orange
-                        : isMyLocation
-                        ? colors.blue
-                        : "black"
-
-                    return (
-                      <Text
-                        key={idx}
-                        onClick={() =>
-                          this.setState({
-                            locationB: str.replace(MY_LOCATION_TEXT, ""),
-                            autocompleteResults: [],
-                          })
-                        }
-                        color={color}
-                        style={{ margin: "8px 0", cursor: "pointer" }}
-                        small
-                      >
-                        {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
-                      </Text>
-                    )
-                  })}
-                </Autocomplete>
-              )}
-
-              <GrayLine miniature={miniature} glow={glow === "locationB"} />
-
-              {!miniature && withinFilter}
-            </InputBox>
-          )}
-        </InputBoxes>
+        {error && miniature ? errorComponent : inputs}
 
         {submit}
 
-        {error && (
-          <Text small color={colors.red} style={{ marginTop: "15px" }}>
-            {error}
-          </Text>
-        )}
+        {!miniature && errorComponent}
       </Form>
     )
   }

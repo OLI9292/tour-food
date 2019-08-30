@@ -16,7 +16,7 @@ export const Text = styled.p`
 
 export const Box = styled.div`
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -34,39 +34,47 @@ export const Header = styled.h2`
 `
 
 export const SearchBoxes = styled.div`
-  height: calc(100vh - 200px);
   width: 100vw;
   justify-content: center;
-  margin-top: 15px;
   text-align: center;
   flex-direction: row;
   display: flex;
+  height: calc(100vh - 120px);
+  align-items: center;
   @media (max-width: 900px) {
     flex-direction: column;
-    align-items: center;
   }
 `
 
 export const SearchBox = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
   cursor: pointer;
+  height: 100%;
+  width: 50%;
   justify-content: center;
   @media (max-width: 900px) {
-    height: 50%;
     width: 100%;
+    height: 50%;
   }
 `
-
+// export const Image = styled.img`
+//   width: 100%;
+//   height: auto;
+//   border-radius: 5px;
+//   @media (max-width: 900px) {
+//     object-fit: contain;
+//     width: auto;
+//   }
+// `
 export const Image = styled.img`
   width: 100%;
   height: auto;
-  border-radius: 5px;
+  margin-top: 5px;
+  object-fit: contain;
   @media (max-width: 900px) {
-    height: calc(100% - 50px);
-    object-fit: contain;
     width: auto;
+    height: calc(100% - 50px);
   }
 `
 
@@ -123,7 +131,7 @@ export const Submit = styled.input`
 
 export const SubmitIcon = styled.img`
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
-  margin: 0 5px;
+  margin: 0 10px 0 20px;
   width: 45px;
   height: 45px;
   background-color: ${p => (p.isNetworking ? colors.orange : colors.blue)};
@@ -133,6 +141,7 @@ export const SubmitIcon = styled.img`
   box-sizing: border-box;
   cursor: pointer;
   @media (max-width: 600px) {
+    margin: 0 5px 0 10px;
     font-size: 0.95em;
     width: 35px;
     height: 35px;
@@ -142,6 +151,8 @@ export const SubmitIcon = styled.img`
 export const InputBox = styled.div`
   margin: ${p => (p.miniature ? 0 : "20px 0")};
   position: relative;
+  max-width: 320px;
+  flex-grow: 1;
   @media (min-width: 600px) {
     margin-left: ${p => (p.miniature && p.destination ? 10 : 0)}px;
   }
@@ -149,6 +160,7 @@ export const InputBox = styled.div`
 
 export const InputBoxes = styled.div`
   height: ${p => p.miniature && "100%"};
+  flex-grow: ${p => p.miniature && 1};
   display: ${p => p.miniature && "flex"};
   @media (min-width: 600px) {
     align-items: ${p => p.miniature && "center"};
@@ -156,9 +168,6 @@ export const InputBoxes = styled.div`
   @media (max-width: 600px) {
     justify-content: ${p => p.miniature && "center"};
     flex-direction: ${p => p.miniature && "column"};
-  }
-  @media (max-width: 400px) {
-    width: ${p => p.miniature && "100px"};
   }
 `
 
