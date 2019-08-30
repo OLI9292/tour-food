@@ -102,8 +102,10 @@ export default class Results extends React.Component {
       Object.keys(filterBy).every(key => {
         if (!filterBy[key]) return true
         return key === "tag"
-          ? l.tags.indexOf(filterBy[key]) > -1
-          : filterBy[key] === l[key]
+          ? l.tags
+              .map(s => s.toLowerCase())
+              .indexOf(filterBy[key].toLowerCase()) > -1
+          : filterBy[key].toLowerCase() === l[key].toLowerCase()
       })
     )
 
@@ -249,6 +251,7 @@ export default class Results extends React.Component {
           center={center}
           yesIWantToUseGoogleMapApiInternals={true}
           zoom={zoom}
+          options={() => ({ gestureHandling: "greedy" })}
           onGoogleApiLoaded={({ map, maps }) => {
             this.setState({ map, maps })
             if (!route) return
