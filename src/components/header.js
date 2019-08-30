@@ -235,6 +235,7 @@ const Filters = styled(FlexedDiv)`
 const StyledHeader = styled.header`
   height: 65px;
   width: 100%;
+  z-index: 999999;
   display: flex;
   align-items: center;
   position: relative;
