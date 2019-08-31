@@ -102,7 +102,9 @@ export default class Results extends React.Component {
     }
 
     const filterTagsNearLocation =
-      this.state.description.includes(" near ") && key === "tag"
+      this.state.description.includes(" near ") &&
+      key === "tag" &&
+      filterBy["tag"]
 
     locations = locations.filter(l =>
       Object.keys(filterBy).every(key => {
@@ -420,7 +422,9 @@ export default class Results extends React.Component {
           )}
 
           <ScrollBox id="scroll-box">
-            <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
+            {results.length > 10 && (
+              <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
+            )}
             {(results || []).map(result)}
           </ScrollBox>
         </ResultsBox>

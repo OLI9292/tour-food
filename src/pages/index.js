@@ -44,8 +44,6 @@ export default class IndexPage extends React.Component {
   componentDidMount() {
     this.requestLocation()
 
-    window.scrollTo(0, 1)
-
     if (REVOKE_GEOLOCATION_PERMISSION) {
       navigator.permissions.revoke({ name: "geolocation" })
     }
@@ -87,7 +85,7 @@ export default class IndexPage extends React.Component {
   requestLocation() {
     // https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API/Using_the_Permissions_API
     if (!navigator) return
-    const permissions = navigator.permissions !== undefined
+    const hasPermissions = navigator.permissions !== undefined
     const options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
 
     const handlePosition = position => {
@@ -100,24 +98,18 @@ export default class IndexPage extends React.Component {
       })
     }
 
-    if (permissions) {
-      navigator.permissions.query({ name: "geolocation" }).then(result => {
-        // granted / prompt / denied
-        if (result.state === "denied") return
-
-        navigator.geolocation.getCurrentPosition(
-          handlePosition,
-          err => console.log(`ERR: ${err.message}`),
-          options
-        )
-      })
-    } else {
+    const getPostion = () =>
       navigator.geolocation.getCurrentPosition(
         handlePosition,
         err => console.log(`ERR: ${err.message}`),
         options
       )
-    }
+
+    hasPermissions
+      ? getPostion()
+      : navigator.permissions.query({ name: "geolocation" }).then(res => {
+          if (!res.state === "denied") getPostion()
+        })
   }
 
   reset() {
