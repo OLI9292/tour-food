@@ -102,7 +102,7 @@ export default class Results extends React.Component {
     }
 
     const filterTagsNearLocation =
-      this.state.description.includes(" near ") &&
+      (this.state.description || "").includes(" near ") &&
       key === "tag" &&
       filterBy["tag"]
 
