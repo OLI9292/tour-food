@@ -37,12 +37,14 @@ export default class IndexPage extends React.Component {
       autocompleteResults: [],
       dataLoaded: false,
       locations: [],
+      isLoading: true,
       // searchType: "route",
     }
   }
 
   componentDidMount() {
     this.requestLocation()
+    this.setState({ isLoading: false })
 
     if (REVOKE_GEOLOCATION_PERMISSION) {
       navigator.permissions.revoke({ name: "geolocation" })
@@ -185,6 +187,21 @@ export default class IndexPage extends React.Component {
         </Header>
       </div>
     )
+
+    if (this.state.isLoading) {
+      return (
+        <div
+          style={{
+            width: "100vw",
+            height: "100vh",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            backgroundColor: colors.orange,
+          }}
+        />
+      )
+    }
 
     return (
       <Box style={{ backgroundColor: searchType ? "white" : colors.orange }}>
