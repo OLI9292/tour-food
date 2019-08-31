@@ -106,10 +106,10 @@ export default class IndexPage extends React.Component {
       )
 
     hasPermissions
-      ? getPostion()
-      : navigator.permissions.query({ name: "geolocation" }).then(res => {
+      ? navigator.permissions.query({ name: "geolocation" }).then(res => {
           if (!res.state === "denied") getPostion()
         })
+      : getPostion()
   }
 
   reset() {
