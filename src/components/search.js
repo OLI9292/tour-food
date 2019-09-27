@@ -27,10 +27,10 @@ import {
 
 import iconRight from "../images/icon-right.png"
 
+const CAR_TO_CROW_RATIO = 0.75
 const DEFAULT_RADIUS_INDEX = 1
-const MIN_DISTANCE_FROM_LOCATION = 20
 const MY_LOCATION_TEXT = "My Location - "
-const RADII = [5, 10, 20].map(String)
+const RADII = [1, 5, 20].map(String)
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -41,8 +41,8 @@ export default class Search extends React.Component {
       inputLetter: "A",
       radius: RADII[DEFAULT_RADIUS_INDEX],
       seconds: 0,
-      // locationA: "Dallas, TX",
-      // locationB: "Fort Collins, CO",
+      locationA: "Dallas, TX",
+      locationB: "Fort Collins, CO",
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -94,12 +94,17 @@ export default class Search extends React.Component {
 
   setError(error) {
     clearTimeout(this.timeout)
-    const timeout = setTimeout(() => this.setState({ error: undefined }), 3500)
+    console.log("Set timeout.")
+    const timeout = setTimeout(() => {
+      console.log("Clear error.")
+      this.setState({ error: undefined })
+    }, 3500)
     this.setState({ timeout, error, isNetworking: false })
   }
 
   async findAlongRoute(locations, cb) {
     console.log("Find along route:", locations)
+    const APPROXIMATE_DRIVING_DISTANCE = this.state.radius * CAR_TO_CROW_RATIO
     directions(
       locations[0],
       locations[1],
@@ -126,7 +131,9 @@ export default class Search extends React.Component {
 
             return { location, distanceFromRoute }
           })
-          .filter(a => a.distanceFromRoute < parseInt(this.state.radius))
+          .filter(
+            a => a.distanceFromRoute < parseInt(APPROXIMATE_DRIVING_DISTANCE)
+          )
           .sort(
             (a, b) =>
               parseFloat(a.distanceFromRoute) - parseFloat(b.distanceFromRoute)
@@ -150,6 +157,7 @@ export default class Search extends React.Component {
 
   async findNearLocation(locations, cb) {
     console.log("Find nearby:", locations[0])
+    const APPROXIMATE_DRIVING_DISTANCE = this.state.radius * CAR_TO_CROW_RATIO
     geocode(locations[0], (lat, lng, address, error) => {
       if (error) return this.setError(error)
 
@@ -163,7 +171,7 @@ export default class Search extends React.Component {
             lng
           ),
         }))
-        .filter(a => a.distance < MIN_DISTANCE_FROM_LOCATION)
+        .filter(a => a.distance < APPROXIMATE_DRIVING_DISTANCE)
         .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
 
       cb(window.locationResults, address)
@@ -172,9 +180,9 @@ export default class Search extends React.Component {
 
   glowInput(glow) {
     if (this.state.glow) return
-    const error = `Please enter a ${
-      glow.includes("A") ? "location" : "destination"
-    }.`
+    const error = this.props.miniature
+      ? undefined
+      : `Please enter a ${glow.includes("A") ? "location" : "destination"}.`
     this.setState({ glow, error })
     setTimeout(() => this.setState({ glow: undefined }), 1000)
   }
@@ -271,6 +279,7 @@ export default class Search extends React.Component {
       const {
         autocompleteOptions,
         myLocation,
+        myLocationCoordinates,
         searchType,
         miniature,
       } = this.props
@@ -281,7 +290,6 @@ export default class Search extends React.Component {
         window.searchProps = {
           searchType,
           autocompleteOptions,
-          myLocation,
           locations,
           route,
         }
@@ -289,9 +297,11 @@ export default class Search extends React.Component {
 
       const state = {
         description,
-        results,
-        locations,
+        myLocation,
         filterBy,
+        locations,
+        myLocationCoordinates,
+        results,
       }
 
       addressA && addressB
@@ -371,6 +381,9 @@ export default class Search extends React.Component {
       <InputBoxes miniature={miniature}>
         <InputBox miniature={miniature}>
           <Input
+            onFocus={() => {
+              if (miniature) this.setState({ locationA: "" })
+            }}
             miniature={miniature}
             spellCheck={false}
             onChange={e => {
@@ -427,6 +440,9 @@ export default class Search extends React.Component {
         {searchType === "route" && (
           <InputBox destination={true} miniature={miniature}>
             <Input
+              onFocus={() => {
+                if (miniature) this.setState({ locationB: "" })
+              }}
               miniature={miniature}
               spellCheck={false}
               onChange={e => {
@@ -473,10 +489,10 @@ export default class Search extends React.Component {
             )}
 
             <GrayLine miniature={miniature} glow={glow === "locationB"} />
-
-            {!miniature && withinFilter}
           </InputBox>
         )}
+
+        {!miniature && withinFilter}
       </InputBoxes>
     )
 

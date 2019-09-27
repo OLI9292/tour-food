@@ -7,7 +7,12 @@ import { isEqual, get } from "lodash"
 
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
-import { FlexedDiv, Text, Box } from "../components/common"
+import {
+  FlexedDiv,
+  Text,
+  Box,
+  MyLocationMarkerImage,
+} from "../components/common"
 import Marker from "../components/mapMarker"
 
 import colors from "../lib/colors"
@@ -16,6 +21,7 @@ import { getBounds, getFilterOptions, idForLocation } from "../lib/helpers"
 import upArrow from "../images/icon-up-arrow.png"
 import searchByRouteSquare from "../images/search-by-route-square.png"
 import close from "../images/close.png"
+import myLocationImage from "../images/my-location.png"
 
 const MAX_FILTER_OPTIONS = 40
 
@@ -101,33 +107,37 @@ export default class Results extends React.Component {
       if (location) filterBy["state"] = location.state
     }
 
+    const isFilteringNearby = (this.state.description || "").includes(" near ")
+    const unfilterTagsNearLocation = key === "tag" && value === undefined
     const filterTagsNearLocation =
-      (this.state.description || "").includes(" near ") &&
-      key === "tag" &&
-      filterBy["tag"]
+      isFilteringNearby && key === "tag" && filterBy["tag"]
 
-    locations = locations.filter(l =>
-      Object.keys(filterBy).every(key => {
-        if (!filterBy[key]) return true
+    if (unfilterTagsNearLocation) {
+      locations = window.locationResults.map(r => r.location)
+    } else {
+      locations = locations.filter(l =>
+        Object.keys(filterBy).every(key => {
+          if (!filterBy[key]) return true
 
-        if (key === "tag") {
-          const matchesTag =
-            l.tags
-              .map(s => s.toLowerCase())
-              .indexOf(filterBy[key].toLowerCase()) > -1
+          if (key === "tag") {
+            const matchesTag =
+              l.tags
+                .map(s => s.toLowerCase())
+                .indexOf(filterBy[key].toLowerCase()) > -1
 
-          if (!filterTagsNearLocation) return matchesTag
-          const nearLocation =
-            matchesTag &&
-            window.locationResults.some(
-              r => idForLocation(r) === idForLocation({ location: l })
-            )
-          return matchesTag && nearLocation
-        } else {
-          return filterBy[key].toLowerCase() === l[key].toLowerCase()
-        }
-      })
-    )
+            if (!filterTagsNearLocation) return matchesTag
+            const nearLocation =
+              matchesTag &&
+              window.locationResults.some(
+                r => idForLocation(r) === idForLocation({ location: l })
+              )
+            return matchesTag && nearLocation
+          } else {
+            return filterBy[key].toLowerCase() === l[key].toLowerCase()
+          }
+        })
+      )
+    }
 
     const results = locations.map(location => ({ location }))
 
@@ -137,7 +147,7 @@ export default class Results extends React.Component {
 
     if (filterBy["tag"]) description += "for " + filterBy["tag"]
 
-    if (filterTagsNearLocation) {
+    if (unfilterTagsNearLocation || filterTagsNearLocation) {
       description += ` near ${this.state.description.split("near")[1]}`
     } else {
       const stateOrCity = filterBy["state"] || filterBy["city"]
@@ -220,6 +230,7 @@ export default class Results extends React.Component {
       displayMap,
       filterBy,
       filterOptions,
+      myLocationCoordinates,
       results,
       route,
       selected,
@@ -295,6 +306,14 @@ export default class Results extends React.Component {
               selected={() => this.selected(r)}
             />
           ))}
+          {myLocationCoordinates && (
+            <MyLocationMarkerImage
+              lat={myLocationCoordinates[0]}
+              lng={myLocationCoordinates[1]}
+              alt="my location"
+              src={myLocationImage}
+            />
+          )}
         </GoogleMapReact>
       </MapBox>
     ) : null
@@ -495,7 +514,7 @@ const InnerResultBox = styled.div`
 `
 
 const MapBox = styled.div`
-  height: 44vh;
+  height: 40vh;
   width: 100%;
   position: relative;
   display: inline-table;

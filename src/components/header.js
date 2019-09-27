@@ -17,6 +17,10 @@ export default class Header extends React.Component {
     this.state = { displayMenu: false, isMobile: false }
   }
 
+  componentWillReceiveProps() {
+    this.setState({ displayMenu: false })
+  }
+
   componentDidMount() {
     window.addEventListener("resize", this.resize.bind(this))
     this.resize()
@@ -212,6 +216,15 @@ export default class Header extends React.Component {
   }
 }
 
+const StyledHeader = styled.header`
+  height: 60px !important;
+  width: 100%;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  position: relative;
+`
+
 const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
@@ -232,18 +245,6 @@ const Filters = styled(FlexedDiv)`
   }
 `
 
-const StyledHeader = styled.header`
-  height: 65px;
-  width: 100%;
-  z-index: 999999;
-  display: flex;
-  align-items: center;
-  position: relative;
-  @media (max-width: 600px) {
-    height: 60px;
-  }
-`
-
 const Line = styled.div`
   position: absolute;
   width: 100%;
@@ -256,10 +257,11 @@ const Line = styled.div`
 
 const FilterHeader = styled(Text)`
   text-transform: capitalize;
-  margin-right: 5px;
+  margin-right: 8px;
+  text-align: center;
   transition: color 0.15s ease;
   @media (max-width: 600px) {
-    margin-right: 3px;
+    margin-right: 5px;
     font-size: 0.95em;
   }
 `
@@ -282,6 +284,7 @@ const FilterBox = styled(FlexedDiv)`
   flex: 1;
   cursor: pointer;
   position: relative;
+  padding: 0 5px;
   height: 100%;
   @media (max-width: 600px) {
     position: static;

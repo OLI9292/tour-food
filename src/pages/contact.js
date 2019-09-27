@@ -1,84 +1,42 @@
 import React from "react"
 import styled from "styled-components"
+import Iframe from "react-iframe"
 
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
 
-import { Box, Header, Submit, Text } from "../components/common"
+import { Box } from "../components/common"
 
-import colors from "../lib/colors"
+const URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSesDDWRjeO9WO9nPOgWmbHxEQ5VHDt1AJpVM6f3w9S4BmV07Q/viewform?embedded=true"
 
 export default class ContactPage extends React.Component {
   constructor(props) {
     super(props)
-    // this.state = { submitted: false }
     this.state = {}
   }
 
   render() {
-    const { submitted } = this.state
-
     return (
       <Box>
         <SEO title="Contact" />
 
         <HeaderComponent searchProps={{}} siteTitle="Tour Food" />
 
-        <Header
-          style={{ textAlign: "center", marginTop: "40px" }}
-          color={colors.blue}
-        >
-          Contact
-        </Header>
-
-        <form
-          action="https://formspree.io/otplunkett@gmail.com"
-          method="POST"
-          style={{ width: "90%", maxWidth: "600px", margin: "0 auto" }}
-        >
-          <Textarea
-            autoFocus={true}
-            spellCheck={false}
-            placeholder="Send us your feedback..."
-            name="contact"
-            onChange={e => this.setState({ value: e.target.value })}
-          />
-
-          <Submit
-            onClick={e => {
-              // e.preventDefault()
-              this.setState({ submitted: true })
-            }}
-            color={submitted ? colors.gray : colors.blue}
-            type="submit"
-            value="submit"
-          />
-
-          {submitted && (
-            <Text
-              style={{
-                textAlign: "center",
-                marginTop: "10px",
-                fontFamily: "BrandonGrotesqueLight",
-              }}
-            >
-              Thanks for your message!
-            </Text>
-          )}
-        </form>
+        <IframeBox>
+          <Iframe url={URL} width="100%" height="100%" />
+        </IframeBox>
       </Box>
     )
   }
 }
 
-const Textarea = styled.textarea`
-  border: 1px solid ${colors.blue};
-  border-radius: 5px;
-  padding: 10px;
-  font-family: BrandonGrotesqueLight;
-  font-size: 1em;
-  outline: 0;
+const IframeBox = styled.div`
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  padding: 20px 0;
+  overflow-y: hidden;
   box-sizing: border-box;
   width: 100%;
-  height: 200px;
 `

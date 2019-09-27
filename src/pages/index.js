@@ -6,9 +6,6 @@ import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
 import Search from "../components/search"
 
-import searchByRoute from "../images/search-by-route.jpg"
-import searchNearby from "../images/search-nearby.jpg"
-
 import {
   Box,
   Header,
@@ -20,6 +17,10 @@ import {
 import { parseRow, reverseGeocode } from "../lib/helpers"
 
 import colors from "../lib/colors"
+
+const searchByRoute = require(`../images/search-by-route.png`)
+
+const searchNearby = require(`../images/search-nearby.png`)
 
 const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
@@ -86,30 +87,38 @@ export default class IndexPage extends React.Component {
 
   requestLocation() {
     // https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API/Using_the_Permissions_API
-    if (!navigator) return
+    if (!navigator) return console.log("Navigator is undefined")
+
     const hasPermissions = navigator.permissions !== undefined
+    console.log(`Has permissions: ${hasPermissions}`)
     const options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
 
     const handlePosition = position => {
       if (!position || !position.coords) return
       const { latitude, longitude } = position.coords
+      console.log(`Position: ${latitude}, ${longitude}`)
       // https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
       reverseGeocode(`${latitude},${longitude}`, address => {
         if (!address || this.state.locationA) return
-        this.setState({ myLocation: `${MY_LOCATION_TEXT}${address}` })
+        this.setState({
+          myLocation: `${MY_LOCATION_TEXT}${address}`,
+          myLocationCoordinates: [latitude, longitude],
+        })
       })
     }
 
-    const getPostion = () =>
+    const getPostion = () => {
+      console.log("Getting position")
       navigator.geolocation.getCurrentPosition(
         handlePosition,
         err => console.log(`ERR: ${err.message}`),
         options
       )
+    }
 
     hasPermissions
       ? navigator.permissions.query({ name: "geolocation" }).then(res => {
-          if (!res.state === "denied") getPostion()
+          if (res.state !== "denied") getPostion()
         })
       : getPostion()
   }
@@ -128,6 +137,7 @@ export default class IndexPage extends React.Component {
       dataLoaded,
       locations,
       myLocation,
+      myLocationCoordinates,
       searchType,
     } = this.state
 
@@ -219,6 +229,7 @@ export default class IndexPage extends React.Component {
             locations={locations}
             miniature={false}
             myLocation={myLocation}
+            myLocationCoordinates={myLocationCoordinates}
             searchType={searchType}
           />
         ) : (

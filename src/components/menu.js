@@ -32,12 +32,9 @@ const Box = styled.div`
   padding: 10px;
   box-sizing: border-box;
   right: -4px;
-  top: 62px;
+  top: 57px;
   z-index: 600;
   border: 2px solid ${colors.blue};
-  @media (max-width: 600px) {
-    top: 57px;
-  }
 `
 
 export const StyledText = styled(Text)`

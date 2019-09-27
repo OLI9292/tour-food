@@ -40,3 +40,8 @@ input {
 h2 {
   font-size: 1.35em;
 }
+
+iframe {
+  border: 0;
+  outline: 0;
+}

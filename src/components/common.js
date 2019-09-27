@@ -186,13 +186,33 @@ export const Form = styled.form`
 `
 
 export const MarkerImage = styled.img`
-  width: ${p => (p.highlight ? 50 : 45)}px;
-  margin-left: ${p => (p.highlight ? -25 : -22.5)}px;
-  margin-top: ${p => (p.highlight ? -50 : -45)}px;
+  width: ${p => (p.highlight ? 45 : 40)}px;
+  margin-left: ${p => (p.highlight ? -22.55 : -20)}px;
+  margin-top: ${p => (p.highlight ? -45 : -40)}px;
   height: auto;
   opacity: ${p => (p.highlight ? 1 : 0.5)};
   cursor: pointer;
   z-index: ${p => (p.highlight ? 1000 : 50)};
+  @media (max-width: 600px) {
+    width: ${p => (p.highlight ? 35 : 30)}px;
+    margin-left: ${p => (p.highlight ? -17.5 : -15)}px;
+    margin-top: ${p => (p.highlight ? -35 : -30)}px;
+    height: auto;
+  }
+`
+
+export const MyLocationMarkerImage = styled.img`
+  width: 25px;
+  margin-left: -12.5px;
+  margin-top: -25px;
+  height: auto;
+  z-index: 10;
+  @media (max-width: 600px) {
+    width: 20px;
+    margin-left: -10px;
+    margin-top: -20px;
+    height: auto;
+  }
 `
 
 export const Autocomplete = styled.div`

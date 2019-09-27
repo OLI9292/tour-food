@@ -23,7 +23,7 @@ const cleanRow = row =>
       return str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
     })
 
-const LOG_ERRORS = false
+const LOG_ERRORS = true
 
 export const parseRow = (row, idx) => {
   try {
