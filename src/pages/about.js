@@ -30,7 +30,7 @@ export default class AboutPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px",
+            padding: "25px 50px",
             fontFamily: "BrandonGrotesqueLight",
             maxWidth: "900px",
             margin: "0 auto",
@@ -60,7 +60,7 @@ export default class AboutPage extends React.Component {
         </Text>
 
         <Header
-          style={{ textAlign: "center", marginTop: "25px" }}
+          style={{ textAlign: "center", marginTop: "25px", padding: "50px" }}
           color={colors.blue}
         >
           HOW IS THIS DIFFERENT FROM OTHER FOOD WEBSITES?
@@ -70,7 +70,7 @@ export default class AboutPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px",
+            padding: "25px 50px",
             fontFamily: "BrandonGrotesqueLight",
             maxWidth: "900px",
             margin: "0 auto",
@@ -110,7 +110,7 @@ export default class AboutPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px",
+            padding: "25px 50px",
             fontFamily: "BrandonGrotesqueLight",
             maxWidth: "900px",
             margin: "0 auto",

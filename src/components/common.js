@@ -25,7 +25,6 @@ export const Box = styled.div`
 export const Header = styled.h2`
   color: ${p => p.color};
   text-transform: uppercase;
-  font-family: BrandonGrotesqueBold;
   letter-spacing: 1.5px;
   margin: 10px 5px;
   @media (max-width: 600px) {
@@ -61,15 +60,7 @@ export const SearchBox = styled.div`
     height: 50%;
   }
 `
-// export const Image = styled.img`
-//   width: 100%;
-//   height: auto;
-//   border-radius: 5px;
-//   @media (max-width: 900px) {
-//     object-fit: contain;
-//     width: auto;
-//   }
-// `
+
 export const Image = styled.img`
   width: 100%;
   height: auto;
@@ -91,9 +82,8 @@ export const Input = styled.input`
   text-overflow: ellipsis;
   ::placeholder {
     text-overflow: ellipsis;
-    color: ${colors.gray};
+    color: ${colors.blue};
   }
-  font-weight: 600;
   font-size: ${p => (p.miniature ? 1 : 1.2)}em;
   display: block;
   @media (max-width: 600px) {
@@ -102,11 +92,10 @@ export const Input = styled.input`
   }
 `
 
-export const GrayLine = styled.div`
-  background-color: ${p => (p.glow ? colors.red : "black")};
+export const BlueLine = styled.div`
+  background-color: ${p => (p.glow ? colors.red : colors.blue)};
   transition: background-color 0.15s ease;
-  height: 4px;
-  height: ${p => (p.miniature ? 2 : 4)}px;
+  height: 2px;
   border-radius: 5px;
   width: 100%;
 `
@@ -120,11 +109,10 @@ export const Submit = styled.input`
   cursor: pointer;
   outline: 0;
   border: 0;
-  border-radius: 10px;
-  padding: 10px 0;
-  font-size: 1.2em;
-  letter-spacing: 1px;
-  font-weight: 700;
+  padding: 8px 0;
+  max-width: 300px;
+  font-size: 1.3em;
+  letter-spacing: 1.5px;
   margin: 0 auto;
   width: 100%;
   display: block;
@@ -152,7 +140,7 @@ export const SubmitIcon = styled.img`
 `
 
 export const InputBox = styled.div`
-  margin: ${p => (p.miniature ? 0 : "20px 0")};
+  margin: ${p => (p.miniature ? 0 : "30px 0")};
   position: relative;
   max-width: 320px;
   flex-grow: 1;

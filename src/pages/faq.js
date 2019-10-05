@@ -27,7 +27,7 @@ export default class FAQPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px",
+            padding: "25px 50px",
             fontFamily: "BrandonGrotesqueLight",
             maxWidth: "900px",
             margin: "0 auto",

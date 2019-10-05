@@ -334,24 +334,18 @@ export default class Results extends React.Component {
                 alignItems: "flex-start",
               }}
             >
-              <div style={{ textAlign: "left" }}>
-                <Text
-                  color={colors.blue}
-                  large
-                  style={{
-                    display: "inline-block",
-                    marginRight: "10px",
-                    fontFamily: "BrandonGrotesqueBold",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  {data.location.name}
-                </Text>
-
-                <Text extraSmall style={{ display: "inline-block" }}>
-                  {data.location.city}, {data.location.state}
-                </Text>
-              </div>
+              <Text
+                color={colors.blue}
+                large
+                style={{
+                  display: "inline-block",
+                  marginRight: "10px",
+                  fontFamily: "BrandonGrotesqueBold",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                {data.location.name}
+              </Text>
 
               {data.distance !== undefined && (
                 <Text style={{ marginLeft: "20px" }} color={colors.orange}>
@@ -359,6 +353,10 @@ export default class Results extends React.Component {
                 </Text>
               )}
             </FlexedDiv>
+
+            <Text extraSmall style={{ textAlign: "left" }}>
+              {data.location.city}, {data.location.state}
+            </Text>
 
             {data.location.tags.length > 0 && (
               <Text
@@ -453,13 +451,13 @@ export default class Results extends React.Component {
 }
 
 const ResultsBox = styled.div`
-  height: calc(100% - 62px);
+  height: calc(100% - 57px);
   text-align: center;
   display: flex;
   flex-direction: column;
   object-fit: contain;
   position: fixed;
-  top: 62px;
+  top: 57px;
   width: 100%;
   @media (max-width: 600px) {
     height: calc(100% - 59px);
@@ -521,15 +519,15 @@ const MapBox = styled.div`
 `
 
 const CloseImage = styled.img`
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  border-radius: 30px;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 8px;
+  right: 8px;
   background-color: white;
-  border-bottom: 3px solid ${colors.blue};
-  border-left: 3px solid ${colors.blue};
+  border: 3px solid ${colors.blue};
   z-index: 500;
 `
 

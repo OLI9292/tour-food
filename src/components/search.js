@@ -9,7 +9,7 @@ import {
   InputBoxes,
   Header,
   Autocomplete,
-  GrayLine,
+  BlueLine,
   Submit,
   Form,
   SubmitIcon,
@@ -345,11 +345,11 @@ export default class Search extends React.Component {
         style={{
           fontFamily: "BrandonGrotesqueLight",
           justifyContent: "space-between",
-          marginTop: "20px",
+          margin: "30px 0",
           textAlign: "left",
         }}
       >
-        <Text small>Within</Text>
+        <Text color={colors.blue}>Within</Text>
         <FlexedDiv style={{ flexGrow: 1, justifyContent: "space-around" }}>
           {RADII.map(r => (
             <FlexedDiv
@@ -361,14 +361,27 @@ export default class Search extends React.Component {
               }}
               onClick={() => this.setState({ radius: r })}
             >
-              <input
-                readOnly
-                checked={r === radius}
-                type="radio"
-                name={r}
-                value={r}
-              />
-              <Text small style={{ marginLeft: "5px" }}>
+              <FlexedDiv
+                style={{
+                  width: "13px",
+                  height: "13px",
+                  border: `2px solid ${colors.blue}`,
+                  borderRadius: "30px",
+                }}
+              >
+                {r === radius && (
+                  <div
+                    style={{
+                      width: "9px",
+                      height: "9px",
+                      backgroundColor: colors.blue,
+                      borderRadius: "10px",
+                    }}
+                  />
+                )}
+              </FlexedDiv>
+
+              <Text color={colors.blue} small style={{ marginLeft: "5px" }}>
                 {r} miles
               </Text>
             </FlexedDiv>
@@ -434,7 +447,7 @@ export default class Search extends React.Component {
             </Autocomplete>
           )}
 
-          <GrayLine miniature={miniature} glow={glow === "locationA"} />
+          <BlueLine miniature={miniature} glow={glow === "locationA"} />
         </InputBox>
 
         {searchType === "route" && (
@@ -453,7 +466,7 @@ export default class Search extends React.Component {
               }}
               value={locationB || ""}
               type="value"
-              placeholder="To..."
+              placeholder="To (venue, city, etc.)"
             />
 
             {inputLetter === "B" && autocompleteResults.length > 0 && (
@@ -488,7 +501,7 @@ export default class Search extends React.Component {
               </Autocomplete>
             )}
 
-            <GrayLine miniature={miniature} glow={glow === "locationB"} />
+            <BlueLine miniature={miniature} glow={glow === "locationB"} />
           </InputBox>
         )}
 
