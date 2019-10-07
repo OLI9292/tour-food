@@ -26,7 +26,7 @@ export default class Menu extends Component {
 const Box = styled.div`
   line-height: 45px;
   min-width: 150px;
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 3px 2px -2px #a9a9a9;
   position: absolute;
   padding: 18px 25px;

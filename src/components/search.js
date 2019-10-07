@@ -41,8 +41,8 @@ export default class Search extends React.Component {
       inputLetter: "A",
       radius: RADII[DEFAULT_RADIUS_INDEX],
       seconds: 0,
-      // locationA: "Dallas, TX",
-      // locationB: "Fort Collins, CO",
+      locationA: "Dallas, TX",
+      locationB: "Fort Collins, CO",
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this)

@@ -10,7 +10,13 @@ import colors from "../lib/colors"
 export default class AboutPage extends React.Component {
   render() {
     return (
-      <Box style={{ height: "auto", position: "relative" }}>
+      <Box
+        style={{
+          height: "auto",
+          position: "relative",
+          backgroundImage: `url(${require("../images/backgrounds/about.png")})`,
+        }}
+      >
         <SEO title="About" />
 
         <HeaderComponent searchProps={{}} siteTitle="Tour Food" />

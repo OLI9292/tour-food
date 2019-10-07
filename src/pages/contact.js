@@ -25,7 +25,11 @@ export default class ContactPage extends React.Component {
     const { submitted, email, name } = this.state
 
     return (
-      <Box>
+      <Box
+        style={{
+          backgroundImage: `url(${require("../images/backgrounds/contact.png")})`,
+        }}
+      >
         <SEO title="Contact" />
 
         <HeaderComponent searchProps={{}} siteTitle="Tour Food" />

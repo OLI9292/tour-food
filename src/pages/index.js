@@ -213,8 +213,18 @@ export default class IndexPage extends React.Component {
       )
     }
 
+    const backgroundImage = searchType
+      ? `url(${require(`../images/backgrounds/${searchType}.png`)})`
+      : undefined
+
     return (
-      <Box style={{ backgroundColor: searchType ? "white" : colors.orange }}>
+      <Box
+        style={{
+          backgroundColor: searchType ? "white" : colors.orange,
+          backgroundImage,
+          backgroundPositionY: "100%",
+        }}
+      >
         <SEO title="Home" />
 
         <HeaderComponent

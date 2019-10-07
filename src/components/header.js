@@ -7,8 +7,9 @@ import { sortBy } from "lodash"
 import Search from "./search"
 import { FlexedDiv, Text } from "./common"
 import Menu, { StyledText } from "./menu"
-import icon from "../images/icon-non-transparent.jpg"
+import icon from "../images/icon.png"
 import hamburger from "../images/hamburger.png"
+import dropdownArrow from "../images/dropdown-arrow.png"
 import colors from "../lib/colors"
 
 export default class Header extends React.Component {
@@ -109,7 +110,12 @@ export default class Header extends React.Component {
             <FilterHeader color={color("state")}>
               {filterBy["state"] || "State"}
             </FilterHeader>
-            <Triangle color={color("state")} />
+
+            <img
+              style={{ width: "18px", height: "18px" }}
+              src={dropdownArrow}
+            />
+
             {displayOptionsFor === "state" && dropdown("state")}
           </FilterBox>
         )}
@@ -126,14 +132,16 @@ export default class Header extends React.Component {
               this.setState({ displayOptionsFor: updated })
               if (filterBy["city"]) this.props.filter("city", undefined)
             }}
-            style={{
-              borderLeft: `1px solid ${colors.gray}`,
-            }}
           >
             <FilterHeader color={color("city")}>
               {filterBy["city"] || "City"}
             </FilterHeader>
-            <Triangle color={color("city")} />
+
+            <img
+              style={{ width: "18px", height: "18px" }}
+              src={dropdownArrow}
+            />
+
             {displayOptionsFor === "city" &&
               dropdown("city", filterOptions.cities)}
           </FilterBox>
@@ -145,7 +153,6 @@ export default class Header extends React.Component {
               this.setState({ displayOptionsFor: "tag" })
             }
           }}
-          style={{ borderLeft: `1px solid ${colors.gray}` }}
           onClick={() => {
             const updated = displayOptionsFor === "tag" ? undefined : "tag"
             this.setState({ displayOptionsFor: updated })
@@ -153,9 +160,23 @@ export default class Header extends React.Component {
           }}
         >
           <FilterHeader color={color("tag")}>
-            {filterBy["tag"] || "Tag"}
+            {filterBy["tag"] || "Filters:"}
+            {!filterBy["tag"] && (
+              <span
+                style={{
+                  marginLeft: "8px",
+                  fontSize: "0.85em",
+                  textTransform: "lowercase",
+                  fontFamily: "BrandonGrotesqueItalic",
+                }}
+              >
+                coffee, etc.
+              </span>
+            )}
           </FilterHeader>
-          <Triangle color={color("tag")} />
+
+          <img style={{ width: "18px", height: "18px" }} src={dropdownArrow} />
+
           {displayOptionsFor === "tag" && dropdown("tag")}
         </FilterBox>
       </Filters>
@@ -197,13 +218,19 @@ export default class Header extends React.Component {
         ) : (
           <div style={{ position: "absolute", right: 0, display: "flex" }}>
             <Link style={{ textDecoration: "none" }} to="/about">
-              <StyledText style={{ marginRight: "20px" }}>About</StyledText>
+              <StyledText style={{ marginRight: "20px", color: "white" }}>
+                About
+              </StyledText>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/faq">
-              <StyledText style={{ marginRight: "20px" }}>FAQ</StyledText>
+              <StyledText style={{ marginRight: "20px", color: "white" }}>
+                FAQ
+              </StyledText>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/contact">
-              <StyledText style={{ marginRight: "10px" }}>Contact</StyledText>
+              <StyledText style={{ marginRight: "10px", color: "white" }}>
+                Contact
+              </StyledText>
             </Link>
           </div>
         )}
@@ -259,6 +286,8 @@ const Line = styled.div`
 const FilterHeader = styled(Text)`
   text-transform: capitalize;
   margin-right: 8px;
+  color: white;
+  font-family: BrandonGrotesqueLight;
   text-align: center;
   transition: color 0.15s ease;
   @media (max-width: 600px) {
@@ -315,12 +344,12 @@ const Dropdown = styled.div`
   background-color: white;
   padding: 10px;
   box-sizing: border-box;
-  border: 3px solid ${colors.blue};
+  border: 2px solid ${colors.blue};
   font-weight: 400;
   width: 100%;
   z-index: 100;
   position: absolute;
-  top: 62px;
+  top: 57px;
   left: 0;
   max-height: 500px;
   overflow-y: auto;

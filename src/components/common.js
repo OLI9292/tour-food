@@ -20,6 +20,9 @@ export const Box = styled.div`
   position: fixed;
   display: flex;
   flex-direction: column;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position-y: 80px;
 `
 
 export const Header = styled.h2`
@@ -76,6 +79,7 @@ export const Input = styled.input`
   outline: 0;
   text-align: left;
   width: 100%;
+  background-color: transparent;
   font-family: BrandonGrotesqueLight;
   border: 0;
   padding: 2px;
@@ -208,8 +212,8 @@ export const Autocomplete = styled.div`
   width: 100%;
   background-color: white;
   font-family: BrandonGrotesqueLight;
-  border: 3px solid ${colors.blue};
-  border-radius: 0 0 5px 5px;
+  border: 2px solid ${colors.blue};
+  border-radius: 0 0 3px 3px;
   text-align: left;
   padding: 0 5px;
   z-index: 100000;
