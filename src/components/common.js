@@ -11,7 +11,8 @@ export const FlexedDiv = styled.div`
 const StyledText = styled.p`
   margin: 0;
   color: ${p => p.color || "black"};
-  font-size: ${p => (p.large ? 1.4 : p.small ? 1 : p.extraSmall ? 0.8 : 1.2)}em;
+  font-size: ${p =>
+    p.large ? 1.4 : p.small ? 1 : p.extraSmall ? 0.85 : 1.2}em;
 `
 export const Text = StyledText
 
@@ -252,6 +253,6 @@ export const RouteArrow = styled.img`
   height: 15px;
   margin: 0 15px;
   @media (max-width: 600px) {
-    margin-top: 4px;
+    margin-top: 5px;
   }
 `

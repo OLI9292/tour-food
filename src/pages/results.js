@@ -451,12 +451,10 @@ export default class Results extends React.Component {
             </Text>
           )}
 
-          <ScrollBox id="scroll-box">
-            {results.length > 10 && (
-              <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
-            )}
-            {(results || []).map(result)}
-          </ScrollBox>
+          <ScrollBox id="scroll-box">{(results || []).map(result)}</ScrollBox>
+          {results.length > 10 && (
+            <GoUp onClick={this.scrollToTop.bind(this)} src={upArrow} />
+          )}
         </ResultsBox>
       </Box>
     )
