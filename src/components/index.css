@@ -13,6 +13,11 @@
   src: url("../lib/fonts/BrandonText-Bold.otf");
 }
 
+@font-face {
+  font-family: BrandonGrotesqueItalic;
+  src: url("../lib/fonts/BrandonText-Italics.otf");
+}
+
 html {
   font-family: "BrandonGrotesque", sans-serif;
 }

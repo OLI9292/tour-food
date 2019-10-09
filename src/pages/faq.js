@@ -11,7 +11,14 @@ import colors from "../lib/colors"
 export default class FAQPage extends React.Component {
   render() {
     return (
-      <Box style={{ height: "auto", position: "relative" }}>
+      <Box
+        style={{
+          height: "auto",
+          position: "relative",
+          backgroundImage: `url(${require("../images/backgrounds/faq.png")})`,
+          backgroundRepeat: "repeat",
+        }}
+      >
         <SEO title="FAQ" />
 
         <HeaderComponent searchProps={{}} siteTitle="Tour Food" />
@@ -27,7 +34,7 @@ export default class FAQPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px",
+            padding: "25px 50px",
             fontFamily: "BrandonGrotesqueLight",
             maxWidth: "900px",
             margin: "0 auto",

@@ -96,7 +96,8 @@ export default class Results extends React.Component {
     //   add to description
     //   filter what is there
     console.log(`Filter ${key} to ${value}.`)
-    let { locations, filterBy } = this.state
+    let { locations, filterBy, searchProps } = this.state
+    const searchType = get(searchProps, "searchType")
 
     if (key) filterBy[key] = value
 
@@ -108,11 +109,13 @@ export default class Results extends React.Component {
     }
 
     const isFilteringNearby = (this.state.description || "").includes(" near ")
-    const unfilterTagsNearLocation = key === "tag" && value === undefined
+    const unfilterTagsNearLocation =
+      key === "tag" && value === undefined && searchType === "destination"
     const filterTagsNearLocation =
       isFilteringNearby && key === "tag" && filterBy["tag"]
 
     if (unfilterTagsNearLocation) {
+      console.log("Unfilter tags near location.")
       locations = window.locationResults.map(r => r.location)
     } else {
       locations = locations.filter(l =>
@@ -126,6 +129,8 @@ export default class Results extends React.Component {
                 .indexOf(filterBy[key].toLowerCase()) > -1
 
             if (!filterTagsNearLocation) return matchesTag
+
+            console.log("Filter tags near location.")
             const nearLocation =
               matchesTag &&
               window.locationResults.some(
@@ -258,20 +263,22 @@ export default class Results extends React.Component {
     const displayMapBanner = results.length ? (
       <FlexedDiv
         style={{
-          borderBottom: `3px solid ${colors.blue}`,
-          padding: "8px 0",
+          padding: "16px 0",
+          backgroundColor: colors.orange,
           width: "100%",
           cursor: "pointer",
-          minHeight: "35px",
+          minHeight: "42px",
         }}
         onClick={() => this.setState({ displayMap: true })}
       >
         <img
-          style={{ height: "35px", width: "35px", marginRight: "5px" }}
+          style={{ height: "42px", width: "42px", marginRight: "10px" }}
           src={searchByRouteSquare}
           alt="search by route"
         />
-        <Text small>View on Map</Text>
+        <Text color="white" style={{ letterSpacing: "2px" }}>
+          MAP VIEW
+        </Text>
       </FlexedDiv>
     ) : null
 
@@ -334,24 +341,18 @@ export default class Results extends React.Component {
                 alignItems: "flex-start",
               }}
             >
-              <div style={{ textAlign: "left" }}>
-                <Text
-                  color={colors.blue}
-                  large
-                  style={{
-                    display: "inline-block",
-                    marginRight: "10px",
-                    fontFamily: "BrandonGrotesqueBold",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  {data.location.name}
-                </Text>
-
-                <Text extraSmall style={{ display: "inline-block" }}>
-                  {data.location.city}, {data.location.state}
-                </Text>
-              </div>
+              <Text
+                color={colors.blue}
+                large
+                style={{
+                  display: "inline-block",
+                  marginRight: "10px",
+                  fontFamily: "BrandonGrotesqueBold",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                {data.location.name}
+              </Text>
 
               {data.distance !== undefined && (
                 <Text style={{ marginLeft: "20px" }} color={colors.orange}>
@@ -359,6 +360,10 @@ export default class Results extends React.Component {
                 </Text>
               )}
             </FlexedDiv>
+
+            <Text extraSmall style={{ textAlign: "left" }}>
+              {data.location.city}, {data.location.state}
+            </Text>
 
             {data.location.tags.length > 0 && (
               <Text
@@ -453,17 +458,17 @@ export default class Results extends React.Component {
 }
 
 const ResultsBox = styled.div`
-  height: calc(100% - 62px);
+  height: calc(100% - 80px);
   text-align: center;
   display: flex;
   flex-direction: column;
   object-fit: contain;
   position: fixed;
-  top: 62px;
+  top: 80px;
   width: 100%;
   @media (max-width: 600px) {
-    height: calc(100% - 59px);
-    top: 59px;
+    height: calc(100% - 80px);
+    top: 80px;
   }
 `
 
@@ -521,15 +526,15 @@ const MapBox = styled.div`
 `
 
 const CloseImage = styled.img`
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  border-radius: 30px;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 8px;
+  right: 8px;
   background-color: white;
-  border-bottom: 3px solid ${colors.blue};
-  border-left: 3px solid ${colors.blue};
+  border: 3px solid ${colors.blue};
   z-index: 500;
 `
 

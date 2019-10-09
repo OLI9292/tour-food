@@ -5,10 +5,11 @@ import "./index.css"
 import { sortBy } from "lodash"
 
 import Search from "./search"
-import { FlexedDiv, Text } from "./common"
+import { FlexedDiv, Text, BlueLine } from "./common"
 import Menu, { StyledText } from "./menu"
-import icon from "../images/icon-non-transparent.jpg"
+import icon from "../images/icon.png"
 import hamburger from "../images/hamburger.png"
+import dropdownArrow from "../images/dropdown-arrow.png"
 import colors from "../lib/colors"
 
 export default class Header extends React.Component {
@@ -53,7 +54,7 @@ export default class Header extends React.Component {
     const color = attr =>
       displayOptionsFor === attr || filterBy[attr] ? colors.orange : colors.blue
 
-    const displaySearch = searchType === "route"
+    const displaySearch = searchType !== undefined
 
     const dropdown = (attr, options) => (
       <Dropdown
@@ -79,7 +80,7 @@ export default class Header extends React.Component {
     )
 
     const filters = () => (
-      <Filters>
+      <Filters displaySearch={displaySearch}>
         {displaySearch && (
           <Search
             reset={this.props.reset.bind(this)}
@@ -108,8 +109,14 @@ export default class Header extends React.Component {
           >
             <FilterHeader color={color("state")}>
               {filterBy["state"] || "State"}
+              <BlueLine style={{ bottom: "-4px" }} miniature={true} />
             </FilterHeader>
-            <Triangle color={color("state")} />
+
+            <img
+              style={{ width: "18px", height: "18px" }}
+              src={dropdownArrow}
+            />
+
             {displayOptionsFor === "state" && dropdown("state")}
           </FilterBox>
         )}
@@ -126,14 +133,17 @@ export default class Header extends React.Component {
               this.setState({ displayOptionsFor: updated })
               if (filterBy["city"]) this.props.filter("city", undefined)
             }}
-            style={{
-              borderLeft: `1px solid ${colors.gray}`,
-            }}
           >
             <FilterHeader color={color("city")}>
               {filterBy["city"] || "City"}
+              <BlueLine style={{ bottom: "-4px" }} miniature={true} />
             </FilterHeader>
-            <Triangle color={color("city")} />
+
+            <img
+              style={{ width: "18px", height: "18px" }}
+              src={dropdownArrow}
+            />
+
             {displayOptionsFor === "city" &&
               dropdown("city", filterOptions.cities)}
           </FilterBox>
@@ -145,7 +155,6 @@ export default class Header extends React.Component {
               this.setState({ displayOptionsFor: "tag" })
             }
           }}
-          style={{ borderLeft: `1px solid ${colors.gray}` }}
           onClick={() => {
             const updated = displayOptionsFor === "tag" ? undefined : "tag"
             this.setState({ displayOptionsFor: updated })
@@ -153,24 +162,30 @@ export default class Header extends React.Component {
           }}
         >
           <FilterHeader color={color("tag")}>
-            {filterBy["tag"] || "Tag"}
+            {filterBy["tag"] || "Filters"}
+            {!filterBy["tag"] && (
+              <EtcSpan displaySearch={displaySearch}>coffee, etc.</EtcSpan>
+            )}
+            <BlueLine style={{ bottom: "-4px" }} miniature={true} />
           </FilterHeader>
-          <Triangle color={color("tag")} />
+
+          <img style={{ width: "18px", height: "18px" }} src={dropdownArrow} />
+
           {displayOptionsFor === "tag" && dropdown("tag")}
         </FilterBox>
       </Filters>
     )
 
     return (
-      <StyledHeader style={{ backgroundColor: "white" }}>
+      <StyledHeader>
         <Line />
 
         <Link
           style={{
-            height: "100%",
+            height: "70px",
             position: "absolute",
-            left: 0,
-            top: 0,
+            top: "5px",
+            left: "2px",
             display: "flex",
             alignItems: "center",
           }}
@@ -197,13 +212,19 @@ export default class Header extends React.Component {
         ) : (
           <div style={{ position: "absolute", right: 0, display: "flex" }}>
             <Link style={{ textDecoration: "none" }} to="/about">
-              <StyledText style={{ marginRight: "20px" }}>About</StyledText>
+              <StyledText color="white" style={{ marginRight: "20px" }}>
+                About
+              </StyledText>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/faq">
-              <StyledText style={{ marginRight: "20px" }}>FAQ</StyledText>
+              <StyledText color="white" style={{ marginRight: "20px" }}>
+                FAQ
+              </StyledText>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/contact">
-              <StyledText style={{ marginRight: "10px" }}>Contact</StyledText>
+              <StyledText color="white" style={{ marginRight: "10px" }}>
+                Contact
+              </StyledText>
             </Link>
           </div>
         )}
@@ -217,10 +238,11 @@ export default class Header extends React.Component {
 }
 
 const StyledHeader = styled.header`
-  height: 60px !important;
+  height: 80px !important;
   width: 100%;
   z-index: 999999;
   display: flex;
+  background-color: ${colors.blue};
   align-items: center;
   position: relative;
 `
@@ -228,8 +250,7 @@ const StyledHeader = styled.header`
 const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
-  margin: 0 80px;
-  margin: 0 235px 0 76px;
+  margin: 0 70px 0 76px;
   border-left: 3px solid rgb(21, 126, 251);
   border-right: 3px solid rgb(21, 126, 251);
   position: absolute;
@@ -237,11 +258,18 @@ const Filters = styled(FlexedDiv)`
   right: 0;
   top: 0;
   height: 100%;
-  @media (max-width: 900px) {
-    margin: 0 66px 0 78px;
+  box-sizing: border-box;
+  @media (min-width: 600px) {
+    flex-direction: row;
+    margin: ${p => p.displaySearch && "0 150px 0 76px"};
+  }
+  @media (min-width: 900px) {
+    margin: ${p => p.displaySearch && "0 350px 0 76px"};
   }
   @media (max-width: 600px) {
-    margin: 0 58px 0 72px;
+    flex-direction: ${p => p.displaySearch && "column"};
+    padding: ${p => (p.displaySearch ? "8px 0px 13px 0px;" : "0")};
+    align-items: flex-start;
   }
 `
 
@@ -258,23 +286,15 @@ const Line = styled.div`
 const FilterHeader = styled(Text)`
   text-transform: capitalize;
   margin-right: 8px;
-  text-align: center;
+  color: white;
+  flex: 1;
+  font-family: BrandonGrotesqueLight;
+  text-align: left;
+  position: relative;
   transition: color 0.15s ease;
   @media (max-width: 600px) {
     margin-right: 5px;
     font-size: 0.95em;
-  }
-`
-
-const Triangle = styled.div`
-  border-color: ${p => p.color} transparent;
-  transition: border-color 0.15s ease;
-  border-style: solid;
-  border-width: 10px 8px 0px 8px;
-  height: 0px;
-  width: 0px;
-  @media (max-width: 600px) {
-    border-width: 9px 7px 0px 7px;
   }
 `
 
@@ -314,12 +334,12 @@ const Dropdown = styled.div`
   background-color: white;
   padding: 10px;
   box-sizing: border-box;
-  border: 3px solid ${colors.blue};
+  border: 2px solid ${colors.blue};
   font-weight: 400;
   width: 100%;
   z-index: 100;
   position: absolute;
-  top: 62px;
+  top: 80px;
   left: 0;
   max-height: 500px;
   overflow-y: auto;
@@ -328,7 +348,7 @@ const Dropdown = styled.div`
   border-top-width: 0px;
   @media (max-width: 600px) {
     padding: 0px;
-    top: 59px;
+    top: 80px;
     grid-template-columns: 1fr;
     border-width: 0 0 3px 0;
     width: 100vw;
@@ -350,9 +370,21 @@ const Icon = styled.img`
 
 const HamburgerIcon = styled.img`
   width: auto;
-  height: 80%;
+  height: 54px;
+  top: 13px;
   cursor: pointer;
   position: absolute;
-  right: 5px;
+  right: 2px;
   z-index: 500;
+`
+
+const EtcSpan = styled.span`
+  margin-left: 8px;
+  font-size: 0.85em;
+  bottom: 0;
+  text-transform: lowercase;
+  font-family: BrandonGrotesqueItalic;
+  @media (max-width: 600px) {
+    display: ${p => (p.displaySearch ? "inline-block" : "none")};
+  }
 `

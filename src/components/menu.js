@@ -24,22 +24,22 @@ export default class Menu extends Component {
 }
 
 const Box = styled.div`
-  line-height: 40px;
+  line-height: 45px;
   min-width: 150px;
-  border: 4px solid #157efb;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 3px 2px -2px #a9a9a9;
   position: absolute;
-  padding: 10px;
+  padding: 18px 25px;
   box-sizing: border-box;
-  right: -4px;
-  top: 57px;
+  right: 0;
+  top: 80px;
   z-index: 600;
-  border: 2px solid ${colors.blue};
 `
 
 export const StyledText = styled(Text)`
   font-family: BrandonGrotesqueLight;
   letter-spacing: 1px;
+  color: ${p => p.color};
   cursor: pointer;
   &:hover {
     color: ${colors.orange};
