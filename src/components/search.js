@@ -9,6 +9,7 @@ import {
   InputBoxes,
   Header,
   Autocomplete,
+  AutocompleteText,
   BlueLine,
   Submit,
   Form,
@@ -428,7 +429,7 @@ export default class Search extends React.Component {
                     : "black"
 
                 return (
-                  <Text
+                  <AutocompleteText
                     key={idx}
                     color={color}
                     onClick={() =>
@@ -437,11 +438,9 @@ export default class Search extends React.Component {
                         autocompleteResults: [],
                       })
                     }
-                    style={{ margin: "8px 0", cursor: "pointer" }}
-                    small
                   >
                     {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
-                  </Text>
+                  </AutocompleteText>
                 )
               })}
             </Autocomplete>
@@ -484,7 +483,7 @@ export default class Search extends React.Component {
                       : "black"
 
                   return (
-                    <Text
+                    <AutocompleteText
                       key={idx}
                       onClick={() =>
                         this.setState({
@@ -493,11 +492,9 @@ export default class Search extends React.Component {
                         })
                       }
                       color={color}
-                      style={{ margin: "8px 0", cursor: "pointer" }}
-                      small
                     >
                       {isMyLocation ? MY_LOCATION_TEXT.split(" - ")[0] : str}
-                    </Text>
+                    </AutocompleteText>
                   )
                 })}
               </Autocomplete>

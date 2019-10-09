@@ -39,7 +39,7 @@ const Box = styled.div`
 export const StyledText = styled(Text)`
   font-family: BrandonGrotesqueLight;
   letter-spacing: 1px;
-  color: ${colors.blue};
+  color: ${p => p.color};
   cursor: pointer;
   &:hover {
     color: ${colors.orange};

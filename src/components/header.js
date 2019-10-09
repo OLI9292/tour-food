@@ -109,7 +109,7 @@ export default class Header extends React.Component {
           >
             <FilterHeader color={color("state")}>
               {filterBy["state"] || "State"}
-              <BlueLine style={{ bottom: "-5px" }} miniature={true} />
+              <BlueLine style={{ bottom: "-4px" }} miniature={true} />
             </FilterHeader>
 
             <img
@@ -136,7 +136,7 @@ export default class Header extends React.Component {
           >
             <FilterHeader color={color("city")}>
               {filterBy["city"] || "City"}
-              <BlueLine style={{ bottom: "-5px" }} miniature={true} />
+              <BlueLine style={{ bottom: "-4px" }} miniature={true} />
             </FilterHeader>
 
             <img
@@ -162,21 +162,11 @@ export default class Header extends React.Component {
           }}
         >
           <FilterHeader color={color("tag")}>
-            {filterBy["tag"] || "Filters:"}
+            {filterBy["tag"] || "Filters"}
             {!filterBy["tag"] && (
-              <span
-                style={{
-                  marginLeft: "8px",
-                  fontSize: "0.85em",
-                  bottom: 0,
-                  textTransform: "lowercase",
-                  fontFamily: "BrandonGrotesqueItalic",
-                }}
-              >
-                coffee, etc.
-              </span>
+              <EtcSpan displaySearch={displaySearch}>coffee, etc.</EtcSpan>
             )}
-            <BlueLine style={{ bottom: "-5px" }} miniature={true} />
+            <BlueLine style={{ bottom: "-4px" }} miniature={true} />
           </FilterHeader>
 
           <img style={{ width: "18px", height: "18px" }} src={dropdownArrow} />
@@ -222,17 +212,17 @@ export default class Header extends React.Component {
         ) : (
           <div style={{ position: "absolute", right: 0, display: "flex" }}>
             <Link style={{ textDecoration: "none" }} to="/about">
-              <StyledText style={{ marginRight: "20px", color: "white" }}>
+              <StyledText color="white" style={{ marginRight: "20px" }}>
                 About
               </StyledText>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/faq">
-              <StyledText style={{ marginRight: "20px", color: "white" }}>
+              <StyledText color="white" style={{ marginRight: "20px" }}>
                 FAQ
               </StyledText>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/contact">
-              <StyledText style={{ marginRight: "10px", color: "white" }}>
+              <StyledText color="white" style={{ marginRight: "10px" }}>
                 Contact
               </StyledText>
             </Link>
@@ -386,4 +376,15 @@ const HamburgerIcon = styled.img`
   position: absolute;
   right: 2px;
   z-index: 500;
+`
+
+const EtcSpan = styled.span`
+  margin-left: 8px;
+  font-size: 0.85em;
+  bottom: 0;
+  text-transform: lowercase;
+  font-family: BrandonGrotesqueItalic;
+  @media (max-width: 600px) {
+    display: ${p => (p.displaySearch ? "inline-block" : "none")};
+  }
 `

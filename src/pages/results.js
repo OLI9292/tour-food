@@ -96,7 +96,8 @@ export default class Results extends React.Component {
     //   add to description
     //   filter what is there
     console.log(`Filter ${key} to ${value}.`)
-    let { locations, filterBy } = this.state
+    let { locations, filterBy, searchProps } = this.state
+    const searchType = get(searchProps, "searchType")
 
     if (key) filterBy[key] = value
 
@@ -108,11 +109,13 @@ export default class Results extends React.Component {
     }
 
     const isFilteringNearby = (this.state.description || "").includes(" near ")
-    const unfilterTagsNearLocation = key === "tag" && value === undefined
+    const unfilterTagsNearLocation =
+      key === "tag" && value === undefined && searchType === "destination"
     const filterTagsNearLocation =
       isFilteringNearby && key === "tag" && filterBy["tag"]
 
     if (unfilterTagsNearLocation) {
+      console.log("Unfilter tags near location.")
       locations = window.locationResults.map(r => r.location)
     } else {
       locations = locations.filter(l =>
@@ -126,6 +129,8 @@ export default class Results extends React.Component {
                 .indexOf(filterBy[key].toLowerCase()) > -1
 
             if (!filterTagsNearLocation) return matchesTag
+
+            console.log("Filter tags near location.")
             const nearLocation =
               matchesTag &&
               window.locationResults.some(

@@ -8,11 +8,12 @@ export const FlexedDiv = styled.div`
   justify-content: center;
 `
 
-export const Text = styled.p`
+const StyledText = styled.p`
   margin: 0;
   color: ${p => p.color || "black"};
   font-size: ${p => (p.large ? 1.4 : p.small ? 1 : p.extraSmall ? 0.8 : 1.2)}em;
 `
+export const Text = StyledText
 
 export const Box = styled.div`
   height: 100vh;
@@ -46,9 +47,6 @@ export const SearchBoxes = styled.div`
   @media (max-width: 900px) {
     flex-direction: column;
   }
-  @media (display-mode: browser) and (max-width: 650px) {
-    height: calc(100vh - 200px);
-  }
 `
 
 export const SearchBox = styled.div`
@@ -61,6 +59,19 @@ export const SearchBox = styled.div`
   @media (max-width: 900px) {
     width: 100%;
     height: 50%;
+  }
+  @media (min-width: 900px) {
+    margin: 0 25px;
+  }
+`
+
+export const SelectSearchBox = styled.div`
+  height: calc(100vh - 160px);
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 900px) {
+    height: calc(100vh - 200px);
+    margin-top: 20px;
   }
 `
 
@@ -88,12 +99,12 @@ export const Input = styled.input`
     text-overflow: ellipsis;
     color: ${p => (p.miniature ? "white" : colors.blue)};
   }
-  font-size: ${p => (p.miniature ? 1 : 1.2)}em;
+  font-size: 1.2em;
   color: ${p => (p.miniature ? "white" : "black")};
   display: block;
   @media (max-width: 600px) {
     margin: 0;
-    font-size: ${p => (p.miniature ? 0.8 : 1.2)}em;
+    font-size: ${p => (p.miniature ? 0.95 : 1.2)}em;
   }
 `
 
@@ -115,6 +126,8 @@ export const MiniatureSubmit = styled.input`
   text-transform: uppercase;
   font-family: BrandonGrotesque;
   border: 1px solid white;
+  pointer-events: ${p => (p.isNetworking ? "none" : "auto")};
+  outline: 0;
   position: absolute;
   letter-spacing: 2px;
   color: white;
@@ -167,7 +180,7 @@ export const InputBoxes = styled.div`
     align-items: ${p => p.miniature && "center"};
   }
   @media (max-width: 600px) {
-    justify-content: ${p => p.miniature && "center"};
+    justify-content: ${p => p.miniature && "flex-start"};
   }
 `
 
@@ -215,6 +228,7 @@ export const MyLocationMarkerImage = styled.img`
 export const Autocomplete = styled.div`
   position: absolute;
   width: 100%;
+  min-width: 150px;
   background-color: white;
   font-family: BrandonGrotesqueLight;
   border: 2px solid ${colors.blue};
@@ -223,6 +237,14 @@ export const Autocomplete = styled.div`
   padding: 0 5px;
   z-index: 100000;
   box-sizing: border-box;
+`
+
+export const AutocompleteText = styled(StyledText)`
+  margin: 8px 0;
+  cursor: pointer;
+  @media (max-width: 600px) {
+    font-size: 0.85em;
+  }
 `
 
 export const RouteArrow = styled.img`

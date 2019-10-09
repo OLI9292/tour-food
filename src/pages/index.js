@@ -9,6 +9,7 @@ import Search from "../components/search"
 import {
   Box,
   Header,
+  SelectSearchBox,
   SearchBoxes,
   SearchBox,
   Image,
@@ -44,6 +45,9 @@ export default class IndexPage extends React.Component {
   }
 
   componentDidMount() {
+    window.locationResults = undefined
+    window.searchProps = undefined
+
     this.requestLocation()
     this.setState({ isLoading: false })
 
@@ -142,13 +146,7 @@ export default class IndexPage extends React.Component {
     } = this.state
 
     const selectSearchComponent = (
-      <div
-        style={{
-          height: "calc(100vh - 60px)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <SelectSearchBox>
         <SearchBoxes>
           <SearchBox onClick={() => this.setState({ searchType: "route" })}>
             <Image src={searchByRoute} />
@@ -195,7 +193,7 @@ export default class IndexPage extends React.Component {
         >
           VIEW ALL
         </Header>
-      </div>
+      </SelectSearchBox>
     )
 
     if (this.state.isLoading) {
