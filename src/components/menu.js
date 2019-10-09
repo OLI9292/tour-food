@@ -10,13 +10,13 @@ export default class Menu extends Component {
     return (
       <Box onMouseLeave={this.props.onMouseLeave.bind(this)}>
         <Link style={{ textDecoration: "none" }} to="/about">
-          <StyledText>About</StyledText>
+          <StyledText color={colors.blue}>About</StyledText>
         </Link>
         <Link style={{ textDecoration: "none" }} to="/faq">
-          <StyledText>FAQ</StyledText>
+          <StyledText color={colors.blue}>FAQ</StyledText>
         </Link>
         <Link style={{ textDecoration: "none" }} to="/contact">
-          <StyledText>Contact</StyledText>
+          <StyledText color={colors.blue}>Contact</StyledText>
         </Link>
       </Box>
     )

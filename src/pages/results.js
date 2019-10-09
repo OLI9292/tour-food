@@ -92,9 +92,6 @@ export default class Results extends React.Component {
   }
 
   filter(key, value) {
-    // If it's a location search and the filter is tag
-    //   add to description
-    //   filter what is there
     console.log(`Filter ${key} to ${value}.`)
     let { locations, filterBy, searchProps } = this.state
     const searchType = get(searchProps, "searchType")
@@ -113,6 +110,11 @@ export default class Results extends React.Component {
       key === "tag" && value === undefined && searchType === "destination"
     const filterTagsNearLocation =
       isFilteringNearby && key === "tag" && filterBy["tag"]
+
+    const filterTagsAlongRoute =
+      key === "tag" && value !== undefined && searchType === "route"
+    const unfilterTagsAlongRoute =
+      key === "tag" && value === undefined && searchType === "route"
 
     if (unfilterTagsNearLocation) {
       console.log("Unfilter tags near location.")
@@ -152,7 +154,9 @@ export default class Results extends React.Component {
 
     if (filterBy["tag"]) description += "for " + filterBy["tag"]
 
-    if (unfilterTagsNearLocation || filterTagsNearLocation) {
+    if (unfilterTagsAlongRoute || filterTagsAlongRoute) {
+      description += ` from ${this.state.description.split("from ")[1]}`
+    } else if (unfilterTagsNearLocation || filterTagsNearLocation) {
       description += ` near ${this.state.description.split("near")[1]}`
     } else {
       const stateOrCity = filterBy["state"] || filterBy["city"]
@@ -349,6 +353,7 @@ export default class Results extends React.Component {
                   marginRight: "10px",
                   fontFamily: "BrandonGrotesqueBold",
                   letterSpacing: "0.5px",
+                  textAlign: "left",
                 }}
               >
                 {data.location.name}
@@ -431,10 +436,11 @@ export default class Results extends React.Component {
 
           {description && (
             <Text
-              small
+              extraSmall
               style={{
                 textAlign: "center",
-                padding: "8px",
+                fontFamily: "BrandonGrotesqueLight",
+                padding: "6px",
                 width: "100%",
                 boxSizing: "border-box",
                 color: "white",
@@ -488,25 +494,20 @@ const ScrollBox = styled.div`
 const GoUp = styled.img`
   position: fixed;
   right: 15px;
-  bottom: 5px;
+  top: calc(100vh - 120px);
   z-index: 400;
   width: 50px;
   height: auto;
   border-radius: 50px;
   background-color: white;
   cursor: pointer;
-  @media (display-mode: browser) and (max-width: 650px) {
-    bottom: 20px;
-  }
 `
 
 const ResultBox = styled.div`
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 10px;
   background-color: ${p => p.highlight && colors.lightestGray};
   width: 100%;
-  padding: 15px 0;
+  padding: 12px 0;
   box-sizing: border-box;
 `
 

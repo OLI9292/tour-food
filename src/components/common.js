@@ -161,7 +161,7 @@ export const Submit = styled.input`
   width: 100%;
   display: block;
   margin-top: 25px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.14);
 `
 
 export const InputBox = styled.div`

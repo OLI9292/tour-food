@@ -28,6 +28,7 @@ export default class ContactPage extends React.Component {
       <Box
         style={{
           backgroundImage: `url(${require("../images/backgrounds/contact.png")})`,
+          position: "relative",
         }}
       >
         <SEO title="Contact" />
@@ -42,7 +43,7 @@ export default class ContactPage extends React.Component {
         </Header>
 
         <form
-          action="https://formspree.io/otplunkett@gmail.com"
+          action="https://formspree.io/tourfood.us@gmail.com"
           method="POST"
           style={{ width: "90%", maxWidth: "600px", margin: "0 auto" }}
         >

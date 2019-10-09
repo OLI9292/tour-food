@@ -77,8 +77,11 @@ export default class FAQPage extends React.Component {
           </span>
           <br />
           We didn’t know about it! If you believe there is an important place we
-          are missing, please send us a message in the ​Contact Form ​and we
-          will happily consider adding it.
+          are missing, please send us a message in the ​
+          <Link style={{ color: colors.orange }} to="/contact">
+            Contact Form
+          </Link>{" "}
+          ​and we will happily consider adding it.
           <br />
           <br />
           <span style={{ fontFamily: "BrandonGrotesque" }}>

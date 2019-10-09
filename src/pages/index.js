@@ -8,6 +8,7 @@ import Search from "../components/search"
 
 import {
   Box,
+  Text,
   Header,
   SelectSearchBox,
   SearchBoxes,
@@ -167,7 +168,7 @@ export default class IndexPage extends React.Component {
           </SearchBox>
         </SearchBoxes>
 
-        <Header
+        <Text
           onClick={() => {
             if (!locations.length) return
             const filterBy = {
@@ -179,20 +180,22 @@ export default class IndexPage extends React.Component {
               state: { results: [], locations, filterBy },
             })
           }}
+          color="white"
           style={{
             textAlign: "center",
             lineHeight: "60px",
+            letterSpacing: "1.5px",
             boxSizing: "border-box",
             width: "100%",
+
             cursor: "pointer",
-            color: "white",
             margin: 0,
             opacity: dataLoaded ? 1 : 0,
             transition: "opacity 0.5s",
           }}
         >
           VIEW ALL
-        </Header>
+        </Text>
       </SelectSearchBox>
     )
 
