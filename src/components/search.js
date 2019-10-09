@@ -12,7 +12,8 @@ import {
   BlueLine,
   Submit,
   Form,
-  SubmitIcon,
+  RouteArrow,
+  MiniatureSubmit,
   FlexedDiv,
 } from "../components/common"
 
@@ -25,7 +26,7 @@ import {
   distanceInMiles,
 } from "../lib/helpers"
 
-import iconRight from "../images/icon-right.png"
+import routeArrow from "../images/route-arrow.png"
 
 const CAR_TO_CROW_RATIO = 0.75
 const DEFAULT_RADIUS_INDEX = 1
@@ -41,8 +42,8 @@ export default class Search extends React.Component {
       inputLetter: "A",
       radius: RADII[DEFAULT_RADIUS_INDEX],
       seconds: 0,
-      locationA: "Dallas, TX",
-      locationB: "Fort Collins, CO",
+      // locationA: "Dallas, TX",
+      // locationB: "Fort Collins, CO",
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -266,9 +267,7 @@ export default class Search extends React.Component {
         ? ` from ${addressA} to ${addressB}`
         : ` near ${addressA}`
 
-      if (results.length === 0) {
-        return this.setState({ error: "0 results" + location })
-      }
+      if (results.length === 0) return this.setError("0 results" + location)
 
       let description = `${results.length} result`
       if (results.length > 1) description += "s"
@@ -316,6 +315,7 @@ export default class Search extends React.Component {
 
   render() {
     const { miniature, searchType } = this.props
+    console.log("Is searching", searchType, "miniature", miniature)
 
     const {
       autocompleteResults,
@@ -450,6 +450,8 @@ export default class Search extends React.Component {
           <BlueLine miniature={miniature} glow={glow === "locationA"} />
         </InputBox>
 
+        {searchType === "route" && miniature && <RouteArrow src={routeArrow} />}
+
         {searchType === "route" && (
           <InputBox destination={true} miniature={miniature}>
             <Input
@@ -510,10 +512,11 @@ export default class Search extends React.Component {
     )
 
     const submit = miniature ? (
-      <SubmitIcon
+      <MiniatureSubmit
+        type="submit"
         isNetworking={isNetworking}
         onClick={this.handleSubmit.bind(this)}
-        src={iconRight}
+        value="search"
       />
     ) : isNetworking ? (
       <Text style={{ marginTop: "15px" }}>Searching{".".repeat(seconds)}</Text>

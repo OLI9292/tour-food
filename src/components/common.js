@@ -86,9 +86,10 @@ export const Input = styled.input`
   text-overflow: ellipsis;
   ::placeholder {
     text-overflow: ellipsis;
-    color: ${colors.blue};
+    color: ${p => (p.miniature ? "white" : colors.blue)};
   }
   font-size: ${p => (p.miniature ? 1 : 1.2)}em;
+  color: ${p => (p.miniature ? "white" : "black")};
   display: block;
   @media (max-width: 600px) {
     margin: 0;
@@ -96,12 +97,38 @@ export const Input = styled.input`
   }
 `
 
-export const BlueLine = styled.div`
-  background-color: ${p => (p.glow ? colors.red : colors.blue)};
+export const BlueLine = styled.span`
+  background-color: ${p =>
+    p.glow ? colors.red : p.miniature ? "white" : colors.blue};
   transition: background-color 0.15s ease;
   height: 2px;
   border-radius: 5px;
   width: 100%;
+  position: absolute;
+  left: 0;
+`
+
+export const MiniatureSubmit = styled.input`
+  cursor: pointer;
+  right: -5px;
+  bottom: 8px;
+  text-transform: uppercase;
+  font-family: BrandonGrotesque;
+  border: 1px solid white;
+  position: absolute;
+  letter-spacing: 2px;
+  color: white;
+  -webkit-appearance: none;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.9em;
+  height: 30px;
+  line-height: 28px;
+  @media (min-width: 600px) {
+    right: -85px;
+    top: 25px;
+    bottom: 25px;
+  }
 `
 
 export const Submit = styled.input`
@@ -124,52 +151,30 @@ export const Submit = styled.input`
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
 `
 
-export const SubmitIcon = styled.img`
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.13), 0 3px 3px rgba(0, 0, 0, 0.17);
-  margin: 0 10px 0 20px;
-  width: 45px;
-  height: 45px;
-  background-color: ${p => (p.isNetworking ? colors.orange : colors.blue)};
-  border-radius: 5px;
-  padding: 5px;
-  z-index: 500;
-  box-sizing: border-box;
-  cursor: pointer;
-  @media (max-width: 600px) {
-    margin: 0 5px 0 10px;
-    font-size: 0.95em;
-    width: 35px;
-    height: 35px;
-  }
-`
-
 export const InputBox = styled.div`
   margin: ${p => (p.miniature ? 0 : "30px 0")};
   position: relative;
   max-width: 320px;
   flex-grow: 1;
-  @media (min-width: 600px) {
-    margin-left: ${p => (p.miniature && p.destination ? 10 : 0)}px;
-  }
 `
 
 export const InputBoxes = styled.div`
   height: ${p => p.miniature && "100%"};
   flex-grow: ${p => p.miniature && 1};
   display: ${p => p.miniature && "flex"};
+  flex-direction: ${p => (p.miniature ? "row" : "column")};
   @media (min-width: 600px) {
     align-items: ${p => p.miniature && "center"};
   }
   @media (max-width: 600px) {
     justify-content: ${p => p.miniature && "center"};
-    flex-direction: ${p => p.miniature && "column"};
   }
 `
 
 export const Form = styled.form`
   flex: 2;
   text-align: center;
-  width: 320px;
+  width: ${p => (p.miniature ? "100%" : "320px")};
   margin: ${p => (p.miniature ? "0 5px" : "0 auto")};
   height: ${p => p.miniature && "100%"};
   display: ${p => (p.miniature ? "flex" : "inline-block")};
@@ -218,4 +223,13 @@ export const Autocomplete = styled.div`
   padding: 0 5px;
   z-index: 100000;
   box-sizing: border-box;
+`
+
+export const RouteArrow = styled.img`
+  width: 15px;
+  height: 15px;
+  margin: 0 15px;
+  @media (max-width: 600px) {
+    margin-top: 4px;
+  }
 `

@@ -32,7 +32,7 @@ const Box = styled.div`
   padding: 18px 25px;
   box-sizing: border-box;
   right: 0;
-  top: 57px;
+  top: 80px;
   z-index: 600;
 `
 

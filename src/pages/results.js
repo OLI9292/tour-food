@@ -258,20 +258,22 @@ export default class Results extends React.Component {
     const displayMapBanner = results.length ? (
       <FlexedDiv
         style={{
-          borderBottom: `3px solid ${colors.blue}`,
-          padding: "8px 0",
+          padding: "16px 0",
+          backgroundColor: colors.orange,
           width: "100%",
           cursor: "pointer",
-          minHeight: "35px",
+          minHeight: "42px",
         }}
         onClick={() => this.setState({ displayMap: true })}
       >
         <img
-          style={{ height: "35px", width: "35px", marginRight: "5px" }}
+          style={{ height: "42px", width: "42px", marginRight: "10px" }}
           src={searchByRouteSquare}
           alt="search by route"
         />
-        <Text small>View on Map</Text>
+        <Text color="white" style={{ letterSpacing: "2px" }}>
+          MAP VIEW
+        </Text>
       </FlexedDiv>
     ) : null
 
@@ -451,17 +453,17 @@ export default class Results extends React.Component {
 }
 
 const ResultsBox = styled.div`
-  height: calc(100% - 57px);
+  height: calc(100% - 80px);
   text-align: center;
   display: flex;
   flex-direction: column;
   object-fit: contain;
   position: fixed;
-  top: 57px;
+  top: 80px;
   width: 100%;
   @media (max-width: 600px) {
-    height: calc(100% - 59px);
-    top: 59px;
+    height: calc(100% - 80px);
+    top: 80px;
   }
 `
 
