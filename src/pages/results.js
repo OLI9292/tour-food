@@ -491,8 +491,8 @@ const ScrollBox = styled.div`
 
 const GoUp = styled.img`
   position: fixed;
-  right: 15px;
-  top: calc(100vh - 120px);
+  right: 8px;
+  top: calc(100vh - 130px);
   z-index: 400;
   width: 50px;
   height: auto;

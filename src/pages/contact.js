@@ -45,7 +45,12 @@ export default class ContactPage extends React.Component {
         <form
           action="https://formspree.io/tourfood.us@gmail.com"
           method="POST"
-          style={{ width: "90%", maxWidth: "600px", margin: "0 auto" }}
+          style={{
+            width: "90%",
+            maxWidth: "600px",
+            margin: "0 auto",
+            position: "relative",
+          }}
         >
           <Input
             spellCheck={false}

@@ -95,16 +95,20 @@ export default class Header extends React.Component {
 
         {!displaySearch && (
           <FilterBox
-            onMouseOver={() => {
-              if (!filterBy["state"]) {
-                this.setState({ displayOptionsFor: "state" })
-              }
-            }}
+            // onMouseOver={() => {
+            //   if (!filterBy["state"]) {
+            //     this.setState({ displayOptionsFor: "state" })
+            //   }
+            // }}
             onClick={() => {
-              const updated =
-                displayOptionsFor === "state" ? undefined : "state"
-              this.setState({ displayOptionsFor: updated })
-              if (filterBy["state"]) this.props.filter("state", undefined)
+              if (filterBy["state"]) {
+                this.props.filter("state", undefined)
+                this.setState({ displayOptionsFor: undefined })
+              } else {
+                const updated =
+                  displayOptionsFor === "state" ? undefined : "state"
+                this.setState({ displayOptionsFor: updated })
+              }
             }}
           >
             <FilterHeader color={color("state")}>
@@ -123,15 +127,20 @@ export default class Header extends React.Component {
 
         {!displaySearch && (
           <FilterBox
-            onMouseOver={() => {
-              if (!filterBy["city"]) {
-                this.setState({ displayOptionsFor: "city" })
-              }
-            }}
+            // onMouseOver={() => {
+            //   if (!filterBy["city"]) {
+            //     this.setState({ displayOptionsFor: "city" })
+            //   }
+            // }}
             onClick={() => {
-              const updated = displayOptionsFor === "city" ? undefined : "city"
-              this.setState({ displayOptionsFor: updated })
-              if (filterBy["city"]) this.props.filter("city", undefined)
+              if (filterBy["city"]) {
+                this.props.filter("city", undefined)
+                this.setState({ displayOptionsFor: undefined })
+              } else {
+                const updated =
+                  displayOptionsFor === "city" ? undefined : "city"
+                this.setState({ displayOptionsFor: updated })
+              }
             }}
           >
             <FilterHeader color={color("city")}>
@@ -150,15 +159,19 @@ export default class Header extends React.Component {
         )}
 
         <FilterBox
-          onMouseOver={() => {
-            if (!filterBy["tag"]) {
-              this.setState({ displayOptionsFor: "tag" })
-            }
-          }}
+          // onMouseOver={() => {
+          //   if (!filterBy["tag"]) {
+          //     this.setState({ displayOptionsFor: "tag" })
+          //   }
+          // }}
           onClick={() => {
-            const updated = displayOptionsFor === "tag" ? undefined : "tag"
-            this.setState({ displayOptionsFor: updated })
-            if (filterBy["tag"]) this.props.filter("tag", undefined)
+            if (filterBy["tag"]) {
+              this.props.filter("tag", undefined)
+              this.setState({ displayOptionsFor: undefined })
+            } else {
+              const updated = displayOptionsFor === "tag" ? undefined : "tag"
+              this.setState({ displayOptionsFor: updated })
+            }
           }}
         >
           <FilterHeader color={color("tag")}>
@@ -250,7 +263,7 @@ const StyledHeader = styled.header`
 const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
-  margin: 0 70px 0 76px;
+  margin: 0 65px 0 80px;
   border-left: 3px solid rgb(21, 126, 251);
   border-right: 3px solid rgb(21, 126, 251);
   position: absolute;
@@ -261,10 +274,10 @@ const Filters = styled(FlexedDiv)`
   box-sizing: border-box;
   @media (min-width: 600px) {
     flex-direction: row;
-    margin: ${p => p.displaySearch && "0 150px 0 76px"};
+    margin: ${p => (p.displaySearch ? "0 165px 0 80px" : "0 65px 0 80px")};
   }
   @media (min-width: 900px) {
-    margin: ${p => p.displaySearch && "0 350px 0 76px"};
+    margin: ${p => (p.displaySearch ? "0 335px 0 80px" : "0 235px 0 80px")};
   }
   @media (max-width: 600px) {
     flex-direction: ${p => p.displaySearch && "column"};
@@ -288,6 +301,7 @@ const FilterHeader = styled(Text)`
   margin-right: 8px;
   color: white;
   flex: 1;
+  min-width: 35px;
   font-family: BrandonGrotesqueLight;
   text-align: left;
   position: relative;
