@@ -494,9 +494,9 @@ const GoUp = styled.img`
   right: 8px;
   top: calc(100vh - 130px);
   z-index: 400;
-  width: 50px;
+  width: 46px;
   height: auto;
-  border-radius: 50px;
+  border-radius: 46px;
   background-color: white;
   cursor: pointer;
 `

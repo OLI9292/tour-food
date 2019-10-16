@@ -528,11 +528,13 @@ export default class Search extends React.Component {
 
     const errorComponent = error && (
       <Text
-        color={colors.red}
+        color={miniature ? "white" : colors.red}
         style={{
           marginTop: miniature ? 0 : "15px",
-          fontSize: miniature ? "0.7em" : "1em",
+          fontSize: miniature ? "0.85em" : "1em",
           flexGrow: miniature ? 1 : 0,
+          textAlign: miniature ? "left" : "center",
+          fontFamily: "BrandonGrotesqueLight"
         }}
       >
         {error}
