@@ -58,6 +58,7 @@ export default class ContactPage extends React.Component {
             value={name}
             style={{ marginTop: "25px" }}
             type="value"
+            name="name"
             placeholder="*Name"
           />
 
@@ -69,6 +70,7 @@ export default class ContactPage extends React.Component {
             style={{ marginTop: "30px" }}
             value={email}
             type="value"
+            name="email"
             placeholder="*Email"
           />
 
