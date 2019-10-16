@@ -116,10 +116,7 @@ export default class Header extends React.Component {
               <BlueLine style={{ bottom: "-4px" }} miniature={true} />
             </FilterHeader>
 
-            <img
-              style={{ width: "18px", height: "18px" }}
-              src={dropdownArrow}
-            />
+            <DropdownArrow src={dropdownArrow} />
 
             {displayOptionsFor === "state" && dropdown("state")}
           </FilterBox>
@@ -148,10 +145,7 @@ export default class Header extends React.Component {
               <BlueLine style={{ bottom: "-4px" }} miniature={true} />
             </FilterHeader>
 
-            <img
-              style={{ width: "18px", height: "18px" }}
-              src={dropdownArrow}
-            />
+            <DropdownArrow src={dropdownArrow} />
 
             {displayOptionsFor === "city" &&
               dropdown("city", filterOptions.cities)}
@@ -182,7 +176,7 @@ export default class Header extends React.Component {
             <BlueLine style={{ bottom: "-4px" }} miniature={true} />
           </FilterHeader>
 
-          <img style={{ width: "18px", height: "18px" }} src={dropdownArrow} />
+          <DropdownArrow src={dropdownArrow} />
 
           {displayOptionsFor === "tag" && dropdown("tag")}
         </FilterBox>
@@ -263,7 +257,7 @@ const StyledHeader = styled.header`
 const Filters = styled(FlexedDiv)`
   flex-grow: 1;
   justify-content: space-around;
-  margin: 0 65px 0 80px;
+  margin: 0 60px 0 80px;
   border-left: 3px solid rgb(21, 126, 251);
   border-right: 3px solid rgb(21, 126, 251);
   position: absolute;
@@ -298,7 +292,8 @@ const Line = styled.div`
 
 const FilterHeader = styled(Text)`
   text-transform: capitalize;
-  margin-right: 8px;
+  margin-right: -18px;
+  padding-right: 22px;
   color: white;
   flex: 1;
   min-width: 35px;
@@ -307,7 +302,9 @@ const FilterHeader = styled(Text)`
   position: relative;
   transition: color 0.15s ease;
   @media (max-width: 600px) {
-    margin-right: 5px;
+    margin-right: -13px;
+    padding-right: 13px;
+    padding-right: 17px;
     font-size: 0.95em;
   }
 `
@@ -384,8 +381,8 @@ const Icon = styled.img`
 
 const HamburgerIcon = styled.img`
   width: auto;
-  height: 54px;
-  top: 13px;
+  height: 44px;
+  top: 18px;
   cursor: pointer;
   position: absolute;
   right: 2px;
@@ -393,7 +390,7 @@ const HamburgerIcon = styled.img`
 `
 
 const EtcSpan = styled.span`
-  margin-left: 8px;
+  margin-left: 5px;
   font-size: 0.85em;
   bottom: 0;
   text-transform: lowercase;
@@ -401,4 +398,13 @@ const EtcSpan = styled.span`
   @media (max-width: 600px) {
     display: ${p => (p.displaySearch ? "inline-block" : "none")};
   }
+`
+
+const DropdownArrow = styled.img`
+  width: 18px;
+  height: 18px;
+  @media (max-width: 600px) {
+    width: 15px;
+    height: 15px;
+  }  
 `

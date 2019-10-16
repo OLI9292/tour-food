@@ -113,7 +113,7 @@ export const BlueLine = styled.span`
   background-color: ${p =>
     p.glow ? colors.red : p.miniature ? "white" : colors.blue};
   transition: background-color 0.15s ease;
-  height: 2px;
+  height: ${p => p.miniature ? 1 : 2}px;
   border-radius: 5px;
   width: 100%;
   position: absolute;
@@ -123,25 +123,25 @@ export const BlueLine = styled.span`
 export const MiniatureSubmit = styled.input`
   cursor: pointer;
   right: -5px;
-  bottom: 8px;
+  bottom: 13px;
   text-transform: uppercase;
   font-family: BrandonGrotesque;
   border: 1px solid white;
   pointer-events: ${p => (p.isNetworking ? "none" : "auto")};
   outline: 0;
   position: absolute;
-  letter-spacing: 2px;
+  letter-spacing: 1.1px;
   color: white;
   -webkit-appearance: none;
   border-radius: 0;
   background-color: transparent;
-  font-size: 0.9em;
-  height: 30px;
-  line-height: 28px;
+  font-size: 0.85em;
+  height: 27px;
   @media (min-width: 600px) {
-    right: -85px;
-    top: 25px;
-    bottom: 25px;
+    right: -95px;
+    font-size: 1em;
+    bottom: 21.6px;
+    height: 35px;
   }
 `
 
@@ -186,7 +186,8 @@ export const InputBoxes = styled.div`
 `
 
 export const Form = styled.form`
-  flex: 2;
+  flex: ${p => p.miniature ? 1 : 2};
+  justify-content: ${p => p.miniature && "flex-start"};
   text-align: center;
   width: ${p => (p.miniature ? "100%" : "320px")};
   margin: ${p => (p.miniature ? "0 5px" : "0 auto")};
@@ -253,6 +254,17 @@ export const RouteArrow = styled.img`
   height: 15px;
   margin: 0 15px;
   @media (max-width: 600px) {
-    margin-top: 5px;
+    margin: 7px 7px 0 7px;
+    width: 12px;
+    height: 12px;
   }
 `
+
+// export const BottomIcon = styled.img`
+//   position: absolute;
+//   left: 50%;
+//   bottom: 80px;
+//   height: 45px;
+//   width: 4px;
+//   margin-left: -20px;
+// `

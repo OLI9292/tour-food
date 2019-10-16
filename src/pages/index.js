@@ -23,6 +23,7 @@ import colors from "../lib/colors"
 const searchByRoute = require(`../images/search-by-route.png`)
 
 const searchNearby = require(`../images/search-nearby.png`)
+const instagram = require(`../images/instagram.png`)
 
 const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
@@ -183,7 +184,7 @@ export default class IndexPage extends React.Component {
           color="white"
           style={{
             textAlign: "center",
-            lineHeight: "60px",
+            lineHeight: "40px",
             letterSpacing: "1.5px",
             boxSizing: "border-box",
             width: "100%",
@@ -246,6 +247,8 @@ export default class IndexPage extends React.Component {
         ) : (
           selectSearchComponent
         )}
+
+        {/* <BottomIcon src={instagram} /> */}
       </Box>
     )
   }

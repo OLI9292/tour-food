@@ -48,7 +48,7 @@ export default class Results extends React.Component {
     super(props)
 
     this.state = {
-      displayMap: false,
+      displayMap: true,
       results: [],
       locations: [],
       filterOptions: { state: [], city: [], topCities: [], tag: [] },
@@ -492,13 +492,16 @@ const ScrollBox = styled.div`
 const GoUp = styled.img`
   position: fixed;
   right: 8px;
-  top: calc(100vh - 130px);
+  top: calc(100vh - 175px);
   z-index: 400;
-  width: 46px;
+  width: 35px;
   height: auto;
   border-radius: 46px;
   background-color: white;
   cursor: pointer;
+  @media (min-width: 600px) {
+    top: calc(100vh - 75px);
+  }  
 `
 
 const ResultBox = styled.div`
@@ -525,15 +528,15 @@ const MapBox = styled.div`
 `
 
 const CloseImage = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 33px;
+  height: 33px;
   cursor: pointer;
   border-radius: 30px;
   position: absolute;
   top: 8px;
   right: 8px;
   background-color: white;
-  border: 3px solid ${colors.blue};
+  border: 2px solid ${colors.blue};
   z-index: 500;
 `
 
