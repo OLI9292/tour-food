@@ -37,7 +37,7 @@ export default class AboutPage extends React.Component {
           color={colors.blue}
           style={{
             padding: "25px 50px",
-            fontFamily: "BrandonGrotesque",
+            fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",
           }}
@@ -77,7 +77,7 @@ export default class AboutPage extends React.Component {
           color={colors.blue}
           style={{
             padding: "25px 50px",
-            fontFamily: "BrandonGrotesque",
+            fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",
           }}
@@ -117,12 +117,14 @@ export default class AboutPage extends React.Component {
           color={colors.blue}
           style={{
             padding: "25px 50px",
-            fontFamily: "BrandonGrotesque",
+            fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",
           }}
         >
-          <span style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesque" }}>
+          <span
+            style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesqueBold" }}
+          >
             Luke Pyenson
           </span>
           <br />
@@ -139,7 +141,9 @@ export default class AboutPage extends React.Component {
           <br />
           <br />
           <br />
-          <span style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesque" }}>
+          <span
+            style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesqueBold" }}
+          >
             Charlie Ferguson
           </span>
           <br />
@@ -158,7 +162,9 @@ export default class AboutPage extends React.Component {
           <br />
           <br />
           <br />
-          <span style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesque" }}>
+          <span
+            style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesqueBold" }}
+          >
             Adam Schatz
           </span>
           <br />

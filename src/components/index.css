@@ -4,6 +4,11 @@
 }
 
 @font-face {
+  font-family: BrandonGrotesqueRegular;
+  src: url("../lib/fonts/BrandonText-Regular.otf");
+}
+
+@font-face {
   font-family: BrandonGrotesqueLight;
   src: url("../lib/fonts/BrandonText-Light.otf");
 }

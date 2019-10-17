@@ -1,5 +1,6 @@
 export default {
   blue: "#157EFB",
+  opaqueBlue: "rgba(21, 126, 251, 0.85)",
   lightBlue: "#abd1fe",
   orange: "#FB6320",
   gray: "#808080",

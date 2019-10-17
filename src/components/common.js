@@ -98,7 +98,7 @@ export const Input = styled.input`
   text-overflow: ellipsis;
   ::placeholder {
     text-overflow: ellipsis;
-    color: ${p => (p.miniature ? "white" : colors.blue)};
+    color: ${p => (p.miniature ? "white" : colors.opaqueBlue)};
   }
   font-size: 1.2em;
   color: ${p => (p.miniature ? "white" : "black")};
@@ -113,7 +113,7 @@ export const BlueLine = styled.span`
   background-color: ${p =>
     p.glow ? colors.red : p.miniature ? "white" : colors.blue};
   transition: background-color 0.15s ease;
-  height: ${p => p.miniature ? 1 : 2}px;
+  height: ${p => (p.miniature ? 1 : 2)}px;
   border-radius: 5px;
   width: 100%;
   position: absolute;
@@ -186,7 +186,7 @@ export const InputBoxes = styled.div`
 `
 
 export const Form = styled.form`
-  flex: ${p => p.miniature ? 1 : 2};
+  flex: ${p => (p.miniature ? 1 : 2)};
   justify-content: ${p => p.miniature && "flex-start"};
   text-align: center;
   width: ${p => (p.miniature ? "100%" : "320px")};

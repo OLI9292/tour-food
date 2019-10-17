@@ -56,7 +56,7 @@ export default class ContactPage extends React.Component {
             spellCheck={false}
             onChange={e => this.setState({ name: e.target.value })}
             value={name}
-            style={{ marginTop: "25px",fontFamily:"BrandonGrotesque" }}
+            style={{ marginTop: "25px", fontFamily: "BrandonGrotesqueRegular" }}
             type="value"
             name="name"
             placeholder="*Name"
@@ -67,7 +67,7 @@ export default class ContactPage extends React.Component {
           <Input
             spellCheck={false}
             onChange={e => this.setState({ email: e.target.value })}
-            style={{ marginTop: "30px",fontFamily:"BrandonGrotesque" }}
+            style={{ marginTop: "30px", fontFamily: "BrandonGrotesqueRegular" }}
             value={email}
             type="value"
             name="email"
@@ -78,7 +78,7 @@ export default class ContactPage extends React.Component {
 
           <Text
             style={{
-              fontFamily: "BrandonGrotesque",
+              fontFamily: "BrandonGrotesqueRegular",
               margin: "30px 0 3px 0",
             }}
             color={colors.blue}
@@ -109,7 +109,7 @@ export default class ContactPage extends React.Component {
               style={{
                 textAlign: "center",
                 marginTop: "10px",
-                fontFamily: "BrandonGrotesque",
+                fontFamily: "BrandonGrotesqueRegular",
               }}
             >
               Thanks for your message!
@@ -125,9 +125,9 @@ const Textarea = styled.textarea`
   border: 1.5px solid ${colors.blue};
   border-radius: 3px;
   padding: 10px;
-  font-family: BrandonGrotesque;
+  font-family: BrandonGrotesqueRegular;
   ::placeholder {
-    color: ${colors.blue};
+    color: ${colors.opaqueBlue};
   }
   font-size: 1em;
   outline: 0;

@@ -35,26 +35,26 @@ export default class FAQPage extends React.Component {
           color={colors.blue}
           style={{
             padding: "25px 50px",
-            fontFamily: "BrandonGrotesque",
+            fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",
           }}
         >
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Does the internet really need another food website?
           </span>
           <br />
           No. Wait...Yes.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Why is this a minimalist website and not an app?
           </span>
           <br />
           We couldn’t afford to pay for app development.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Is this a complete list of places to eat around the US and Canada?
           </span>
           <br />
@@ -62,7 +62,7 @@ export default class FAQPage extends React.Component {
           trusted touring musician associates have been to so far.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             I’m not a touring musician, is this site for me?
           </span>
           <br />
@@ -72,7 +72,7 @@ export default class FAQPage extends React.Component {
           insular.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Why isn’t my favorite spot on here?
           </span>
           <br />
@@ -84,7 +84,7 @@ export default class FAQPage extends React.Component {
           ​and we will happily consider adding it.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Does Tour Food have listings that cater to my dietary restriction?
           </span>
           <br />
@@ -96,7 +96,7 @@ export default class FAQPage extends React.Component {
           no matter what your diet is.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             How much work are you doing for me?
           </span>
           <br />
@@ -108,14 +108,14 @@ export default class FAQPage extends React.Component {
           and could never provide.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             What determines an 'open late' tag?
           </span>
           <br />
           Open until 11:00pm or later.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Is everything on tour food within a certain price range?
           </span>
           <br />
@@ -127,7 +127,7 @@ export default class FAQPage extends React.Component {
           budget that works for them.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Why do some listings have notes?
           </span>
           <br />
@@ -138,14 +138,14 @@ export default class FAQPage extends React.Component {
           and think we should add a note, ​get in touch.
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             Will you add more international listings in the future?
           </span>
           <br />
           We’re planning to!
           <br />
           <br />
-          <span style={{ fontFamily: "BrandonGrotesque" }}>
+          <span style={{ fontFamily: "BrandonGrotesqueBold" }}>
             I ate at a place you suggested and it stunk!
           </span>
           <br />
