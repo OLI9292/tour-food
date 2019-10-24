@@ -7,10 +7,6 @@ export default function HTML(props) {
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-        <meta
-          name="og:image"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
         <meta name="og:title" content="Tour Food" />
         <meta name="og:image" content="tour-food-icon.png" />
         <meta name="og:url" content="https://tourfood.us" />

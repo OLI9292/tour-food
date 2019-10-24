@@ -25,7 +25,7 @@ module.exports = {
         background_color: `#FB6320`,
         theme_color: `#157EFB`,
         display: `fullscreen`,
-        icon: `src/images/icon.png`,
+        icon: `src/images/tour-food-icon-sq.png`,
         orientation: "portrait",
       },
     },
