@@ -40,22 +40,6 @@ function SEO({ lang, meta }) {
           content: description,
         },
         {
-          property: `og:title`,
-          content: title,
-        },
-        {
-          property: `og:image`,
-          content: image,
-        },
-        {
-          property: `og:url`,
-          content: url,
-        },
-        {
-          property: `og:description`,
-          content: description,
-        },
-        {
           property: `og:type`,
           content: `website`,
         },

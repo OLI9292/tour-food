@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: `Tour Food`,
     description: `Great places for food and drink on tour!`,
-    url: `https://www.tourfood.us`,
+    url: `https://tourfood.us`,
     image: `tour-food-icon.png`,
   },
   plugins: [
