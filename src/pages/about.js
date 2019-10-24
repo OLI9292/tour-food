@@ -38,7 +38,7 @@ export default class AboutPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px 50px",
+            padding: "25px",
             fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",
@@ -78,7 +78,7 @@ export default class AboutPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px 50px",
+            padding: "25px",
             fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",
@@ -118,7 +118,7 @@ export default class AboutPage extends React.Component {
           small
           color={colors.blue}
           style={{
-            padding: "25px 50px",
+            padding: "25px",
             fontFamily: "BrandonGrotesqueRegular",
             maxWidth: "900px",
             margin: "0 auto",

@@ -121,7 +121,7 @@ export default class ContactPage extends React.Component {
         </form>
 
         <a target="_blank" href="https://www.instagram.com/tourfood.us">
-          <BottomIconAbsolute src={instaBlue} />
+          <BottomIconAbsolute bottom={90} src={instaBlue} />
         </a>
       </Box>
     )

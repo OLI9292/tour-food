@@ -43,7 +43,7 @@ export const SearchBoxes = styled.div`
   text-align: center;
   flex-direction: row;
   display: flex;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 160px);
   align-items: center;
   @media (max-width: 900px) {
     flex-direction: column;
@@ -71,7 +71,7 @@ export const SelectSearchBox = styled.div`
   display: flex;
   flex-direction: column;
   @media (max-width: 900px) {
-    height: calc(100vh - 230px);
+    height: calc(100vh - 240px);
     margin-top: 5px;
   }
 `
@@ -264,20 +264,20 @@ export const BottomIconAbsolute = styled.img`
   position: absolute;
   left: 50%;
   bottom: 20px;
-  height: 35px;
-  width: 35px;
-  margin-left: -17.5px;
+  height: 30px;
+  width: 30px;
+  margin-left: -15px;
   cursor: pointer;
   @media (max-width: 900px) {
-    bottom: 100px;
+    bottom: ${p => p.bottom || 105}px;
   }
 `
 
 export const BottomIcon = styled.img`
-  margin-left: calc(50% - 17.5px);
+  margin-left: calc(50% - 15px);
   margin-top: 20px;
   margin-bottom: 30px;
-  height: 35px;
-  width: 35px;
+  height: 30px;
+  width: 30px;
   cursor: pointer;
 `
