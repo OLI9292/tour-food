@@ -3,7 +3,7 @@ module.exports = {
     title: `Tour Food`,
     description: `Great places for food and drink on tour!`,
     url: `https://tourfood.us`,
-    image: `tour-food-icon.png`,
+    image: `tour-food-icon.jpeg`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

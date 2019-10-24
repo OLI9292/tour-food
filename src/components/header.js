@@ -18,8 +18,8 @@ export default class Header extends React.Component {
     this.state = { displayMenu: false, isMobile: false }
   }
 
-  componentDidUpdate() {
-    if (this.state.displayMenu) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.searchType !== this.props.searchType) {
       this.setState({ displayMenu: false })
     }
   }
