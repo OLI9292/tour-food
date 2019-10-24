@@ -26,13 +26,11 @@ function SEO({ lang, meta }) {
     `
   )
 
-  const { description, image, title, url } = site.siteMetadata
+  const { description, title } = site.siteMetadata
 
   return (
     <Helmet
-      htmlAttributes={{
-        lang,
-      }}
+      htmlAttributes={{ lang }}
       title={title}
       meta={[
         {
@@ -56,7 +54,15 @@ function SEO({ lang, meta }) {
           content: description,
         },
       ].concat(meta)}
-    />
+    >
+      <meta name="og:title" content="Tour Food" />
+      <meta name="og:image" content="tour-food-icon.png" />
+      <meta name="og:url" content="https://tourfood.us" />
+      <meta
+        name="og:description"
+        content="Great places for food and drink on tour!"
+      />
+    </Helmet>
   )
 }
 

@@ -18,8 +18,10 @@ export default class Header extends React.Component {
     this.state = { displayMenu: false, isMobile: false }
   }
 
-  componentWillReceiveProps() {
-    this.setState({ displayMenu: false })
+  componentDidUpdate() {
+    if (this.state.displayMenu) {
+      this.setState({ displayMenu: false })
+    }
   }
 
   componentDidMount() {

@@ -491,7 +491,7 @@ const ScrollBox = styled.div`
 
 const GoUp = styled.img`
   position: fixed;
-  right: 8px;
+  right: 17px;
   top: calc(100vh - 175px);
   z-index: 400;
   width: 35px;
@@ -501,7 +501,7 @@ const GoUp = styled.img`
   cursor: pointer;
   @media (min-width: 600px) {
     top: calc(100vh - 75px);
-  }  
+  }
 `
 
 const ResultBox = styled.div`
@@ -533,8 +533,8 @@ const CloseImage = styled.img`
   cursor: pointer;
   border-radius: 30px;
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 17px;
+  right: 17px;
   background-color: white;
   border: 2px solid ${colors.blue};
   z-index: 500;
