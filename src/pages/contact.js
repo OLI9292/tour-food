@@ -11,7 +11,7 @@ import {
   Text,
   Input,
   BlueLine,
-  BottomIconAbsolute,
+  BottomIcon,
 } from "../components/common"
 
 import colors from "../lib/colors"
@@ -121,7 +121,7 @@ export default class ContactPage extends React.Component {
         </form>
 
         <a target="_blank" href="https://www.instagram.com/tourfood.us">
-          <BottomIconAbsolute bottom={90} src={instaBlue} />
+          <BottomIcon style={{marginTop:"50px"}} src={instaBlue} />
         </a>
       </Box>
     )
