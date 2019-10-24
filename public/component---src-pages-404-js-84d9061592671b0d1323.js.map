@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/pages/404.js"],"names":["window","location"],"mappings":"0FAAA,OAAe,qBAEb,MADsB,oBAAXA,SAAwBA,OAAOC,SAAW,KAC9C","file":"component---src-pages-404-js-84d9061592671b0d1323.js","sourcesContent":["export default () => {\n  if (typeof window !== \"undefined\") window.location = \"/\"\n  return null\n}\n"],"sourceRoot":""}

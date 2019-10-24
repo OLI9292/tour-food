@@ -32,7 +32,7 @@ import routeArrow from "../images/route-arrow.png"
 const CAR_TO_CROW_RATIO = 0.75
 const DEFAULT_RADIUS_INDEX = 1
 const MY_LOCATION_TEXT = "My Location - "
-const RADII = [1, 5, 20].map(String)
+const RADII = [1, 10, 25].map(String)
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -534,7 +534,7 @@ export default class Search extends React.Component {
           fontSize: miniature ? "0.85em" : "1em",
           flexGrow: miniature ? 1 : 0,
           textAlign: miniature ? "left" : "center",
-          fontFamily: "BrandonGrotesqueLight"
+          fontFamily: "BrandonGrotesqueLight",
         }}
       >
         {error}

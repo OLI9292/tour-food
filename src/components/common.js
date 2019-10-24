@@ -43,7 +43,7 @@ export const SearchBoxes = styled.div`
   text-align: center;
   flex-direction: row;
   display: flex;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 150px);
   align-items: center;
   @media (max-width: 900px) {
     flex-direction: column;
@@ -71,8 +71,8 @@ export const SelectSearchBox = styled.div`
   display: flex;
   flex-direction: column;
   @media (max-width: 900px) {
-    height: calc(100vh - 200px);
-    margin-top: 20px;
+    height: calc(100vh - 230px);
+    margin-top: 5px;
   }
 `
 
@@ -260,11 +260,24 @@ export const RouteArrow = styled.img`
   }
 `
 
-// export const BottomIcon = styled.img`
-//   position: absolute;
-//   left: 50%;
-//   bottom: 80px;
-//   height: 45px;
-//   width: 4px;
-//   margin-left: -20px;
-// `
+export const BottomIconAbsolute = styled.img`
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  height: 35px;
+  width: 35px;
+  margin-left: -17.5px;
+  cursor: pointer;
+  @media (max-width: 600px) {
+    bottom: 100px;
+  }
+`
+
+export const BottomIcon = styled.img`
+  margin-left: calc(50% - 17.5px);
+  margin-top: 20px;
+  margin-bottom: 30px;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+`

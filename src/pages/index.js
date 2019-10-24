@@ -8,6 +8,7 @@ import Search from "../components/search"
 
 import {
   Box,
+  BottomIconAbsolute,
   Text,
   Header,
   SelectSearchBox,
@@ -23,7 +24,8 @@ import colors from "../lib/colors"
 const searchByRoute = require(`../images/search-by-route.png`)
 
 const searchNearby = require(`../images/search-nearby.png`)
-const instagram = require(`../images/instagram.png`)
+const instaWhite = require(`../images/insta-white.png`)
+const instaBlue = require(`../images/insta-blue.png`)
 
 const DATA_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
@@ -153,7 +155,7 @@ export default class IndexPage extends React.Component {
           <SearchBox onClick={() => this.setState({ searchType: "route" })}>
             <Image src={searchByRoute} />
 
-            <Header style={{ margin: 0, lineHeight: "40px" }} color={"white"}>
+            <Header style={{ margin: 0, lineHeight: "35px" }} color={"white"}>
               search by route
             </Header>
           </SearchBox>
@@ -163,7 +165,7 @@ export default class IndexPage extends React.Component {
           >
             <Image src={searchNearby} />
 
-            <Header style={{ margin: 0, lineHeight: "40px" }} color={"white"}>
+            <Header style={{ margin: 0, lineHeight: "35px" }} color={"white"}>
               search by location
             </Header>
           </SearchBox>
@@ -248,7 +250,9 @@ export default class IndexPage extends React.Component {
           selectSearchComponent
         )}
 
-        {/* <BottomIcon src={instagram} /> */}
+        <a target="_blank" href="https://www.instagram.com/tourfood.us">
+          <BottomIconAbsolute src={searchType ? instaBlue : instaWhite} />
+        </a>
       </Box>
     )
   }

@@ -103,7 +103,7 @@ export default class Header extends React.Component {
             onClick={() => {
               if (filterBy["state"]) {
                 this.props.filter("state", undefined)
-                this.setState({ displayOptionsFor: undefined })
+                this.setState({ displayOptionsFor: "state" })
               } else {
                 const updated =
                   displayOptionsFor === "state" ? undefined : "state"
@@ -132,7 +132,7 @@ export default class Header extends React.Component {
             onClick={() => {
               if (filterBy["city"]) {
                 this.props.filter("city", undefined)
-                this.setState({ displayOptionsFor: undefined })
+                this.setState({ displayOptionsFor: "city" })
               } else {
                 const updated =
                   displayOptionsFor === "city" ? undefined : "city"
@@ -161,7 +161,7 @@ export default class Header extends React.Component {
           onClick={() => {
             if (filterBy["tag"]) {
               this.props.filter("tag", undefined)
-              this.setState({ displayOptionsFor: undefined })
+              this.setState({ displayOptionsFor: "tag" })
             } else {
               const updated = displayOptionsFor === "tag" ? undefined : "tag"
               this.setState({ displayOptionsFor: updated })
@@ -406,5 +406,5 @@ const DropdownArrow = styled.img`
   @media (max-width: 600px) {
     width: 15px;
     height: 15px;
-  }  
+  }
 `

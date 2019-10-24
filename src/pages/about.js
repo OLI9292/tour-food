@@ -3,9 +3,11 @@ import React from "react"
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
 
-import { Box, Header, Text } from "../components/common"
+import { Box, Header, Text, BottomIcon } from "../components/common"
 
 import colors from "../lib/colors"
+
+const instaBlue = require(`../images/insta-blue.png`)
 
 export default class AboutPage extends React.Component {
   render() {
@@ -178,7 +180,47 @@ export default class AboutPage extends React.Component {
           Talkhouse and has read articles in Bon Appetit. He pays a monthly fee
           for The New York Times Cooking. His favorite listing on Tour Food is
           Perly’s in Richmond, VA.
+          <br />
+          <br />
+          <br />
+          <span
+            style={{ fontSize: "1.2em", fontFamily: "BrandonGrotesqueBold" }}
+          >
+            AND...
+          </span>
+          <br />
+          <br />
+          Web design by{" "}
+          <a
+            style={{ color: colors.orange }}
+            target="_blank"
+            href="https://oliverplunkett.io"
+          >
+            Oliver Plunkett
+          </a>
+          <br />
+          Illustrations and graphic design by{" "}
+          <a
+            style={{ color: colors.orange }}
+            target="_blank"
+            href="http://www.laurenmartinnyc.com"
+          >
+            Lauren Martin
+          </a>
+          <br />
+          Additional graphic design by{" "}
+          <a
+            style={{ color: colors.orange }}
+            target="_blank"
+            href="https://amyarmani.com"
+          >
+            Amy Armani
+          </a>
         </Text>
+
+        <a target="_blank" href="https://www.instagram.com/tourfood.us">
+          <BottomIcon src={instaBlue} />
+        </a>
       </Box>
     )
   }

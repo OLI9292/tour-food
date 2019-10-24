@@ -1,8 +1,9 @@
 module.exports = {
   siteMetadata: {
     title: `Tour Food`,
-    description: `Good places for food and drink on tour!`,
-    author: `Oliver Plunkett`,
+    description: `Great places for food and drink on tour!`,
+    url: `https://www.tourfood.us`,
+    image: `tour-food-icon.png`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

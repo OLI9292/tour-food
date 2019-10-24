@@ -4,9 +4,11 @@ import { Link } from "gatsby"
 import SEO from "../components/seo"
 import HeaderComponent from "../components/header"
 
-import { Box, Header, Text } from "../components/common"
+import { Box, Header, Text, BottomIcon } from "../components/common"
 
 import colors from "../lib/colors"
+
+const instaBlue = require(`../images/insta-blue.png`)
 
 export default class FAQPage extends React.Component {
   render() {
@@ -156,6 +158,10 @@ export default class FAQPage extends React.Component {
           and let us know that one of our recommendations isn’t up to snuff.
           Don’t hold back.
         </Text>
+
+        <a target="_blank" href="https://www.instagram.com/tourfood.us">
+          <BottomIcon src={instaBlue} />
+        </a>
       </Box>
     )
   }

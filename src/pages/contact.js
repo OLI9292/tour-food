@@ -11,9 +11,12 @@ import {
   Text,
   Input,
   BlueLine,
+  BottomIconAbsolute,
 } from "../components/common"
 
 import colors from "../lib/colors"
+
+const instaBlue = require(`../images/insta-blue.png`)
 
 export default class ContactPage extends React.Component {
   constructor(props) {
@@ -116,6 +119,10 @@ export default class ContactPage extends React.Component {
             </Text>
           )}
         </form>
+
+        <a target="_blank" href="https://www.instagram.com/tourfood.us">
+          <BottomIconAbsolute src={instaBlue} />
+        </a>
       </Box>
     )
   }
