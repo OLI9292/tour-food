@@ -140,5 +140,5 @@ const Textarea = styled.textarea`
   outline: 0;
   box-sizing: border-box;
   width: 100%;
-  height: 200px;
+  height: 150px;
 `

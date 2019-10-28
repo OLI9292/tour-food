@@ -263,21 +263,21 @@ export const RouteArrow = styled.img`
 export const BottomIconAbsolute = styled.img`
   position: absolute;
   left: 50%;
-  bottom: 20px;
-  height: 30px;
-  width: 30px;
-  margin-left: -15px;
+  bottom: 25px;
+  height: 24px;
+  width: 24px;
+  margin-left: -12px;
   cursor: pointer;
   @media (max-width: 900px) {
-    bottom: ${p => p.bottom || 115}px;
+    bottom: 120px;
   }
 `
 
 export const BottomIcon = styled.img`
-  margin-left: calc(50% - 15px);
+  margin-left: calc(50% - 12px);
   margin-top: 20px;
   margin-bottom: 30px;
-  height: 30px;
-  width: 30px;
+  height: 24px;
+  width: 24px;
   cursor: pointer;
 `
