@@ -49,6 +49,8 @@ export default class IndexPage extends React.Component {
   }
 
   componentDidMount() {
+    document.body.style.overflow = "hidden"
+
     window.locationResults = undefined
     window.searchProps = undefined
 
@@ -60,6 +62,10 @@ export default class IndexPage extends React.Component {
     }
 
     window.locations ? this.setData(window.locations) : this.loadData()
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflow = "visible" 
   }
 
   loadData() {
@@ -226,8 +232,7 @@ export default class IndexPage extends React.Component {
         style={{
           backgroundColor: searchType ? "white" : colors.orange,
           backgroundImage,
-          backgroundPositionY: "100%",
-          overflow: "hidden"
+          backgroundPositionY: "100%"
         }}
       >
         <SEO title="Home" />
