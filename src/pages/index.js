@@ -227,6 +227,7 @@ export default class IndexPage extends React.Component {
           backgroundColor: searchType ? "white" : colors.orange,
           backgroundImage,
           backgroundPositionY: "100%",
+          overflow: "hidden"
         }}
       >
         <SEO title="Home" />
