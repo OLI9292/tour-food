@@ -112,8 +112,8 @@ export const reverseGeocode = (latLng, cb) => {
 }
 
 export const directions = (origin, destination, cb) => {
-  // const url = `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
-  const url = `${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
+  const url = `${PROXY_URL}${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
+  // const url = `${BASE_DIRECTIONS_URL}origin=${origin}&destination=${destination}${API_KEY}`
   // console.log(`Fetching ${url}.`)
   fetch(url)
     .then(res => res.json())
