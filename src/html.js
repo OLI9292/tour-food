@@ -16,7 +16,7 @@ export default function HTML(props) {
         <meta name="og:url" content="https://tourfood.us" />
         <meta
           name="og:description"
-          content="Great places for food and drink on tour!"
+          content="Great places to eat on tour from musicians who know!"
         />
         {props.headComponents}
       </head>

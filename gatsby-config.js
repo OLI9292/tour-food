@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: `Tour Food`,
-    description: `Great places for food and drink on tour!`,
+    description: `Great places to eat on tour from musicians who know!`,
     url: `https://tourfood.us`,
     image: `tour-food-icon.jpeg`,
   },
