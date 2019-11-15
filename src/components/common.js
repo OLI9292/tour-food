@@ -269,7 +269,7 @@ export const BottomIconAbsolute = styled.img`
   margin-left: -12px;
   cursor: pointer;
   @media (max-width: 900px) {
-    bottom: 120px;
+    top: calc(100vh - 146px);
   }
 `
 
