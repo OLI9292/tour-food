@@ -8,7 +8,6 @@ import Search from "../components/search"
 
 import {
   Box,
-  BottomIconAbsolute,
   Text,
   Header,
   SelectSearchBox,
@@ -65,7 +64,7 @@ export default class IndexPage extends React.Component {
   }
 
   componentWillUnmount() {
-    document.body.style.overflow = "visible" 
+    document.body.style.overflow = "visible"
   }
 
   loadData() {
@@ -132,8 +131,8 @@ export default class IndexPage extends React.Component {
 
     hasPermissions
       ? navigator.permissions.query({ name: "geolocation" }).then(res => {
-          if (res.state !== "denied") getPostion()
-        })
+        if (res.state !== "denied") getPostion()
+      })
       : getPostion()
   }
 
@@ -205,6 +204,17 @@ export default class IndexPage extends React.Component {
         >
           VIEW ALL
         </Text>
+
+        <a style={{ height: "24px" }} target="_blank" href="https://www.instagram.com/tourfood.us">
+          <img
+            style={{
+              marginLeft: "calc(50% - 12px)",
+              height: "24px",
+              width: "24px",
+              cursor: "pointer",
+            }}
+            src={instaWhite} />
+        </a>
       </SelectSearchBox>
     )
 
@@ -253,12 +263,19 @@ export default class IndexPage extends React.Component {
             searchType={searchType}
           />
         ) : (
-          selectSearchComponent
-        )}
+            selectSearchComponent
+          )}
 
-        <a target="_blank" href="https://www.instagram.com/tourfood.us">
-          <BottomIconAbsolute src={searchType ? instaBlue : instaWhite} />
-        </a>
+        {searchType && <a style={{ height: "24px", margin: "20px 0" }} target="_blank" href="https://www.instagram.com/tourfood.us">
+          <img
+            style={{
+              marginLeft: "calc(50% - 12px)",
+              height: "24px",
+              width: "24px",
+              cursor: "pointer",
+            }}
+            src={instaBlue} />
+        </a>}
       </Box>
     )
   }
