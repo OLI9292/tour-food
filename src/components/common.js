@@ -41,9 +41,9 @@ export const SearchBoxes = styled.div`
   width: 100vw;
   justify-content: center;
   text-align: center;
+  height: 100%;
   flex-direction: row;
   display: flex;
-  height: calc(100vh - 160px);
   align-items: center;
   @media (max-width: 900px) {
     flex-direction: column;

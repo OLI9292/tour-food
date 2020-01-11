@@ -219,24 +219,24 @@ export default class Header extends React.Component {
             src={hamburger}
           />
         ) : (
-          <div style={{ position: "absolute", right: 0, display: "flex" }}>
-            <Link style={{ textDecoration: "none" }} to="/about">
-              <StyledText color="white" style={{ marginRight: "20px" }}>
-                About
+            <div style={{ position: "absolute", right: 0, display: "flex" }}>
+              <Link style={{ textDecoration: "none" }} to="/about">
+                <StyledText color="white" style={{ marginRight: "20px" }}>
+                  About
               </StyledText>
-            </Link>
-            <Link style={{ textDecoration: "none" }} to="/faq">
-              <StyledText color="white" style={{ marginRight: "20px" }}>
-                FAQ
+              </Link>
+              <Link style={{ textDecoration: "none" }} to="/faq">
+                <StyledText color="white" style={{ marginRight: "20px" }}>
+                  FAQ
               </StyledText>
-            </Link>
-            <Link style={{ textDecoration: "none" }} to="/contact">
-              <StyledText color="white" style={{ marginRight: "10px" }}>
-                Contact
+              </Link>
+              <Link style={{ textDecoration: "none" }} to="/contact">
+                <StyledText color="white" style={{ marginRight: "10px" }}>
+                  Contact
               </StyledText>
-            </Link>
-          </div>
-        )}
+              </Link>
+            </div>
+          )}
 
         {displayMenu && isMobile && (
           <Menu onMouseLeave={() => this.setState({ displayMenu: false })} />
@@ -247,6 +247,7 @@ export default class Header extends React.Component {
 }
 
 const StyledHeader = styled.header`
+  min-height: 80px;
   height: 80px !important;
   width: 100%;
   z-index: 999999;

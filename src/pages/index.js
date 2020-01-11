@@ -1,3 +1,4 @@
+import styled from "styled-components"
 import React from "react"
 import { navigate } from "gatsby"
 import { uniq, uniqBy } from "lodash"
@@ -195,7 +196,6 @@ export default class IndexPage extends React.Component {
             letterSpacing: "1.5px",
             boxSizing: "border-box",
             width: "100%",
-
             cursor: "pointer",
             margin: 0,
             opacity: dataLoaded ? 1 : 0,
@@ -205,16 +205,9 @@ export default class IndexPage extends React.Component {
           VIEW ALL
         </Text>
 
-        <a style={{ height: "24px" }} target="_blank" href="https://www.instagram.com/tourfood.us">
-          <img
-            style={{
-              marginLeft: "calc(50% - 12px)",
-              height: "24px",
-              width: "24px",
-              cursor: "pointer",
-            }}
-            src={instaWhite} />
-        </a>
+        <InstagramLink target="_blank" href="https://www.instagram.com/tourfood.us">
+          <InstagramIcon src={instaWhite} />
+        </InstagramLink>
       </SelectSearchBox>
     )
 
@@ -266,17 +259,29 @@ export default class IndexPage extends React.Component {
             selectSearchComponent
           )}
 
-        {searchType && <a style={{ height: "24px", margin: "20px 0" }} target="_blank" href="https://www.instagram.com/tourfood.us">
-          <img
-            style={{
-              marginLeft: "calc(50% - 12px)",
-              height: "24px",
-              width: "24px",
-              cursor: "pointer",
-            }}
-            src={instaBlue} />
-        </a>}
+        {
+          searchType &&
+          <InstagramLink
+            target="_blank"
+            href="https://www.instagram.com/tourfood.us">
+            <InstagramIcon src={instaBlue} />
+          </InstagramLink>
+        }
       </Box>
     )
   }
 }
+
+export const InstagramLink = styled.a`
+  height: 24px;
+  @media (max-width: 600px) {
+    margin-bottom: 50px;
+  }
+`
+
+export const InstagramIcon = styled.img`
+  margin-left: calc(50% - 12px);
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+`
