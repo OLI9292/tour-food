@@ -71,7 +71,7 @@ export const SelectSearchBox = styled.div`
   display: flex;
   flex-direction: column;
   @media (max-width: 900px) {
-    height: calc(100vh - 240px);
+    height: calc(100vh - 180px);
   }
 `
 
