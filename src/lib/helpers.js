@@ -79,7 +79,6 @@ export const geocode = (addressStr, cb) => {
 
       try {
         const result = data["results"][0]
-        console.log(result)
         const { lat, lng } = result["geometry"]["location"]
         const address = result["formatted_address"].replace(", USA", "")
         cb(lat, lng, address)
