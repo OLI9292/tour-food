@@ -28,7 +28,7 @@ const instaWhite = require(`../images/insta-white.png`)
 const instaBlue = require(`../images/insta-blue.png`)
 
 const DATA_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSba72Al-RA3rUkBruesaJpLe8A5pIm-EJ8ZvY5SeSIzJWi8sebSnNqBTckypxCCyEhk2UaWvD_6Kfe/pub?output=csv"
+  "https://docs.google.com/spreadsheets/d/1Ya3l25NQxTt61OwaH5u_qK5vOHNmVkg7PErVAu0NTSg/gviz/tq?tqx=out:csv&sheet=THE%20LIST"
 
 const MY_LOCATION_TEXT = "My Location - "
 
@@ -132,8 +132,8 @@ export default class IndexPage extends React.Component {
 
     hasPermissions
       ? navigator.permissions.query({ name: "geolocation" }).then(res => {
-        if (res.state !== "denied") getPostion()
-      })
+          if (res.state !== "denied") getPostion()
+        })
       : getPostion()
   }
 
@@ -205,7 +205,10 @@ export default class IndexPage extends React.Component {
           VIEW ALL
         </Text>
 
-        <InstagramLink target="_blank" href="https://www.instagram.com/tourfood.us">
+        <InstagramLink
+          target="_blank"
+          href="https://www.instagram.com/tourfood.us"
+        >
           <InstagramIcon src={instaWhite} />
         </InstagramLink>
       </SelectSearchBox>
@@ -235,7 +238,7 @@ export default class IndexPage extends React.Component {
         style={{
           backgroundColor: searchType ? "white" : colors.orange,
           backgroundImage,
-          backgroundPositionY: "100%"
+          backgroundPositionY: "100%",
         }}
       >
         <SEO title="Home" />
@@ -256,17 +259,17 @@ export default class IndexPage extends React.Component {
             searchType={searchType}
           />
         ) : (
-            selectSearchComponent
-          )}
+          selectSearchComponent
+        )}
 
-        {
-          searchType &&
+        {searchType && (
           <InstagramLink
             target="_blank"
-            href="https://www.instagram.com/tourfood.us">
+            href="https://www.instagram.com/tourfood.us"
+          >
             <InstagramIcon src={instaBlue} />
           </InstagramLink>
-        }
+        )}
       </Box>
     )
   }
