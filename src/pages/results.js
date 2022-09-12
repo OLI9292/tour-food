@@ -296,6 +296,7 @@ export default class Results extends React.Component {
           disableDefaultUI={true}
           bootstrapURLKeys={{ key: process.env.GATSBY_GOOGLE_API_KEY }}
           center={center}
+          style={{ height: "40vh" }}
           yesIWantToUseGoogleMapApiInternals={true}
           zoom={zoom}
           options={() => ({ gestureHandling: "greedy" })}
@@ -521,7 +522,7 @@ const InnerResultBox = styled.div`
 `
 
 const MapBox = styled.div`
-  height: 40vh;
+  min-height: 40vh;
   width: 100%;
   position: relative;
   display: inline-table;
