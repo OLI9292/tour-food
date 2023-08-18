@@ -12,7 +12,7 @@ const BASE_DIRECTIONS_URL =
 
 const PROXY_URL = "https://cors-anywhere.herokuapp.com/"
 
-const API_KEY = "&key=AIzaSyBdXkVtyeTG0wf51sEXEEZLyMqvFkoyEqE" // + process.env.GATSBY_GOOGLE_API_KEY
+const API_KEY = "&key=AIzaSyBn8mxCsXUQrc60HU1JhsKP7jk5xwxBhuY" // + process.env.GATSBY_GOOGLE_API_KEY
 
 const cleanRow = row =>
   row
