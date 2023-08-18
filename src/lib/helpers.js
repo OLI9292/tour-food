@@ -14,7 +14,6 @@ const PROXY_URL = "https://cors-anywhere.herokuapp.com/"
 
 const API_KEY = "&key=AIzaSyBn8mxCsXUQrc60HU1JhsKP7jk5xwxBhuY" // + process.env.GATSBY_GOOGLE_API_KEY
 
-
 const cleanRow = row =>
   row
     .trim()
