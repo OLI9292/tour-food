@@ -7,7 +7,7 @@
   "dependencies": {
     "@google/maps": "^0.5.5",
     "@turf/turf": "^5.1.6",
-    "gatsby": "^2.15.1",
+    "gatsby": "^5.13.7",
     "gatsby-image": "^2.2.15",
     "gatsby-plugin-google-analytics": "^2.1.20",
     "gatsby-plugin-manifest": "^2.2.12",
